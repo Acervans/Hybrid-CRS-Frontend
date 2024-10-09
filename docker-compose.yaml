@@ -1,0 +1,13 @@
+services:
+  next-app:
+    container_name: next-app
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile
+      args:
+        ENV_VARIABLE: ${ENV_VARIABLE}
+    ports:
+      - 3000:3000
+    tty: true
+    restart: unless-stopped
+    
