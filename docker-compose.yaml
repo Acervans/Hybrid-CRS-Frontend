@@ -1,13 +1,19 @@
 services:
-  next-app:
-    container_name: next-app
+  hybrid-crs-ui:
+    container_name: hybrid-crs-ui
     build:
-      context: ./app
-      dockerfile: ./Dockerfile
-      args:
-        ENV_VARIABLE: ${ENV_VARIABLE}
+      context: ./hybrid-crs-ui
+      dockerfile: ./dev.Dockerfile
     ports:
-      - 3000:3000
+      - 3001:3000
+    # Set environment variables based on the .env file
+    env_file:
+      - .env
+    volumes:
+      - ./hybrid-crs-ui/src:/app/src
+      - ./hybrid-crs-ui/public:/app/public
+      - ./hybrid-crs-ui/.next:/app/.next
+      - /app/node_modules
     tty: true
+    stdin_open: true
     restart: unless-stopped
-    
