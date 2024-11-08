@@ -7,8 +7,8 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <h1>You're Offline</h1>
-      <h2>Check your connection to use Hybrid-CRS</h2>
+      <h1>You&apos;re Offline</h1>
+      <h2>Check your connection to use HybridCRS</h2>
     </>
   )
 }

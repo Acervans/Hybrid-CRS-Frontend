@@ -1,11 +1,12 @@
-import withSerwistInit from "@serwist/next";
+import withPWAInit from "@ducanh2912/next-pwa";
 
-const withSerwist = withSerwistInit({
-    swSrc: "src/sw.ts", // Service worker
-    swDest: "public/sw.js",
+const withPWA = withPWAInit({
+    dest: "public",
+    disable: process.env.NODE_ENV === "development",
     reloadOnOnline: true,
-    injectionPoint: "__SW_MANIFEST",
-    disable: process.env.NODE_ENV === "development", // Disable PWA in development
+    fallbacks: {
+        document: '/~offline'
+    }
 });
 
 /** @type {import('next').NextConfig} */
@@ -14,4 +15,4 @@ const nextConfig = {
     reactStrictMode: true,
 };
 
-export default withSerwist(nextConfig);
+export default withPWA(nextConfig);
