@@ -1,22 +1,15 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
-import {
-  ColorSchemeScript,
-  MantineProvider,
-  mantineHtmlProps,
-  createTheme,
-  MantineColorsTuple
-} from '@mantine/core';
+import { ColorSchemeScript, MantineProvider, mantineHtmlProps, createTheme, MantineColorsTuple } from '@mantine/core'
 
 import './globals.css'
 
 // Import styles for Mantine packages
-import '@mantine/core/styles.css';
-import '@mantine/dates/styles.css';
-import '@mantine/dropzone/styles.css';
-import '@mantine/notifications/styles.css';
-import 'mantine-datatable/styles.layer.css';
-
+import '@mantine/core/styles.css'
+import '@mantine/dates/styles.css'
+import '@mantine/dropzone/styles.css'
+import '@mantine/notifications/styles.css'
+import 'mantine-datatable/styles.layer.css'
 
 export const metadata: Metadata = {
   title: 'HybridCRS',
@@ -55,7 +48,7 @@ const themeColor: MantineColorsTuple = [
   '#37b397',
   '#2aa086',
   '#0f8a73'
-];
+]
 
 const theme = createTheme({
   colors: {
@@ -64,13 +57,12 @@ const theme = createTheme({
   primaryColor: 'themeColor'
 })
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'] })
 export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
-
   return (
     <html lang='en' {...mantineHtmlProps}>
       <head>

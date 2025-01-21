@@ -1,0 +1,1 @@
+cd ./hybrid-crs-ui && pnpm lint-staged
