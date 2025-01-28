@@ -28,6 +28,10 @@ export default function DashboardLayout({
     setLoaded(true)
     if (colorScheme === 'auto' && window.matchMedia) {
       setColorScheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    } else if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        setColorScheme(e.matches ? 'dark' : 'light')
+      })
     }
   })
 
