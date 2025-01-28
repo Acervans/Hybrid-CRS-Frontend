@@ -22,10 +22,13 @@ export default function DashboardLayout({
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true)
 
   const [loaded, setLoaded] = useState<boolean>(false)
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const { colorScheme, setColorScheme, toggleColorScheme } = useMantineColorScheme()
 
   useEffectOnce(() => {
     setLoaded(true)
+    if (colorScheme === 'auto' && window.matchMedia) {
+      setColorScheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    }
   })
 
   return (
