@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: 'Hybrid Conversational Recommender System using LLM with RAG and RecSys integration',
   generator: 'Next.js',
   manifest: '/manifest.json',
-  keywords: ['hybrid-crs', 'conversational', 'recommender-system', 'llm', 'rag', 'nextjs', 'next14', 'pwa', 'next-pwa'],
+  keywords: ['hybrid-crs', 'conversational', 'recommender-system', 'llm', 'rag', 'nextjs', 'next15', 'pwa', 'next-pwa'],
   authors: [
     {
       name: 'Acervans',
@@ -24,8 +24,8 @@ export const metadata: Metadata = {
     }
   ],
   icons: [
-    { rel: 'apple-touch-icon', url: 'icons/icon-192x192.png' },
-    { rel: 'icon', url: 'icons/icon-192x192.png' }
+    { rel: 'apple-touch-icon', url: '/icons/icon-192x192.png' },
+    { rel: 'icon', url: '/icons/icon-192x192.png' }
   ]
 }
 
