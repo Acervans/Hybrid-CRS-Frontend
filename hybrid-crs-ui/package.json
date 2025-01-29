@@ -25,7 +25,7 @@
     "@nlux/highlighter": "^2.17.1",
     "@nlux/react": "^2.17.1",
     "@nlux/themes": "^2.17.1",
-    "ai": "^4.1.10",
+    "ai": "^4.1.11",
     "apexcharts": "^4.4.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",

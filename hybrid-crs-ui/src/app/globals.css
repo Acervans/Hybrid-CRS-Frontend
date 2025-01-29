@@ -26,14 +26,20 @@ body {
   }
 }
 
-.nlux-comp-chatItem > .nlux-comp-message {
+.nlux-comp-message {
   flex: unset !important;
 }
 
-.nlux-AiChat-root > .nlux-chatRoom-container {
+.nlux-chatRoom-container {
   --nlux-chtr--brdrRd: 10px;
 }
 
 .nlux-comp-exceptionBox {
   z-index: 299 !important;
+}
+
+.nlux-markdown-container > ol,
+ul {
+  list-style-type: revert;
+  padding-left: 2em !important;
 }

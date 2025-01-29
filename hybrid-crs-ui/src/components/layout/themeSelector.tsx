@@ -24,19 +24,13 @@ const themeItemProps = {
 }
 
 export default function ThemeSelector() {
-  const {
-    colorScheme,
-    setColorScheme
-  }: {
-    colorScheme: ColorScheme
-    setColorScheme: (colorScheme: ColorScheme) => void
-  } = useMantineColorScheme()
+  const { colorScheme, setColorScheme } = useMantineColorScheme()
 
   return (
     <Menu position='bottom' withArrow>
       <Menu.Target>
         <ActionIcon variant='subtle' color={themeItemProps[colorScheme].color} title='Set Theme'>
-          <Icon path={themeItemProps[colorScheme].icon} size='1' />
+          <Icon path={themeItemProps[colorScheme].icon} />
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown>
@@ -46,15 +40,8 @@ export default function ThemeSelector() {
           return (
             <Menu.Item
               key={theme}
-              onClick={() => setColorScheme(theme)}
-              leftSection={
-                <Icon
-                  path={themeProps.icon}
-                  size='1rem'
-                  className='w-max'
-                  // color={themeProps.color}
-                />
-              }
+              onClick={() => setColorScheme(theme as ColorScheme)}
+              leftSection={<Icon path={themeProps.icon} size='1rem' />}
             >
               {themeProps.name}
             </Menu.Item>

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useEffectOnce } from 'react-use'
 
 import { Flex, Title } from '@mantine/core'
+import { useHeadroom } from '@mantine/hooks'
 
 import { AppShell, Burger, Group, Skeleton } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
@@ -20,6 +21,7 @@ export default function DashboardLayout({
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true)
 
   const [loaded, setLoaded] = useState<boolean>(false)
+  const pinned = useHeadroom({ fixedAt: 120 })
 
   useEffectOnce(() => {
     setLoaded(true)
@@ -28,13 +30,14 @@ export default function DashboardLayout({
   return (
     <AppShell
       layout='default'
-      header={{ height: { base: 60, md: 70, lg: 70 } }}
+      header={{ height: { base: 60, md: 70 }, collapsed: !pinned }}
       navbar={{
-        width: { base: 200, md: 300, lg: 300 },
+        width: { base: 200, md: 300 },
         breakpoint: 'sm',
         collapsed: { mobile: !mobileOpened, desktop: !desktopOpened }
       }}
-      padding='sm'
+      padding='xs'
+      withBorder={false}
     >
       <AppShell.Header>
         <Flex justify={'space-between'} h='100%' px='md'>
@@ -61,7 +64,9 @@ export default function DashboardLayout({
             <Skeleton key={index} h={28} mt='sm' animate={false} />
           ))}
       </AppShell.Navbar>
-      <AppShell.Main h='100dvh'>{children}</AppShell.Main>
+      <AppShell.Main h='100dvh' className='!pt-[var(--app-shell-header-offset)]'>
+        {children}
+      </AppShell.Main>
     </AppShell>
   )
 }

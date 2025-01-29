@@ -3,7 +3,7 @@
 import { useEffectOnce } from 'react-use'
 import { Container, Skeleton, useMantineColorScheme } from '@mantine/core'
 import { AiChat, useAsStreamAdapter, useAiChatApi } from '@nlux/react'
-import { streamText } from './stream'
+import { streamText } from '@/lib/stream'
 import { highlighter } from '@nlux/highlighter'
 import { useCallback, useEffect, useState } from 'react'
 import '@nlux/themes/nova.css'
