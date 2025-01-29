@@ -33,3 +33,7 @@ body {
 .nlux-AiChat-root > .nlux-chatRoom-container {
   --nlux-chtr--brdrRd: 10px;
 }
+
+.nlux-comp-exceptionBox {
+  z-index: 299 !important;
+}

@@ -10,8 +10,9 @@ The Next.js app is located inside `hibrid-crs-ui/`, which follows this folder st
   - **/components** -> Custom React components
   - **/contexts** -> Data Contexts shared among Components
   - **/lib** -> Backend API and database configuration, Server Actions
-  - **/types** -> TypeScript type definitions and interfaces
   - **/views** -> Page views, composed of whole screens or sections
+  - `types.ts` -> Type/Interface definitions
+  - `utils.ts` -> Utility functions used throughout the project
 - **/public** -> Static assets
 
 ## Getting Started

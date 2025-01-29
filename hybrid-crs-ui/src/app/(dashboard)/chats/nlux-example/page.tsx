@@ -1,32 +1,49 @@
 'use client'
 
 import { useEffectOnce } from 'react-use'
-import { Container, useMantineColorScheme } from '@mantine/core'
+import { Container, Skeleton, useMantineColorScheme } from '@mantine/core'
 import { AiChat, useAsStreamAdapter, useAiChatApi } from '@nlux/react'
 import { streamText } from './stream'
 import { highlighter } from '@nlux/highlighter'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import '@nlux/themes/nova.css'
 
 export default function HomePage() {
   const [isLoaded, setLoaded] = useState<boolean>(false)
 
   const { colorScheme } = useMantineColorScheme()
+  const [chatTheme, setChatTheme] = useState<ColorScheme>(colorScheme)
 
   // We transform the streamText function into an adapter that <AiChat /> can use
   const chatAdapter = useAsStreamAdapter(streamText)
 
   const chatApi = useAiChatApi()
 
-  async function loadHighlighterTheme() {
-    if (colorScheme === 'dark') await import('@nlux/highlighter/dark-theme.css')
+  async function loadHighlighterTheme(theme: ColorScheme) {
+    if (theme === 'dark') await import('@nlux/highlighter/dark-theme.css')
     else await import('@nlux/highlighter/light-theme.css')
   }
 
+  const syncTheme = useCallback(() => {
+    const newTheme = document.documentElement.getAttribute('data-mantine-color-scheme') as 'dark' | 'light'
+
+    setChatTheme(newTheme)
+    loadHighlighterTheme(newTheme)
+  }, [])
+
   useEffectOnce(() => {
-    loadHighlighterTheme()
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        setTimeout(syncTheme, 200)
+      })
+    }
+    syncTheme()
     setLoaded(true)
   })
+
+  useEffect(() => {
+    syncTheme()
+  }, [colorScheme, syncTheme])
 
   return (
     <Container size={'100%'} p={0} h={'100%'} mah={'100%'} className='aiChat-container'>
@@ -52,23 +69,21 @@ export default function HomePage() {
               { prompt: 'Can you show me a magic trick?' },
               { prompt: 'Where can I find the book of wizardry?' }
             ],
-            historyPayloadSize: 'max'
+            historyPayloadSize: 'max',
+            autoScroll: true
           }}
           displayOptions={{
-            // width: 800,
-            // height: 640,
-            colorScheme: colorScheme
+            colorScheme: chatTheme
           }}
           messageOptions={{
             showCodeBlockCopyButton: false,
             editableUserMessages: true,
             syntaxHighlighter: highlighter
           }}
-          className='max-h-full h-full'
+          className='max-h-full shadow-lg rounded-lg'
         />
       ) : (
-        // Maybe loading skeleton
-        'Loading chat...'
+        <Skeleton height='100%' radius='md' />
       )}
     </Container>
   )

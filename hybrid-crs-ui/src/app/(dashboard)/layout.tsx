@@ -3,15 +3,13 @@
 import { useState } from 'react'
 import { useEffectOnce } from 'react-use'
 
-import { ActionIcon, Flex, Title, useMantineColorScheme } from '@mantine/core'
-
-import Icon from '@mdi/react'
-import { mdiWeatherSunny, mdiWeatherNight } from '@mdi/js'
+import { Flex, Title } from '@mantine/core'
 
 import { AppShell, Burger, Group, Skeleton } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import Image from 'next/image'
 import Link from 'next/link'
+import ThemeSelector from '@/components/layout/themeSelector'
 
 export default function DashboardLayout({
   children
@@ -22,17 +20,9 @@ export default function DashboardLayout({
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true)
 
   const [loaded, setLoaded] = useState<boolean>(false)
-  const { colorScheme, setColorScheme, toggleColorScheme } = useMantineColorScheme()
 
   useEffectOnce(() => {
     setLoaded(true)
-    if (colorScheme === 'auto' && window.matchMedia) {
-      setColorScheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    } else if (window.matchMedia) {
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        setColorScheme(e.matches ? 'dark' : 'light')
-      })
-    }
   })
 
   return (
@@ -44,7 +34,7 @@ export default function DashboardLayout({
         breakpoint: 'sm',
         collapsed: { mobile: !mobileOpened, desktop: !desktopOpened }
       }}
-      padding='md'
+      padding='sm'
     >
       <AppShell.Header>
         <Flex justify={'space-between'} h='100%' px='md'>
@@ -60,22 +50,7 @@ export default function DashboardLayout({
               </Group>
             </Link>
           </Group>
-          <Group>
-            {loaded && (
-              <ActionIcon
-                variant='subtle'
-                color={colorScheme === 'dark' ? 'yellow' : 'blue'}
-                onClick={() => toggleColorScheme()}
-                title={`${colorScheme === 'dark' ? 'Light' : 'Dark'} mode`}
-              >
-                {colorScheme === 'dark' ? (
-                  <Icon path={mdiWeatherSunny} size='1' />
-                ) : (
-                  <Icon path={mdiWeatherNight} size='1' />
-                )}
-              </ActionIcon>
-            )}
-          </Group>
+          <Group>{loaded && <ThemeSelector />}</Group>
         </Flex>
       </AppShell.Header>
       <AppShell.Navbar p='md'>
@@ -86,7 +61,7 @@ export default function DashboardLayout({
             <Skeleton key={index} h={28} mt='sm' animate={false} />
           ))}
       </AppShell.Navbar>
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main h='100dvh'>{children}</AppShell.Main>
     </AppShell>
   )
 }
