@@ -1,4 +1,4 @@
-import { StreamingAdapterObserver } from '@nlux/react'
+import { StreamingAdapterObserver, ChatAdapterExtras } from '@nlux/react'
 import { createOllama } from 'ollama-ai-provider'
 import { streamText } from 'ai'
 
@@ -16,12 +16,19 @@ const ollama = createOllama({
 // Stream text from the API -> Ollama
 // We use HTTP POST to send the prompt to the server, and receive a stream of server-sent events
 // We use the observer object passed by NLUX to send chunks of text to <AiChat />
-export async function streamChat(prompt: string, observer: StreamingAdapterObserver) {
+export async function streamChat(prompt: string, observer: StreamingAdapterObserver, extras: ChatAdapterExtras) {
   try {
     const response = streamText({
       model: ollama('qwen2.5:3b'),
       temperature: 0.2,
       messages: [
+        ...(extras.conversationHistory || []).map(chatItem => ({
+          role: chatItem.role,
+          content:
+            (chatItem.message as string | Array<string>) instanceof Array
+              ? (chatItem.message as unknown as Array<string>).join('')
+              : chatItem.message
+        })),
         {
           role: 'user',
           content: prompt

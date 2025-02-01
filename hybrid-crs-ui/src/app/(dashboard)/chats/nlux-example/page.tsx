@@ -80,7 +80,7 @@ export default function HomePage() {
             showCodeBlockCopyButton: false,
             editableUserMessages: true,
             syntaxHighlighter: highlighter,
-            streamingAnimationSpeed: 5
+            streamingAnimationSpeed: 10
           }}
           className='max-h-full shadow-lg rounded-lg'
         />
