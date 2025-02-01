@@ -4,32 +4,34 @@ import { Menu, ActionIcon, useMantineColorScheme } from '@mantine/core'
 
 import Icon from '@mdi/react'
 import { mdiWhiteBalanceSunny, mdiWeatherNight, mdiThemeLightDark } from '@mdi/js'
-
-const themeItemProps = {
-  dark: {
-    name: 'Dark',
-    icon: mdiWeatherNight,
-    color: 'blue'
-  },
-  light: {
-    name: 'Light',
-    icon: mdiWhiteBalanceSunny,
-    color: 'yellow'
-  },
-  auto: {
-    name: 'System',
-    icon: mdiThemeLightDark,
-    color: 'lightseagreen'
-  }
-}
+import { useTranslations } from 'next-intl'
 
 export default function ThemeSelector() {
   const { colorScheme, setColorScheme } = useMantineColorScheme()
+  const t = useTranslations('Theme')
+
+  const themeItemProps = {
+    dark: {
+      name: t('dark'),
+      icon: mdiWeatherNight,
+      color: 'blue'
+    },
+    light: {
+      name: t('light'),
+      icon: mdiWhiteBalanceSunny,
+      color: 'yellow'
+    },
+    auto: {
+      name: t('system'),
+      icon: mdiThemeLightDark,
+      color: 'lightseagreen'
+    }
+  }
 
   return (
     <Menu position='bottom' withArrow>
       <Menu.Target>
-        <ActionIcon variant='subtle' color={themeItemProps[colorScheme].color} title='Set Theme'>
+        <ActionIcon variant='subtle' color={themeItemProps[colorScheme].color} title={t('tooltip')}>
           <Icon path={themeItemProps[colorScheme].icon} />
         </ActionIcon>
       </Menu.Target>

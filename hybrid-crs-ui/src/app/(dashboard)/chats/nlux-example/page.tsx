@@ -3,7 +3,7 @@
 import { useEffectOnce } from 'react-use'
 import { Container, Skeleton, useMantineColorScheme } from '@mantine/core'
 import { AiChat, useAsStreamAdapter, useAiChatApi } from '@nlux/react'
-import { streamText } from '@/lib/stream'
+import { streamChat } from '@/lib/api'
 import { highlighter } from '@nlux/highlighter'
 import { useCallback, useEffect, useState } from 'react'
 import '@nlux/themes/nova.css'
@@ -15,7 +15,7 @@ export default function HomePage() {
   const [chatTheme, setChatTheme] = useState<ColorScheme>(colorScheme)
 
   // We transform the streamText function into an adapter that <AiChat /> can use
-  const chatAdapter = useAsStreamAdapter(streamText)
+  const chatAdapter = useAsStreamAdapter(streamChat)
 
   const chatApi = useAiChatApi()
 
@@ -63,6 +63,7 @@ export default function HomePage() {
             }
           }}
           conversationOptions={{
+            layout: 'bubbles',
             conversationStarters: [
               // Funny prompts as if you're talking to HarryBotter
               { prompt: 'What is the spell to make my code work?' },
@@ -78,7 +79,8 @@ export default function HomePage() {
           messageOptions={{
             showCodeBlockCopyButton: false,
             editableUserMessages: true,
-            syntaxHighlighter: highlighter
+            syntaxHighlighter: highlighter,
+            streamingAnimationSpeed: 5
           }}
           className='max-h-full shadow-lg rounded-lg'
         />

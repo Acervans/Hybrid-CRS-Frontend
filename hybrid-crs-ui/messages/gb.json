@@ -1,0 +1,15 @@
+{
+    "Metadata": {
+        "title": "HybridCRS",
+        "description": "Hybrid Conversational Recommender System using LLM with RAG and RecSys integration"
+    },
+    "Locale": {
+        "tooltip": "Set Language"
+    },
+    "Theme": {
+        "tooltip": "Set Theme",
+        "dark": "Dark",
+        "light": "Light",
+        "system": "System"
+    }
+}

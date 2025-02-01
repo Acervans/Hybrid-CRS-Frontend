@@ -11,6 +11,7 @@ import { useDisclosure } from '@mantine/hooks'
 import Image from 'next/image'
 import Link from 'next/link'
 import ThemeSelector from '@/components/layout/themeSelector'
+import LanguageSelector from '@/components/layout/languageSelector'
 
 export default function DashboardLayout({
   children
@@ -53,7 +54,17 @@ export default function DashboardLayout({
               </Group>
             </Link>
           </Group>
-          <Group>{loaded && <ThemeSelector />}</Group>
+          {loaded ? (
+            <Group>
+              <LanguageSelector />
+              <ThemeSelector />
+            </Group>
+          ) : (
+            <Group>
+              <Skeleton h='1.75rem' w='1.75rem' />
+              <Skeleton h='1.75rem' w='1.75rem' />
+            </Group>
+          )}
         </Flex>
       </AppShell.Header>
       <AppShell.Navbar p='md'>
