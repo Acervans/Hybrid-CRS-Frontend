@@ -1,7 +1,7 @@
 {
   "name": "Hybrid Conversational Recommender System",
   "short_name": "HybridCRS",
-  "theme_color": "#018569",
+  "theme_color": "#0f8a73",
   "background_color": "#ffffff",
   "display": "standalone",
   "orientation": "portrait",
