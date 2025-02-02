@@ -36,7 +36,7 @@ export default function LanguageSelector() {
             <Menu.Item
               key={code}
               onClick={() => {
-                setLocale(code as Locale, { expires: 34560000, sameSite: 'lax' })
+                setLocale(code as Locale, { expires: 400, sameSite: 'lax' })
                 router.refresh()
               }}
               leftSection={<span className={`fi fi-${getLocaleIcon(code)}`} />}
