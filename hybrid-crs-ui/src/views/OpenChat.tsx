@@ -6,17 +6,19 @@ import { AiChat, useAsStreamAdapter, useAiChatApi } from '@nlux/react'
 import { streamChat } from '@/lib/api'
 import { highlighter } from '@nlux/highlighter'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
+
 import '@nlux/themes/nova.css'
 
-export default function HomePage() {
+export default function OpenChat() {
   const [isLoaded, setLoaded] = useState<boolean>(false)
 
   const { colorScheme } = useMantineColorScheme()
   const [chatTheme, setChatTheme] = useState<ColorScheme>(colorScheme)
+  const t = useTranslations('Chats')
 
   // We transform the streamText function into an adapter that <AiChat /> can use
   const chatAdapter = useAsStreamAdapter(streamChat)
-
   const chatApi = useAiChatApi()
 
   async function loadHighlighterTheme(theme: ColorScheme) {
@@ -81,6 +83,9 @@ export default function HomePage() {
             editableUserMessages: true,
             syntaxHighlighter: highlighter,
             streamingAnimationSpeed: 10
+          }}
+          composerOptions={{
+            placeholder: t('placeholder')
           }}
           className='max-h-full shadow-lg rounded-lg'
         />

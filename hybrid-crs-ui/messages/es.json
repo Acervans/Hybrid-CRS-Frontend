@@ -10,5 +10,11 @@
         "dark": "Oscuro",
         "light": "Claro",
         "system": "Sistema"
+    },
+    "Chats": {
+        "Open": {
+            "title": "Chat Libre"
+        },
+        "placeholder": "Envía un mensaje"
     }
 }

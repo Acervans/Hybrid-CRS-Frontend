@@ -1,6 +1,5 @@
 {
     "Metadata": {
-        "title": "HybridCRS",
         "description": "Hybrid Conversational Recommender System using LLM with RAG and RecSys integration"
     },
     "Locale": {
@@ -11,5 +10,11 @@
         "dark": "Dark",
         "light": "Light",
         "system": "System"
+    },
+    "Chats": {
+        "Open": {
+            "title": "Open Chat"
+        },
+        "placeholder": "Send a message"
     }
 }

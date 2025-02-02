@@ -14,11 +14,15 @@ import '@mantine/dropzone/styles.css'
 import '@mantine/notifications/styles.css'
 import 'mantine-datatable/styles.layer.css'
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
-  const t = await getTranslations({ locale, namespace: 'Metadata' })
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const dynParams = await params
+  const t = await getTranslations({ locale: dynParams.locale, namespace: 'Metadata' })
 
   return {
-    title: t('title'),
+    title: {
+      template: '%s | HybridCRS',
+      default: 'HybridCRS'
+    },
     description: t('description'),
     generator: 'Next.js',
     manifest: '/manifest.json',
