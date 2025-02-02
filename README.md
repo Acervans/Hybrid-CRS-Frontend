@@ -4,13 +4,16 @@ Frontend for [Hybrid-CRS](https://github.com/Acervans/Hybrid-CRS), developed wit
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Folder Structure
-The Next.js app is located inside `hibrid-crs-ui/`, which follows this folder structure:
-- **/src** -> All the source code for that will be compiled and rendered by Next.js
+The Next.js app is located inside `hybrid-crs-ui/`, with the following folder structure:
+- **/src** -> All the source code that will be compiled and rendered by Next.js
   - **/app** -> Application routes and pages
   - **/components** -> Custom React components
   - **/contexts** -> Data Contexts shared among Components
+  - **/hooks** -> Custom hooks for shared stateful logic
+  - **/i18n** -> Request configuration for i18n (Internationalisation)
   - **/lib** -> Backend API and database configuration, Server Actions
   - **/views** -> Page views, composed of whole screens or sections
+  - `constants.ts` -> Shared constants definitions
   - `types.ts` -> Type/Interface definitions
   - `utils.ts` -> Utility functions used throughout the project
 - **/public** -> Static assets
@@ -39,7 +42,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load the Inter font family.
 
 ## Learn More
 
