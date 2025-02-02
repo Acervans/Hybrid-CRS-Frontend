@@ -3,31 +3,31 @@
 import { Menu, ActionIcon } from '@mantine/core'
 
 import { useCookie } from 'react-use'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
+import { useRouter } from 'next/navigation'
+
+import { availableLanguages } from '@/constants'
 
 import 'flag-icons/css/flag-icons.min.css'
-import { useRouter } from 'next/navigation'
+
+const localeToIcon: Record<string, string> = {
+  en: 'gb',
+  zh: 'cn'
+}
 
 export default function LanguageSelector() {
   const [locale, setLocale] = useCookie('NEXT_LOCALE')
-  const t = useTranslations('Locale')
+  const defaultLocale = useLocale()
   const router = useRouter()
+  const t = useTranslations('Locale')
 
-  const availableLanguages = {
-    gb: 'English (UK)',
-    es: 'Español',
-    de: 'Deutsch',
-    fr: 'Français',
-    it: 'Italiano',
-    pt: 'Português',
-    cn: '中文'
-  }
+  const getLocaleIcon = (localeCode: string) => localeToIcon[localeCode] || localeCode
 
   return (
     <Menu position='bottom' withArrow>
       <Menu.Target>
         <ActionIcon variant='subtle' title={t('tooltip')}>
-          <span className={`fi fi-${locale || 'gb'}`} />
+          <span className={`fi fi-${getLocaleIcon(locale || defaultLocale)}`} />
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown>
@@ -39,7 +39,7 @@ export default function LanguageSelector() {
                 setLocale(code as Locale, { expires: 34560000, sameSite: 'lax' })
                 router.refresh()
               }}
-              leftSection={<span className={`fi fi-${code}`} />}
+              leftSection={<span className={`fi fi-${getLocaleIcon(code)}`} />}
             >
               {availableLanguages[code as Locale]}
             </Menu.Item>

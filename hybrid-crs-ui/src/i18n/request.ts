@@ -1,15 +1,28 @@
 import { getRequestConfig } from 'next-intl/server'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
+import { availableLanguages } from '@/constants'
 import deepmerge from 'deepmerge'
 
 export default getRequestConfig(async () => {
   const reqCookies = await cookies()
-  const locale = reqCookies.get('NEXT_LOCALE')?.value || 'gb'
+  const reqHeaders = await headers()
 
-  // Fallback to english
+  // Get locale from cookie or request headers
+  const locale =
+    reqCookies.get('NEXT_LOCALE')?.value || reqHeaders.get('accept-language')?.split(',')[1].split(';')[0] || 'en'
+
+  const defaultMessages = (await import(`../../messages/en.json`)).default
+
+  if (locale === 'en' || !availableLanguages[locale as Locale]) {
+    return {
+      locale: 'en',
+      messages: defaultMessages
+    }
+  }
+
+  // Fallback to english entries
   const userMessages = (await import(`../../messages/${locale}.json`)).default
-  const defaultMessages = (await import(`../../messages/gb.json`)).default
-  const messages = locale === 'gb' ? userMessages : deepmerge(defaultMessages, userMessages)
+  const messages = deepmerge(defaultMessages, userMessages)
 
   return {
     locale,
