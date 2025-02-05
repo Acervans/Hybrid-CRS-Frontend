@@ -11,10 +11,16 @@
         "light": "Claro",
         "system": "Sistema"
     },
+    "LLM": {
+        "tooltip": "Elegir Modelo LLM"
+    },
     "Chats": {
         "Open": {
             "title": "Chat Libre"
         },
-        "placeholder": "Envía un mensaje"
+        "placeholder": "Envía un mensaje",
+        "voiceTooltip": "Voz a Texto",
+        "voiceTooltipDisabled": "Micrófono desactivado para esta aplicación",
+        "you": "Tú"
     }
 }

@@ -1,5 +1,5 @@
 export const availableLanguages: Record<Locale, string> = {
-  en: 'English (UK)',
+  en: 'English',
   es: 'Español',
   de: 'Deutsch',
   fr: 'Français',

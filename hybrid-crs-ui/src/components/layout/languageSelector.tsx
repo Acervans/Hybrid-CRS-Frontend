@@ -1,14 +1,15 @@
 'use client'
 
-import { Menu, ActionIcon } from '@mantine/core'
+import { Menu, ActionIcon, Tooltip } from '@mantine/core'
 
-import { useCookie } from 'react-use'
-import { useTranslations, useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 
 import { availableLanguages } from '@/constants'
 
 import 'flag-icons/css/flag-icons.min.css'
+import { useContext } from 'react'
+import { LocaleContext } from '@/contexts/localeContext'
 
 const localeToIcon: Record<string, string> = {
   en: 'gb',
@@ -16,8 +17,7 @@ const localeToIcon: Record<string, string> = {
 }
 
 export default function LanguageSelector() {
-  const [locale, setLocale] = useCookie('NEXT_LOCALE')
-  const defaultLocale = useLocale()
+  const { locale, setLocale } = useContext(LocaleContext)
   const router = useRouter()
   const t = useTranslations('Locale')
 
@@ -26,9 +26,11 @@ export default function LanguageSelector() {
   return (
     <Menu position='bottom' withArrow>
       <Menu.Target>
-        <ActionIcon variant='subtle' title={t('tooltip')}>
-          <span className={`fi fi-${getLocaleIcon(locale || defaultLocale)}`} />
-        </ActionIcon>
+        <Tooltip label={t('tooltip')} position='left' openDelay={1000} withArrow>
+          <ActionIcon variant='subtle'>
+            <span className={`fi fi-${getLocaleIcon(locale)}`} />
+          </ActionIcon>
+        </Tooltip>
       </Menu.Target>
       <Menu.Dropdown>
         {Object.keys(availableLanguages).map(code => {

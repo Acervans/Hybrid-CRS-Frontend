@@ -41,3 +41,7 @@ ul {
   list-style-type: revert;
   padding-left: 2em !important;
 }
+
+.nlux-conversationStarters-container {
+  overflow-y: auto !important;
+}

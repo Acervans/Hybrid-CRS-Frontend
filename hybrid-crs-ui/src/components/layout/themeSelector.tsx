@@ -1,6 +1,6 @@
 'use client'
 
-import { Menu, ActionIcon, useMantineColorScheme } from '@mantine/core'
+import { Menu, ActionIcon, useMantineColorScheme, Tooltip } from '@mantine/core'
 
 import Icon from '@mdi/react'
 import { mdiWhiteBalanceSunny, mdiWeatherNight, mdiThemeLightDark } from '@mdi/js'
@@ -31,9 +31,11 @@ export default function ThemeSelector() {
   return (
     <Menu position='bottom' withArrow>
       <Menu.Target>
-        <ActionIcon variant='subtle' color={themeItemProps[colorScheme].color} title={t('tooltip')}>
-          <Icon path={themeItemProps[colorScheme].icon} />
-        </ActionIcon>
+        <Tooltip label={t('tooltip')} position='left' openDelay={1000} withArrow>
+          <ActionIcon variant='subtle' color={themeItemProps[colorScheme].color}>
+            <Icon path={themeItemProps[colorScheme].icon} />
+          </ActionIcon>
+        </Tooltip>
       </Menu.Target>
       <Menu.Dropdown>
         {Object.keys(themeItemProps).map(theme => {

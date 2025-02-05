@@ -11,10 +11,16 @@
         "light": "Light",
         "system": "System"
     },
+    "LLM": {
+        "tooltip": "Select LLM Model"
+    },
     "Chats": {
         "Open": {
             "title": "Open Chat"
         },
-        "placeholder": "Send a message"
+        "placeholder": "Send a message",
+        "voiceTooltip": "Speech to Text",
+        "voiceTooltipDisabled": "Microphone is disabled for this app",
+        "you": "You"
     }
 }

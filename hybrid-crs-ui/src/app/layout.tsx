@@ -4,6 +4,7 @@ import { ColorSchemeScript, MantineProvider, mantineHtmlProps, createTheme, Mant
 
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
+import { LocaleProvider } from '@/contexts/localeContext'
 
 import './globals.css'
 
@@ -96,7 +97,7 @@ export default async function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <MantineProvider theme={theme} defaultColorScheme='auto'>
-            {children}
+            <LocaleProvider>{children}</LocaleProvider>
           </MantineProvider>
         </NextIntlClientProvider>
       </body>
