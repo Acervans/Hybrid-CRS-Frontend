@@ -1,19 +1,14 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps, createTheme, MantineColorsTuple } from '@mantine/core'
+
+import { ThemeProvider } from 'next-themes'
 
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { LocaleProvider } from '@/contexts/localeContext'
 
 import './globals.css'
-
-// Import styles for Mantine packages
-import '@mantine/core/styles.css'
-import '@mantine/dates/styles.css'
-import '@mantine/dropzone/styles.css'
-import '@mantine/notifications/styles.css'
-import 'mantine-datatable/styles.layer.css'
+import { ModelProvider } from '@/contexts/modelContext'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const dynParams = await params
@@ -59,26 +54,6 @@ export const viewport: Viewport = {
   viewportFit: 'cover'
 }
 
-const themeColor: MantineColorsTuple = [
-  '#e9fcf8',
-  '#d9f5ef',
-  '#b4eade',
-  '#8bdecb',
-  '#6ad4bc',
-  '#55ceb2',
-  '#47cbad',
-  '#37b397',
-  '#2aa086',
-  '#0f8a73'
-]
-
-const theme = createTheme({
-  colors: {
-    themeColor
-  },
-  primaryColor: 'themeColor'
-})
-
 const inter = Inter({ subsets: ['latin'] })
 
 export default async function RootLayout({
@@ -90,15 +65,15 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale} {...mantineHtmlProps}>
-      <head>
-        <ColorSchemeScript defaultColorScheme='auto' />
-      </head>
+    <html lang={locale} suppressHydrationWarning>
+      <head />
       <body className={`${inter.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <MantineProvider theme={theme} defaultColorScheme='auto'>
-            <LocaleProvider>{children}</LocaleProvider>
-          </MantineProvider>
+          <ThemeProvider defaultTheme='system'>
+            <LocaleProvider>
+              <ModelProvider>{children}</ModelProvider>
+            </LocaleProvider>
+          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>

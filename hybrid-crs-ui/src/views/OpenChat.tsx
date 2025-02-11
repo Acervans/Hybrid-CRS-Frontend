@@ -1,97 +1,98 @@
 'use client'
 
-import { useEffectOnce } from 'react-use'
-import { Container, Skeleton, useMantineColorScheme } from '@mantine/core'
-import { AiChat, useAsStreamAdapter, useAiChatApi } from '@nlux/react'
 import { streamChat } from '@/lib/api'
-import { highlighter } from '@nlux/highlighter'
-import { useCallback, useEffect, useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useContext } from 'react'
 
-import '@nlux/themes/nova.css'
+import {
+  AssistantRuntimeProvider,
+  CompositeAttachmentAdapter,
+  SimpleTextAttachmentAdapter,
+  SimpleImageAttachmentAdapter,
+  useLocalRuntime,
+  type ChatModelAdapter
+} from '@assistant-ui/react'
+
+import { WebSpeechSynthesisAdapter } from '@/components/chats/web-speech-adapter'
+
+import { Thread } from '@/components/assistant-ui/thread'
+// import { ThreadList } from "@/components/assistant-ui/thread-list";
+import { LocaleContext } from '@/contexts/localeContext'
+import { useToast } from '@/hooks/use-toast'
+import { ModelContext } from '@/contexts/modelContext'
 
 export default function OpenChat() {
-  const [isLoaded, setLoaded] = useState<boolean>(false)
+  const { locale } = useContext(LocaleContext)
+  const { toast } = useToast()
+  const { model } = useContext(ModelContext)
 
-  const { colorScheme } = useMantineColorScheme()
-  const [chatTheme, setChatTheme] = useState<ColorScheme>(colorScheme)
-  const t = useTranslations('Chats')
-
-  // We transform the streamText function into an adapter that <AiChat /> can use
-  const chatAdapter = useAsStreamAdapter(streamChat)
-  const chatApi = useAiChatApi()
-
-  async function loadHighlighterTheme(theme: ColorScheme) {
-    if (theme === 'dark') await import('@nlux/highlighter/dark-theme.css')
-    else await import('@nlux/highlighter/light-theme.css')
+  const errorToast = () => {
+    toast({
+      variant: 'destructive',
+      title: 'Something went wrong',
+      description: 'Please try again later'
+    })
   }
 
-  const syncTheme = useCallback(() => {
-    const newTheme = document.documentElement.getAttribute('data-mantine-color-scheme') as 'dark' | 'light'
+  // TODO add follow-up suggestions with custom context or ThreadStatus
+  const OllamaModelAdapter: ChatModelAdapter = {
+    async *run({ messages, abortSignal, context }) {
+      const response = await streamChat({
+        messages,
+        abortSignal,
+        model,
+        onError: async (event: { error: unknown }) => {
+          const error = event.error as Error
 
-    setChatTheme(newTheme)
-    loadHighlighterTheme(newTheme)
-  }, [])
-
-  useEffectOnce(() => {
-    if (window.matchMedia) {
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-        setTimeout(syncTheme, 200)
+          errorToast()
+          console.error(`[${error.name}] ${error.message}`)
+        },
+        onFinish: async () => {
+          if (context.tools) console.log(context.tools)
+          // do something with messageHistory (send to backend DB maybe)
+        }
       })
+      if (response.status !== 200) {
+        errorToast()
+        throw new Error(`Something went wrong (${response.status}${' ' + response.statusText})`)
+      }
+      if (!response.body) {
+        return
+      }
+
+      const reader = response.body.getReader()
+      const textDecoder = new TextDecoder()
+      let fullText = ''
+
+      while (true) {
+        const { value, done } = await reader.read()
+
+        if (done) {
+          break
+        }
+        const content = textDecoder.decode(value)
+
+        if (content) {
+          fullText += content
+          yield {
+            content: [{ type: 'text', text: fullText }]
+          }
+        }
+      }
     }
-    syncTheme()
-    setLoaded(true)
+  }
+
+  const textAttachmentAdapter = new SimpleTextAttachmentAdapter()
+  textAttachmentAdapter.accept += ',application/json,.c,.cpp,.h,.java,.js,.jsx,.md,.py,.sh,.tex,.ts,.tsx'
+  const runtime = useLocalRuntime(OllamaModelAdapter, {
+    adapters: {
+      attachments: new CompositeAttachmentAdapter([new SimpleImageAttachmentAdapter(), textAttachmentAdapter]),
+      speech: new WebSpeechSynthesisAdapter(locale)
+    }
   })
 
-  useEffect(() => {
-    syncTheme()
-  }, [colorScheme, syncTheme])
-
   return (
-    <Container size={'100%'} p={0} h={'100%'} mah={'100%'} className='aiChat-container'>
-      {isLoaded ? (
-        <AiChat
-          adapter={chatAdapter}
-          api={chatApi}
-          personaOptions={{
-            assistant: {
-              name: 'HarryBotter',
-              avatar: 'https://docs.nlkit.com/nlux/images/personas/harry-botter.png',
-              tagline: 'Making Magic With Mirthful AI'
-            },
-            user: {
-              name: 'Alex',
-              avatar: 'https://docs.nlkit.com/nlux/images/personas/alex.png'
-            }
-          }}
-          conversationOptions={{
-            layout: 'bubbles',
-            conversationStarters: [
-              // Funny prompts as if you're talking to HarryBotter
-              { prompt: 'What is the spell to make my code work?' },
-              { prompt: 'Can you show me a magic trick?' },
-              { prompt: 'Where can I find the book of wizardry?' }
-            ],
-            historyPayloadSize: 'max',
-            autoScroll: true
-          }}
-          displayOptions={{
-            colorScheme: chatTheme
-          }}
-          messageOptions={{
-            showCodeBlockCopyButton: false,
-            editableUserMessages: true,
-            syntaxHighlighter: highlighter,
-            streamingAnimationSpeed: 10
-          }}
-          composerOptions={{
-            placeholder: t('placeholder')
-          }}
-          className='max-h-full shadow-lg rounded-lg'
-        />
-      ) : (
-        <Skeleton height='100%' radius='md' />
-      )}
-    </Container>
+    <AssistantRuntimeProvider runtime={runtime}>
+      <Thread />
+    </AssistantRuntimeProvider>
   )
 }

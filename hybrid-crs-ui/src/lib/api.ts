@@ -1,75 +1,73 @@
-import { StreamingAdapterObserver, ChatAdapterExtras } from '@nlux/react'
 import { createOllama } from 'ollama-ai-provider'
-import { streamText } from 'ai'
+import { StepResult, streamText, ToolSet } from 'ai'
+import { apiUrl } from '@/constants'
+import { ThreadMessage } from '@assistant-ui/react'
+import { Ollama } from 'ollama/browser'
+import { convertToCoreMessages } from '@/lib/utils'
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 const commonHeaders: Record<string, string> = {
   'Content-Type': 'application/json',
   skip_zrok_insterstitial: '1'
 }
-const ollama = createOllama({
-  baseURL: `${apiUrl}/ollama`,
+
+const ollamaProvider = createOllama({
+  // baseURL: `http://192.168.1.142:8000/ollama/api`,
+  baseURL: `${apiUrl}/ollama/api`,
   // baseURL: `http://localhost:11434/api`,
   headers: commonHeaders
 })
 
-// Stream text from the API -> Ollama
-// We use HTTP POST to send the prompt to the server, and receive a stream of server-sent events
-// We use the observer object passed by NLUX to send chunks of text to <AiChat />
-export async function streamChat(prompt: string, observer: StreamingAdapterObserver, extras: ChatAdapterExtras) {
-  try {
-    const response = streamText({
-      model: ollama('qwen2.5:3b'),
-      temperature: 0.2,
-      messages: [
-        ...(extras.conversationHistory || []).map(chatItem => ({
-          role: chatItem.role,
-          content:
-            (chatItem.message as string | Array<string>) instanceof Array
-              ? (chatItem.message as unknown as Array<string>).join('')
-              : chatItem.message
-        })),
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      async onFinish() {
-        // implement your own logic here, e.g. for storing messages
-        // or recording token usage
-      }
-    }).toTextStreamResponse()
+const ollama = new Ollama({
+  host: `${apiUrl}/ollama`,
+  headers: commonHeaders
+})
 
-    if (response.status !== 200) {
-      observer.error(new Error(`Something went wrong (${response.status}${' ' + response.statusText})`))
-      return
+const CTX_WIN_1K = 1024
+
+const modelToCtxWindow: Record<string, number> = {
+  'qwen2.5:3b': CTX_WIN_1K * 16,
+  'llava-phi3': CTX_WIN_1K * 4
+}
+
+const defaultModel = 'qwen2.5:3b'
+
+export async function streamChat({
+  messages,
+  abortSignal,
+  model,
+  onError,
+  onFinish
+}: {
+  messages: readonly ThreadMessage[]
+  abortSignal: AbortSignal
+  model?: string
+  onError?: (event: { error: unknown }) => Promise<void> | void
+  onFinish?: (
+    event: Omit<StepResult<ToolSet>, 'stepType' | 'isContinued'> & {
+      readonly steps: StepResult<ToolSet>[]
     }
+  ) => Promise<void> | void
+}) {
+  const llm = model || defaultModel
 
-    if (!response.body) {
-      return
-    }
+  return streamText({
+    model: ollamaProvider(llm, { numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 4 }),
+    temperature: 0.2,
+    messages: convertToCoreMessages(messages),
+    abortSignal: abortSignal,
+    onError,
+    onFinish
+  }).toTextStreamResponse()
+}
 
-    // Read a stream of server-sent events
-    // and feed them to the observer as they are being generated
-    const reader = response.body.getReader()
-    const textDecoder = new TextDecoder()
+export async function ollamaList() {
+  return ollama.list()
+}
 
-    while (true) {
-      const { value, done } = await reader.read()
-      if (done) {
-        break
-      }
+export async function ollamaPull(model: string) {
+  return ollama.pull({ model: model, stream: true })
+}
 
-      const content = textDecoder.decode(value)
-      if (content) {
-        observer.next(content)
-      }
-    }
-    observer.complete()
-  } catch (e) {
-    const error = e as Error
-
-    console.error(`[${error.name}] ${error.message}`)
-    observer.error(error)
-  }
+export async function ollamaDelete(model: string) {
+  return ollama.delete({ model: model })
 }

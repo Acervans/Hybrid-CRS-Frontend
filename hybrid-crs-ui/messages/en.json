@@ -12,15 +12,33 @@
         "system": "System"
     },
     "LLM": {
-        "tooltip": "Select LLM Model"
+        "tooltip": "Select LLM Model",
+        "searchPlaceholder": "Search model...",
+        "modelUnavailable": "Model not available. Try pulling from the",
+        "ollamaLibrary": "Ollama Library",
+        "pullPrompt": "Pull",
+        "pulling": "Pulling",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "deleteSuccess": "{model} deleted successfully!",
+        "deleteFail": "Failed to delete {model}",
+        "notFound": "Model does not exist",
+        "pullError": "Error while pulling model",
+        "pullSuccess": "{model} pulled successfully!",
+        "deleteDialogTitle": "Delete {model}",
+        "deleteDialogConfirm": "Are you sure you want to delete {model}?"
+    },
+    "Titles": {
+        "dashboard": "Dashboard",
+        "chats": "Chats",
+        "datasets": "Datasets",
+        "open-chat": "Open Chat"
     },
     "Chats": {
-        "Open": {
-            "title": "Open Chat"
-        },
-        "placeholder": "Send a message",
+        "welcome": "How can I help you today?",
+        "placeholder": "Write a message...",
         "voiceTooltip": "Speech to Text",
-        "voiceTooltipDisabled": "Microphone is disabled for this app",
-        "you": "You"
+        "voiceTooltipDisabled": "Microphone disabled for this app",
+        "voiceStop": "Stop Listening"
     }
 }

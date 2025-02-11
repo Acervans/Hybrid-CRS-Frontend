@@ -12,15 +12,30 @@
         "system": "Sistema"
     },
     "LLM": {
-        "tooltip": "Elegir Modelo LLM"
+        "tooltip": "Elegir Modelo LLM",
+        "searchPlaceholder": "Buscar modelo...",
+        "modelUnavailable": "Modelo no disponible. Prueba a descargar de la",
+        "ollamaLibrary": "Librería Ollama",
+        "pullPrompt": "Descargar",
+        "pulling": "Descargando",
+        "cancel": "Cancelar",
+        "delete": "Borrar",
+        "deleteSuccess": "{model} borrado con éxito",
+        "deleteFail": "No se ha podido borrar {model}",
+        "notFound": "El modelo solicitado no existe",
+        "pullError": "Error durante la descarga del modelo",
+        "pullSuccess": "{model} descargado con éxito",
+        "deleteDialogTitle": "Borrar {model}",
+        "deleteDialogConfirm": "¿Seguro que quieres borrar {model}?"
+    },
+    "Titles": {
+        "open-chat": "Chat Libre"
     },
     "Chats": {
-        "Open": {
-            "title": "Chat Libre"
-        },
-        "placeholder": "Envía un mensaje",
+        "welcome": "¿En qué puedo ayudarte?",
+        "placeholder": "Envía un mensaje...",
         "voiceTooltip": "Voz a Texto",
         "voiceTooltipDisabled": "Micrófono desactivado para esta aplicación",
-        "you": "Tú"
+        "voiceStop": "Dejar de Escuchar"
     }
 }

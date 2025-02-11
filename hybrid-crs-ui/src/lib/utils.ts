@@ -1,4 +1,35 @@
-export const rgbaToHex = (colorStr: string, forceRemoveAlpha: boolean = false) => {
+import { ThreadMessage } from '@assistant-ui/react'
+import { CoreMessage } from 'ai'
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+
+export function convertToCoreMessages(messages: readonly ThreadMessage[] | ThreadMessage[]): CoreMessage[] {
+  return messages.map(
+    msg =>
+      ({
+        role: msg.role,
+        content: [...(msg.attachments?.flatMap(att => att.content) || []), ...msg.content]
+      }) as unknown as CoreMessage
+  )
+}
+
+export function formatBytes(bytes: number, decimals = 2) {
+  if (!+bytes) return '0 Bytes'
+
+  const k = 1000
+  const dm = Math.max(decimals, 0)
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+  return `${(bytes / Math.pow(k, i)).toFixed(dm)} ${sizes[i]}`
+}
+
+export function rgbaToHex(colorStr: string, forceRemoveAlpha: boolean = false) {
   // Check if the input string contains '/'
   const hasSlash = colorStr.includes('/')
 
