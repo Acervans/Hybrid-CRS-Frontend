@@ -6,7 +6,6 @@ import { Ollama } from 'ollama/browser'
 import { convertToCoreMessages } from '@/lib/utils'
 
 const commonHeaders: Record<string, string> = {
-  'Content-Type': 'application/json',
   skip_zrok_insterstitial: '1'
 }
 
@@ -70,4 +69,19 @@ export async function ollamaPull(model: string) {
 
 export async function ollamaDelete(model: string) {
   return ollama.delete({ model: model })
+}
+
+export async function pdfToText(file: File): Promise<string | void> {
+  const formData = new FormData()
+
+  formData.append('file', file, file.name)
+  return fetch(`${apiUrl}/pdf-to-text`, {
+    method: 'POST',
+    headers: commonHeaders,
+    body: formData
+  })
+    .then(async res => res.text())
+    .catch(err => {
+      console.error(`Failed to convert PDF to Text: ${err}`)
+    })
 }

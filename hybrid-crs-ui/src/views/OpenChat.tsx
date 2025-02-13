@@ -1,6 +1,6 @@
 'use client'
 
-import { streamChat } from '@/lib/api'
+import { pdfToText, streamChat } from '@/lib/api'
 import { useContext } from 'react'
 
 import {
@@ -19,6 +19,40 @@ import { Thread } from '@/components/assistant-ui/thread'
 import { LocaleContext } from '@/contexts/localeContext'
 import { useToast } from '@/hooks/use-toast'
 import { ModelContext } from '@/contexts/modelContext'
+
+import { CompleteAttachment, PendingAttachment, AttachmentAdapter } from '@assistant-ui/react'
+
+class PdfTextAttachmentAdapter implements AttachmentAdapter {
+  public accept = 'application/pdf'
+
+  public async add(state: { file: File }): Promise<PendingAttachment> {
+    return {
+      id: state.file.name,
+      type: 'file',
+      name: state.file.name,
+      contentType: state.file.type,
+      file: state.file,
+      status: { type: 'requires-action', reason: 'composer-send' }
+    }
+  }
+
+  public async send(attachment: PendingAttachment): Promise<CompleteAttachment> {
+    return {
+      ...attachment,
+      status: { type: 'complete' },
+      content: [
+        {
+          type: 'text',
+          text: `<attachment name=${attachment.name} type=pdf>\n${await pdfToText(attachment.file)}\n</attachment>`
+        }
+      ]
+    }
+  }
+
+  public async remove() {
+    // noop
+  }
+}
 
 export default function OpenChat() {
   const { locale } = useContext(LocaleContext)
@@ -85,7 +119,11 @@ export default function OpenChat() {
   textAttachmentAdapter.accept += ',application/json,.c,.cpp,.h,.java,.js,.jsx,.md,.py,.sh,.tex,.ts,.tsx'
   const runtime = useLocalRuntime(OllamaModelAdapter, {
     adapters: {
-      attachments: new CompositeAttachmentAdapter([new SimpleImageAttachmentAdapter(), textAttachmentAdapter]),
+      attachments: new CompositeAttachmentAdapter([
+        new SimpleImageAttachmentAdapter(),
+        new PdfTextAttachmentAdapter(),
+        textAttachmentAdapter
+      ]),
       speech: new WebSpeechSynthesisAdapter(locale)
     }
   })
