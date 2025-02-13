@@ -84,7 +84,6 @@
 
 :root {
   scrollbar-color: hsl(var(--border)) transparent;
-  overflow-y: hidden;
 }
 
 @layer base {
