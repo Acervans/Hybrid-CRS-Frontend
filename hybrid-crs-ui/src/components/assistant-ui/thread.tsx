@@ -40,12 +40,12 @@ export const Thread: FC = () => {
 
   return (
     <ThreadPrimitive.Root
-      className={`bg-background box-border h-full`}
+      className='bg-background box-border h-[calc(100dvh-4rem)] md:h-[calc(100dvh-5rem)] group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-[calc(100dvh-4rem)]'
       style={{
         ['--aui-thread-max-width' as string]: '42rem'
       }}
     >
-      <ThreadPrimitive.Viewport className='flex h-full flex-col items-center overflow-y-auto scroll-smooth bg-inherit px-1 sm:px-4 pt-8'>
+      <ThreadPrimitive.Viewport className='flex h-full flex-col items-center overflow-y-auto scroll-smooth bg-inherit px-1 sm:px-4'>
         <ThreadWelcome t={t} />
 
         <ThreadPrimitive.Messages
@@ -85,7 +85,7 @@ const ThreadScrollToBottom: FC = () => {
   )
 }
 
-const ThreadWelcome: FC<{ t: (namespace?: string) => string }> = props => {
+const ThreadWelcome: FC<{ t: (key?: string) => string }> = props => {
   return (
     <ThreadPrimitive.Empty>
       <div className='max-w-aui-thread flex w-full flex-grow flex-col'>
@@ -124,7 +124,7 @@ const ThreadWelcomeSuggestions: FC = () => {
   )
 }
 
-const Composer: FC<{ t: (namespace?: string) => string }> = props => {
+const Composer: FC<{ t: (key?: string) => string }> = props => {
   return (
     <ComposerPrimitive.Root className='focus-within:border-ring/20 flex w-full flex-wrap items-end rounded-lg border bg-inherit px-2.5 shadow-sm transition-colors ease-in'>
       <ComposerAttachments />
