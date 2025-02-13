@@ -130,11 +130,6 @@ export default function OpenChat() {
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
-      <style global jsx>{`
-        body {
-          overflow-y: hidden;
-        }
-      `}</style>
       <Thread />
     </AssistantRuntimeProvider>
   )
