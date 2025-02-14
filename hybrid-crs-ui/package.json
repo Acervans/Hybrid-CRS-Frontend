@@ -47,7 +47,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@types/react-speech-recognition": "^3.9.6",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "ai": "^4.1.38",
+    "ai": "^4.1.40",
     "apexcharts": "^4.4.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
