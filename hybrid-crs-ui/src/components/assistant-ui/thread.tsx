@@ -3,7 +3,8 @@ import {
   BranchPickerPrimitive,
   ComposerPrimitive,
   MessagePrimitive,
-  ThreadPrimitive
+  ThreadPrimitive,
+  useComposerRuntime
 } from '@assistant-ui/react'
 import type { FC } from 'react'
 import {
@@ -40,12 +41,12 @@ export const Thread: FC = () => {
 
   return (
     <ThreadPrimitive.Root
-      className='bg-background box-border h-[calc(100dvh-4rem)] md:h-[calc(100dvh-5rem)] group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-[calc(100dvh-4rem)]'
+      className='bg-background box-border h-[calc(100dvh-3rem)] md:h-[calc(100dvh-4rem)] group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-[calc(100dvh-3rem)]'
       style={{
         ['--aui-thread-max-width' as string]: '42rem'
       }}
     >
-      <ThreadPrimitive.Viewport className='flex h-full flex-col items-center overflow-y-auto scroll-smooth bg-inherit px-1 sm:px-4'>
+      <ThreadPrimitive.Viewport className='flex h-full flex-col items-center overflow-y-auto scroll-smooth bg-inherit px-3 sm:px-6'>
         <ThreadWelcome t={t} />
 
         <ThreadPrimitive.Messages
@@ -125,6 +126,8 @@ const ThreadWelcomeSuggestions: FC = () => {
 }
 
 const Composer: FC<{ t: (key?: string) => string }> = props => {
+  const composerRuntime = useComposerRuntime()
+
   return (
     <ComposerPrimitive.Root className='focus-within:border-ring/20 flex w-full flex-wrap items-end rounded-lg border bg-inherit px-2.5 shadow-sm transition-colors ease-in'>
       <ComposerAttachments />
@@ -135,6 +138,16 @@ const Composer: FC<{ t: (key?: string) => string }> = props => {
         autoFocus
         placeholder={props.t('placeholder')}
         className='placeholder:text-muted-foreground max-h-40 flex-grow resize-none border-none bg-transparent pl-2 sm:px-2 py-4 text-sm outline-none focus:ring-0 disabled:cursor-not-allowed'
+        onPaste={e => {
+          const files = e.clipboardData.files
+
+          if (files.length) {
+            e.preventDefault()
+            Array.from(files).forEach(file => {
+              composerRuntime.addAttachment(file)
+            })
+          }
+        }}
       />
       <ComposerAction />
     </ComposerPrimitive.Root>
@@ -170,14 +183,13 @@ const ComposerAction: FC = () => {
 const UserMessage: FC = () => {
   return (
     <MessagePrimitive.Root className='grid auto-rows-auto grid-cols-[minmax(72px,1fr)_auto] gap-y-2 [&>*]:col-start-2 max-w-aui-thread w-full py-4'>
-      <UserActionBar />
-
       <UserMessageAttachments />
-
-      <div className='bg-muted text-foreground max-w-[calc(var(--thread-max-width)*0.8)] break-words rounded-3xl px-5 py-2.5 col-start-2 row-start-2'>
-        <MessagePrimitive.Content />
+      <div className='grid w-auto ml-auto'>
+        <UserActionBar />
+        <div className='bg-muted text-foreground max-w-[calc(var(--thread-max-width)*0.8)] break-words rounded-3xl px-5 py-2.5 col-start-2 row-start-2'>
+          <MessagePrimitive.Content />
+        </div>
       </div>
-
       <BranchPicker className='col-span-full col-start-1 row-start-3 -mr-1 justify-end' />
     </MessagePrimitive.Root>
   )

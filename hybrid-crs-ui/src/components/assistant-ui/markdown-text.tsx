@@ -16,6 +16,7 @@ import { CheckIcon, CopyIcon } from 'lucide-react'
 
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import { cn } from '@/lib/utils'
+// import { SyntaxHighlighter } from '@/components/assistant-ui/syntax-highlighter'
 
 const MarkdownTextImpl = () => {
   return (
@@ -146,4 +147,5 @@ const defaultComponents = memoizeMarkdownComponents({
     return <code className={cn(!isCodeBlock && 'bg-muted rounded border font-semibold', className)} {...props} />
   },
   CodeHeader
+  // SyntaxHighlighter  // TODO uncomment when fixed
 })

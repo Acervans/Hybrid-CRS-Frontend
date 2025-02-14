@@ -8,7 +8,7 @@ import java from 'react-syntax-highlighter/dist/esm/languages/prism/java'
 import c from 'react-syntax-highlighter/dist/esm/languages/prism/c'
 import cpp from 'react-syntax-highlighter/dist/esm/languages/prism/cpp'
 
-import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { coldarkDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 
 // register languages you want to support
 PrismAsyncLight.registerLanguage('js', tsx)
@@ -22,11 +22,11 @@ PrismAsyncLight.registerLanguage('c', c)
 PrismAsyncLight.registerLanguage('cpp', cpp)
 
 export const SyntaxHighlighter = makePrismAsyncLightSyntaxHighlighter({
-  style: atomOneDark,
+  style: coldarkDark,
   customStyle: {
     margin: 0,
     width: '100%',
-    background: 'transparent',
+    background: 'black',
     padding: '1.5rem 1rem'
   }
 })

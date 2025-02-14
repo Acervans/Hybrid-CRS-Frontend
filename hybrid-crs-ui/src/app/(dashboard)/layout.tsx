@@ -17,7 +17,7 @@ export default function DashboardLayout({
       <AppSidebar />
       <SidebarInset>
         <AppHeader />
-        <div className='p-2 h-full'>{children}</div>
+        <div className='h-full'>{children}</div>
       </SidebarInset>
       <Toaster />
     </SidebarProvider>
