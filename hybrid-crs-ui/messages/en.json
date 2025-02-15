@@ -14,8 +14,7 @@
     "LLM": {
         "tooltip": "Select LLM Model",
         "searchPlaceholder": "Search model...",
-        "modelUnavailable": "Model not available. Try pulling from the",
-        "ollamaLibrary": "Ollama Library",
+        "modelNotFound": "Model not found. Try pulling from the <ollama>Ollama Library</ollama>",
         "pullPrompt": "Pull",
         "pulling": "Pulling",
         "cancel": "Cancel",

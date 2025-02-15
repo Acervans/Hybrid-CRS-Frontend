@@ -175,14 +175,17 @@ export default function LlmSelector() {
           <CommandList>
             <CommandEmpty className='flex flex-col gap-2 p-4 min-w-full w-fit'>
               <span>
-                {t('modelUnavailable')}{' '}
-                <Link
-                  className='text-primary underline-offset-4 hover:underline'
-                  target='_blank'
-                  href='https://ollama.com/library'
-                >
-                  {t('ollamaLibrary')}
-                </Link>
+                {t.rich('modelNotFound', {
+                  ollama: chunks => (
+                    <Link
+                      className='text-primary underline-offset-4 hover:underline'
+                      target='_blank'
+                      href='https://ollama.com/library'
+                    >
+                      {chunks}
+                    </Link>
+                  )
+                })}
                 .
               </span>
               <Button

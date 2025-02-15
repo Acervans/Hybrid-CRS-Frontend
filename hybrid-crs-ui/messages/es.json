@@ -14,8 +14,7 @@
     "LLM": {
         "tooltip": "Elegir Modelo LLM",
         "searchPlaceholder": "Buscar modelo...",
-        "modelUnavailable": "Modelo no disponible. Prueba a descargar de la",
-        "ollamaLibrary": "Librería Ollama",
+        "modelNotFound": "Modelo no encontrado. Prueba a descargar de la <ollama>Librería Ollama</ollama>",
         "pullPrompt": "Descargar",
         "pulling": "Descargando",
         "cancel": "Cancelar",
