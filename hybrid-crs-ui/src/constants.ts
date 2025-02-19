@@ -7,5 +7,5 @@ export const availableLanguages: Record<Locale, string> = {
   fr: 'Français',
   it: 'Italiano',
   pt: 'Português',
-  zh: '中文'
+  zh: '简体中文'
 }
