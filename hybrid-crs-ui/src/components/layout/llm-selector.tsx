@@ -227,6 +227,7 @@ export default function LlmSelector() {
                   onSelect={currentValue => {
                     if (currentValue !== model) setModel(currentValue)
                     setOpen(false)
+                    setTimeout(() => setSearch(''), 150)
                   }}
                 >
                   {m.name}
