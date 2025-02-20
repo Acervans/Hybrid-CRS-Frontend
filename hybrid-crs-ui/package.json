@@ -13,7 +13,7 @@
     "prepare": "cd .. && husky hybrid-crs-ui/.husky"
   },
   "dependencies": {
-    "@assistant-ui/react": "^0.7.85",
+    "@assistant-ui/react": "^0.7.86",
     "@assistant-ui/react-ai-sdk": "^0.7.16",
     "@assistant-ui/react-markdown": "^0.7.20",
     "@assistant-ui/react-syntax-highlighter": "^0.7.10",
@@ -47,7 +47,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@types/react-speech-recognition": "^3.9.6",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "ai": "^4.1.44",
+    "ai": "^4.1.45",
     "apexcharts": "^4.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
