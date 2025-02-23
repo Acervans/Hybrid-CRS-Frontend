@@ -35,13 +35,18 @@ function ConfirmDeleteDialog(props: { model: string; onConfirm?: MouseEventHandl
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant='ghost' className='h-auto w-auto p-0' onClick={e => e.stopPropagation()}>
+        <Button
+          title={t('deleteModel', { model: props.model })}
+          variant='ghost'
+          className='h-auto w-auto p-0'
+          onClick={e => e.stopPropagation()}
+        >
           <Trash />
         </Button>
       </DialogTrigger>
       <DialogContent onClick={e => e.stopPropagation()}>
         <DialogHeader>
-          <DialogTitle>{t('deleteDialogTitle', { model: props.model })}</DialogTitle>
+          <DialogTitle>{t('deleteModel', { model: props.model })}</DialogTitle>
           <DialogDescription>{t('deleteDialogConfirm', { model: props.model })}</DialogDescription>
         </DialogHeader>
         <DialogFooter className='flex flex-row gap-2 justify-center'>

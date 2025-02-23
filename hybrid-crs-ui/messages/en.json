@@ -19,12 +19,12 @@
         "pulling": "Pulling",
         "cancel": "Cancel",
         "delete": "Delete",
+        "deleteModel": "Delete {model}",
         "deleteSuccess": "{model} deleted successfully!",
         "deleteFail": "Failed to delete {model}",
         "notFound": "Model does not exist",
         "pullError": "Error while pulling model",
         "pullSuccess": "{model} pulled successfully!",
-        "deleteDialogTitle": "Delete {model}",
         "deleteDialogConfirm": "Are you sure you want to delete {model}?"
     },
     "Titles": {

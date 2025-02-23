@@ -19,12 +19,12 @@
         "pulling": "Descargando",
         "cancel": "Cancelar",
         "delete": "Borrar",
+        "deleteModel": "Borrar {model}",
         "deleteSuccess": "{model} borrado con éxito",
         "deleteFail": "No se ha podido borrar {model}",
         "notFound": "El modelo solicitado no existe",
         "pullError": "Error durante la descarga del modelo",
         "pullSuccess": "{model} descargado con éxito",
-        "deleteDialogTitle": "Borrar {model}",
         "deleteDialogConfirm": "¿Seguro que quieres borrar {model}?"
     },
     "Titles": {
