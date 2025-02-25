@@ -38,6 +38,7 @@
         "placeholder": "Write a message...",
         "voiceTooltip": "Speech to Text",
         "voiceTooltipDisabled": "Microphone disabled for this app",
-        "voiceStop": "Stop Listening"
+        "voiceStop": "Stop Listening",
+        "webSearch": "Search the Web"
     }
 }

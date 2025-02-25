@@ -34,12 +34,14 @@ export async function streamChat({
   messages,
   abortSignal,
   model,
+  metadata,
   onError,
   onFinish
 }: {
   messages: readonly ThreadMessage[]
   abortSignal: AbortSignal
   model?: string
+  metadata?: Record<string, unknown>
   onError?: (event: { error: unknown }) => Promise<void> | void
   onFinish?: (
     event: Omit<StepResult<ToolSet>, 'stepType' | 'isContinued'> & {
@@ -53,6 +55,7 @@ export async function streamChat({
     model: ollamaProvider(llm, { numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 4 }),
     temperature: 0.2,
     messages: convertToCoreMessages(messages),
+    headers: metadata as Record<string, string>,
     abortSignal: abortSignal,
     onError,
     onFinish

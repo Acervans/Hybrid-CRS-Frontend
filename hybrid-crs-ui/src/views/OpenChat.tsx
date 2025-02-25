@@ -69,11 +69,12 @@ export default function OpenChat() {
 
   // TODO add follow-up suggestions with custom context or ThreadStatus
   const OllamaModelAdapter: ChatModelAdapter = {
-    async *run({ messages, abortSignal, context }) {
+    async *run({ messages, runConfig, abortSignal, context }) {
       const response = await streamChat({
         messages,
         abortSignal,
         model,
+        metadata: runConfig.custom,
         onError: async (event: { error: unknown }) => {
           const error = event.error as Error
 

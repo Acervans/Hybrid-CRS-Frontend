@@ -35,6 +35,7 @@
         "placeholder": "Envía un mensaje...",
         "voiceTooltip": "Voz a Texto",
         "voiceTooltipDisabled": "Micrófono desactivado para esta aplicación",
-        "voiceStop": "Dejar de Escuchar"
+        "voiceStop": "Dejar de Escuchar",
+        "webSearch": "Buscar en Internet"
     }
 }
