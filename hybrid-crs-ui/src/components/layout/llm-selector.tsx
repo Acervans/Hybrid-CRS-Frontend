@@ -38,7 +38,7 @@ function ConfirmDeleteDialog(props: { model: string; onConfirm?: MouseEventHandl
         <Button
           title={t('deleteModel', { model: props.model })}
           variant='ghost'
-          className='h-auto w-auto p-0'
+          className='h-auto w-auto !p-0'
           onClick={e => e.stopPropagation()}
         >
           <Trash />

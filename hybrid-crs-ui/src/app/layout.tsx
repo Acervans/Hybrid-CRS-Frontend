@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import { cookies } from 'next/headers'
 
 import { ThemeProvider } from 'next-themes'
 
@@ -7,8 +8,10 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { LocaleProvider } from '@/contexts/localeContext'
 
-import './globals.css'
 import { ModelProvider } from '@/contexts/modelContext'
+import { SidebarProvider } from '@/components/ui/sidebar'
+
+import './globals.css'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const dynParams = await params
@@ -63,6 +66,8 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale()
   const messages = await getMessages()
+  const cookieStore = await cookies()
+  const defaultOpen = (cookieStore.get('sidebar_state')?.value ?? 'true') === 'true'
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -71,7 +76,9 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider defaultTheme='system'>
             <LocaleProvider>
-              <ModelProvider>{children}</ModelProvider>
+              <ModelProvider>
+                <SidebarProvider defaultOpen={defaultOpen}>{children}</SidebarProvider>
+              </ModelProvider>
             </LocaleProvider>
           </ThemeProvider>
         </NextIntlClientProvider>

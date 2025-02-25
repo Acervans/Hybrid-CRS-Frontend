@@ -51,7 +51,7 @@ export function AppHeader() {
           <Button className='h-8 w-8' variant='ghost' size='icon' onClick={toggleSidebar}>
             <Menu className='!size-[1.5rem]' />
           </Button>
-          <Separator orientation='vertical' className='ml-2 mr-3 h-4' />
+          <Separator orientation='vertical' className='ml-2 mr-3 !h-4' />
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>

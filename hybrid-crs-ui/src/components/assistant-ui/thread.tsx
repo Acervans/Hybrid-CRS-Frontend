@@ -35,17 +35,13 @@ import { ThreadFollowupSuggestions } from '@/components/assistant-ui/follow-up-s
 
 import { useTranslations } from 'next-intl'
 import VoiceChat from '@/components/chats/voice-chat'
+import WebSearch from '@/components/chats/web-search'
 
 export const Thread: FC = () => {
   const t = useTranslations('Chats')
 
   return (
-    <ThreadPrimitive.Root
-      className='bg-background box-border h-[calc(100dvh-3rem)] md:h-[calc(100dvh-4rem)] group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-[calc(100dvh-3rem)]'
-      style={{
-        ['--aui-thread-max-width' as string]: '42rem'
-      }}
-    >
+    <ThreadPrimitive.Root className='bg-background box-border h-[calc(100dvh-3rem)] md:h-[calc(100dvh-4rem)] group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-[calc(100dvh-3rem)]'>
       <ThreadPrimitive.Viewport className='flex h-full flex-col items-center overflow-y-auto scroll-smooth bg-inherit px-3 sm:px-6'>
         <ThreadWelcome t={t} />
 
@@ -132,6 +128,7 @@ const Composer: FC<{ t: (key?: string) => string }> = props => {
     <ComposerPrimitive.Root className='focus-within:border-ring/20 flex w-full flex-wrap items-end rounded-lg border bg-inherit px-2.5 shadow-sm transition-colors ease-in'>
       <ComposerAttachments />
       <ComposerAddAttachment />
+      <WebSearch />
 
       <ComposerPrimitive.Input
         rows={1}

@@ -50,7 +50,7 @@ export default function LanguageSelector() {
               key={code}
               onClick={() => {
                 setLocale(code as Locale, { expires: 400, sameSite: 'lax' })
-                router.refresh()
+                setTimeout(router.refresh, 150)
               }}
               className='justify-between'
             >
