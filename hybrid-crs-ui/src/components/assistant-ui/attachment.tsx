@@ -8,7 +8,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Dialog, DialogTitle, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
-import { TooltipProvider } from '@radix-ui/react-tooltip'
 
 const useFileSrc = (file: File | undefined) => {
   const [src, setSrc] = useState<string | undefined>(undefined)
@@ -116,30 +115,39 @@ const AttachmentUI: FC = () => {
         throw new Error(`Unknown attachment type: ${_exhaustiveCheck}`)
     }
   })
+  const [open, setOpen] = useState(false)
+
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <AttachmentPrimitive.Root className='relative mt-3'>
-          <AttachmentPreviewDialog>
-            <TooltipTrigger asChild>
-              <div className='flex h-12 w-40 items-center justify-center gap-2 rounded-lg border p-1'>
-                <AttachmentThumb />
-                <div className='flex-grow basis-0'>
-                  <p className='text-muted-foreground line-clamp-1 text-ellipsis break-all text-xs font-bold'>
-                    <AttachmentPrimitive.Name />
-                  </p>
-                  <p className='text-muted-foreground text-xs'>{typeLabel}</p>
-                </div>
+    <Tooltip open={open} onOpenChange={setOpen}>
+      <AttachmentPrimitive.Root className='relative mt-3'>
+        <AttachmentPreviewDialog>
+          <TooltipTrigger
+            asChild
+            onTouchStart={e => {
+              e.currentTarget.dataset.tooltipTimeout = String(setTimeout(() => setOpen(true), 300))
+            }}
+            onTouchEnd={e => {
+              clearTimeout(e.currentTarget.dataset.tooltipTimeout)
+              setOpen(false)
+            }}
+          >
+            <div className='flex h-12 w-40 items-center justify-center gap-2 rounded-lg border p-1'>
+              <AttachmentThumb />
+              <div className='flex-grow basis-0'>
+                <p className='text-muted-foreground line-clamp-1 text-ellipsis break-all text-xs font-bold'>
+                  <AttachmentPrimitive.Name />
+                </p>
+                <p className='text-muted-foreground text-xs'>{typeLabel}</p>
               </div>
-            </TooltipTrigger>
-          </AttachmentPreviewDialog>
-          {canRemove && <AttachmentRemove />}
-        </AttachmentPrimitive.Root>
-        <TooltipContent side='top'>
-          <AttachmentPrimitive.Name />
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+            </div>
+          </TooltipTrigger>
+        </AttachmentPreviewDialog>
+        {canRemove && <AttachmentRemove />}
+      </AttachmentPrimitive.Root>
+      <TooltipContent side='top'>
+        <AttachmentPrimitive.Name />
+      </TooltipContent>
+    </Tooltip>
   )
 }
 

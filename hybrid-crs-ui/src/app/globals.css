@@ -162,9 +162,9 @@
 }
 
 [data-slot='button'],
-[data-slot='tooltip-trigger'],
-[data-slot='dialog-trigger'],
-[data-slot='dropdown-menu-trigger'],
+button[data-slot='dialog-trigger'],
+button[data-slot='dropdown-menu-trigger'],
+button[data-slot='tooltip-trigger'],
 [type='button'] {
   cursor: pointer;
 }

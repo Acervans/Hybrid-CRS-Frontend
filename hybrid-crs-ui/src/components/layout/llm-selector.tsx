@@ -6,7 +6,7 @@ import { Check, Loader2, Trash } from 'lucide-react'
 import { formatBytes } from '@/lib/utils'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Dialog,
   DialogClose,
@@ -75,6 +75,7 @@ export default function LlmSelector() {
   const t = useTranslations('LLM')
   const [localModels, setLocalModels] = useState<Array<ModelResponse>>()
   const [open, setOpen] = useState(false)
+  const [tooltipOpen, setTooltipOpen] = useState(false)
   const [search, setSearch] = useState<string>()
   const [pulling, setPulling] = useState<boolean>(false)
   const [progress, setProgress] = useState<number>(0)
@@ -152,99 +153,107 @@ export default function LlmSelector() {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <PopoverTrigger asChild>
-              <Bot />
-            </PopoverTrigger>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{t('tooltip')}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-      <PopoverContent className='p-0'>
-        <Command
-          filter={(value, search) => {
-            return Number(value.toLocaleLowerCase().includes(search.toLowerCase()))
+      <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
+        <TooltipTrigger
+          asChild
+          onMouseDown={e => e.preventDefault()}
+          onTouchStart={e => {
+            e.currentTarget.dataset.tooltipTimeout = String(setTimeout(() => setTooltipOpen(true), 300))
+          }}
+          onTouchEnd={e => {
+            clearTimeout(e.currentTarget.dataset.tooltipTimeout)
+            setTooltipOpen(false)
           }}
         >
-          <CommandInput
-            placeholder={t('searchPlaceholder')}
-            disabled={pulling}
-            className='h-9'
-            value={search}
-            onValueChange={value => setSearch(value)}
-          />
-          <CommandList>
-            <CommandEmpty className='flex flex-col gap-2 p-4 min-w-full w-fit'>
-              <span>
-                {t.rich('modelNotFound', {
-                  ollama: chunks => (
-                    <Link
-                      className='text-primary underline-offset-4 hover:underline'
-                      target='_blank'
-                      href='https://ollama.com/library'
-                    >
-                      {chunks}
-                    </Link>
-                  )
-                })}
-                .
-              </span>
-              <Button
-                variant='default'
-                type='submit'
-                onClick={pullModel}
-                disabled={pulling || !search?.length}
-                className='whitespace-normal break-all h-auto'
-              >
-                {pulling ? (
-                  <>
-                    <Loader2 className='animate-spin' />
-                    {t('pulling')}
-                  </>
-                ) : (
-                  <>{t('pullPrompt')}</>
-                )}{' '}
-                {search}
-              </Button>
-              <Button
-                variant='destructive'
-                className={!pulling ? 'hidden' : ''}
-                onClick={() => {
-                  if (progressGen.current) {
-                    progressGen.current.abort()
-                    resetPull()
-                  }
-                }}
-              >
-                {t('cancel')}
-              </Button>
-              {pulling && <Progress value={progress} className='h-3' />}
-            </CommandEmpty>
-            <CommandGroup>
-              {localModels?.map(m => (
-                <CommandItem
-                  key={m.name}
-                  value={m.name}
-                  onSelect={currentValue => {
-                    if (currentValue !== model) setModel(currentValue)
-                    setOpen(false)
-                    setTimeout(() => setSearch(''), 150)
+          <PopoverTrigger>
+            <Bot />
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{t('tooltip')}</p>
+        </TooltipContent>
+        <PopoverContent className='p-0'>
+          <Command
+            filter={(value, search) => {
+              return Number(value.toLocaleLowerCase().includes(search.toLowerCase()))
+            }}
+          >
+            <CommandInput
+              placeholder={t('searchPlaceholder')}
+              disabled={pulling}
+              className='h-9'
+              value={search}
+              onValueChange={value => setSearch(value)}
+            />
+            <CommandList>
+              <CommandEmpty className='flex flex-col gap-2 p-4 min-w-full w-fit'>
+                <span>
+                  {t.rich('modelNotFound', {
+                    ollama: chunks => (
+                      <Link
+                        className='text-primary underline-offset-4 hover:underline'
+                        target='_blank'
+                        href='https://ollama.com/library'
+                      >
+                        {chunks}
+                      </Link>
+                    )
+                  })}
+                  .
+                </span>
+                <Button
+                  variant='default'
+                  type='submit'
+                  onClick={pullModel}
+                  disabled={pulling || !search?.length}
+                  className='whitespace-normal break-all h-auto'
+                >
+                  {pulling ? (
+                    <>
+                      <Loader2 className='animate-spin' />
+                      {t('pulling')}
+                    </>
+                  ) : (
+                    <>{t('pullPrompt')}</>
+                  )}{' '}
+                  {search}
+                </Button>
+                <Button
+                  variant='destructive'
+                  className={!pulling ? 'hidden' : ''}
+                  onClick={() => {
+                    if (progressGen.current) {
+                      progressGen.current.abort()
+                      resetPull()
+                    }
                   }}
                 >
-                  {m.name}
-                  <span className='text-primary ml-auto'>{formatBytes(m.size, 1)}</span>
-                  <Check className={model === m.name ? 'opacity-100' : 'opacity-0'} />
-                  <ConfirmDeleteDialog model={m.name} onConfirm={() => deleteModel(m.name)} />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
+                  {t('cancel')}
+                </Button>
+                {pulling && <Progress value={progress} className='h-3' />}
+              </CommandEmpty>
+              <CommandGroup>
+                {localModels?.map(m => (
+                  <CommandItem
+                    key={m.name}
+                    value={m.name}
+                    onSelect={currentValue => {
+                      if (currentValue !== model) setModel(currentValue)
+                      setOpen(false)
+                      setTimeout(() => setSearch(''), 150)
+                    }}
+                  >
+                    {m.name}
+                    <span className='text-primary ml-auto'>{formatBytes(m.size, 1)}</span>
+                    <Check className={model === m.name ? 'opacity-100' : 'opacity-0'} />
+                    <ConfirmDeleteDialog model={m.name} onConfirm={() => deleteModel(m.name)} />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Tooltip>
     </Popover>
   )
 }

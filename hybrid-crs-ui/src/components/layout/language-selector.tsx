@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
@@ -26,21 +26,19 @@ export default function LanguageSelector() {
 
   return (
     <DropdownMenu>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <DropdownMenuTrigger asChild>
-              <div className='flex flex-row gap-1 items-center justify-center w-11'>
-                <Globe size={16} />
-                {locale.toUpperCase()}
-              </div>
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{t('tooltip')}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <DropdownMenuTrigger asChild>
+            <div className='flex flex-row gap-1 items-center justify-center w-11 select-none'>
+              <Globe size={16} />
+              {locale.toUpperCase()}
+            </div>
+          </DropdownMenuTrigger>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{t('tooltip')}</p>
+        </TooltipContent>
+      </Tooltip>
       <DropdownMenuContent>
         <DropdownMenuLabel>{t('tooltip')}</DropdownMenuLabel>
         <DropdownMenuSeparator />

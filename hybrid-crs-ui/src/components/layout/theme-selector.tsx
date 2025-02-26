@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 import { Sun, Moon, SunMoon } from 'lucide-react'
 
@@ -41,18 +41,16 @@ export default function ThemeSelector() {
 
   return (
     <DropdownMenu>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <DropdownMenuTrigger asChild className='w-[1.5rem]'>
-              <currTheme.icon color={currTheme.color} />
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{t('tooltip')}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <DropdownMenuTrigger asChild className='w-[1.5rem]'>
+            <currTheme.icon color={currTheme.color} />
+          </DropdownMenuTrigger>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{t('tooltip')}</p>
+        </TooltipContent>
+      </Tooltip>
       <DropdownMenuContent className='min-w-none'>
         <DropdownMenuLabel>{t('tooltip')}</DropdownMenuLabel>
         <DropdownMenuSeparator />

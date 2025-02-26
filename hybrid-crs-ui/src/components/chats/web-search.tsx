@@ -2,7 +2,7 @@
 
 import { HTMLAttributes, ReactElement, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { SearchCheck, SearchX } from 'lucide-react'
+import { Search, SearchCheck } from 'lucide-react'
 
 import { useEffectOnce } from 'react-use'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -27,15 +27,16 @@ export default function WebSearch(props: HTMLAttributes<HTMLElement>): ReactElem
         <TooltipIconButton
           {...rest}
           tooltip={t('webSearch')}
-          variant='ghost'
+          variant={active ? 'outline' : 'ghost'}
           side='top'
-          onClick={async () => {
+          onClick={async e => {
+            e.preventDefault()
             composerRuntime.setRunConfig({ custom: { webSearch: !active } })
             setActive(active => !active)
           }}
-          className={`${rest.className} my-2.5 size-8 p-2 transition-opacity ease-in ${active ? 'text-green-500' : 'text-gray-500'}`}
+          className={`${rest.className} ${active && 'text-green-500'}`}
         >
-          {active ? <SearchCheck /> : <SearchX />}
+          {active ? <SearchCheck /> : <Search />}
         </TooltipIconButton>
       ) : (
         <Skeleton className={rest.className} />

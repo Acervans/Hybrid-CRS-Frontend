@@ -2,6 +2,7 @@ import { PrismAsyncLight } from 'react-syntax-highlighter'
 import { makePrismAsyncLightSyntaxHighlighter } from '@assistant-ui/react-syntax-highlighter'
 
 import tsx from 'react-syntax-highlighter/dist/esm/languages/prism/tsx'
+import css from 'react-syntax-highlighter/dist/esm/languages/prism/css'
 import python from 'react-syntax-highlighter/dist/esm/languages/prism/python'
 import r from 'react-syntax-highlighter/dist/esm/languages/prism/r'
 import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash'
@@ -25,6 +26,7 @@ PrismAsyncLight.registerLanguage('js', tsx)
 PrismAsyncLight.registerLanguage('jsx', tsx)
 PrismAsyncLight.registerLanguage('ts', tsx)
 PrismAsyncLight.registerLanguage('tsx', tsx)
+PrismAsyncLight.registerLanguage('css', css)
 PrismAsyncLight.registerLanguage('python', python)
 PrismAsyncLight.registerLanguage('r', r)
 PrismAsyncLight.registerLanguage('bash', bash)

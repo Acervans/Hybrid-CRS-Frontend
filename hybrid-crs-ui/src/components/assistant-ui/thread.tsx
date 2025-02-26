@@ -128,13 +128,12 @@ const Composer: FC<{ t: (key?: string) => string }> = props => {
     <ComposerPrimitive.Root className='focus-within:border-ring/20 flex w-full flex-wrap items-end rounded-lg border bg-inherit px-2.5 shadow-sm transition-colors ease-in'>
       <ComposerAttachments />
       <ComposerAddAttachment />
-      <WebSearch />
 
       <ComposerPrimitive.Input
         rows={1}
         autoFocus
         placeholder={props.t('placeholder')}
-        className='placeholder:text-muted-foreground max-h-40 flex-grow resize-none border-none bg-transparent pl-2 sm:px-2 py-4 text-sm outline-none focus:ring-0 disabled:cursor-not-allowed'
+        className='placeholder:text-muted-foreground max-h-40 w-0 grow resize-none border-none bg-transparent pl-2 sm:px-2 py-4 text-sm outline-none focus:ring-0 disabled:cursor-not-allowed'
         onPaste={e => {
           const files = e.clipboardData.files
 
@@ -153,8 +152,9 @@ const Composer: FC<{ t: (key?: string) => string }> = props => {
 
 const ComposerAction: FC = () => {
   return (
-    <div className='flex flex-row gap-2'>
+    <div className='flex flex-row gap-1'>
       <VoiceChat className='my-2.5 size-8 p-2 transition-opacity ease-in' />
+      <WebSearch className='my-2.5 mr-2 size-8 p-2 transition-opacity ease-in' />
       <ThreadPrimitive.If running={false}>
         <ComposerPrimitive.Send asChild>
           <TooltipIconButton tooltip='Send' variant='default' className='my-2.5 size-8 p-2 transition-opacity ease-in'>
