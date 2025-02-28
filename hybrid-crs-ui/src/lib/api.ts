@@ -1,9 +1,10 @@
 import { createOllama } from 'ollama-ai-provider'
-import { StepResult, streamText, ToolSet } from 'ai'
+import { StepResult, streamText, generateObject, ToolSet } from 'ai'
 import { apiUrl } from '@/constants'
 import { ThreadMessage } from '@assistant-ui/react'
 import { Ollama } from 'ollama/browser'
 import { convertToCoreMessages } from '@/lib/utils'
+import { z } from 'zod'
 
 const commonHeaders: Record<string, string> = {
   skip_zrok_insterstitial: '1'
@@ -52,7 +53,7 @@ export async function streamChat({
   const llm = model || defaultModel
 
   return streamText({
-    model: ollamaProvider(llm, { numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 4 }),
+    model: ollamaProvider(llm, { numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 2 }),
     temperature: 0.2,
     messages: convertToCoreMessages(messages),
     headers: metadata as Record<string, string>,
@@ -87,4 +88,18 @@ export async function pdfToText(file: File): Promise<string | void> {
     .catch(err => {
       console.error(`Failed to convert PDF to Text: ${err}`)
     })
+}
+
+export async function generateTitle(model: string | undefined, prompt: string): Promise<string> {
+  const llm = model || defaultModel
+  const { object } = await generateObject({
+    model: ollamaProvider(llm, { numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 2 }),
+    schema: z.object({
+      title: z.string()
+    }),
+    prompt: `Generate a concise title for a conversation. User Prompt: "${prompt}"`,
+    maxRetries: 2
+  })
+
+  return object.title
 }

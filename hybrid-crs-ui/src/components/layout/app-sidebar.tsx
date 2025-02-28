@@ -24,12 +24,17 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenuButton,
-  // SidebarMenuButton,
-  SidebarRail
+  SidebarRail,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuSub
 } from '@/components/ui/sidebar'
+import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
+import { ThreadList } from '@/components/assistant-ui/thread-list'
 import Image from 'next/image'
 import { apiUrl } from '@/constants'
 import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 
 // This is sample data.
 const data = {
@@ -162,23 +167,51 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const openChatUrl = '/chats/open-chat'
+
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        {/* <SidebarMenuButton isActive></SidebarMenuButton> */}
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
-        <Link href={`${apiUrl}/docs`} target='_blank'>
-          {' '}
-          {/* Temporary, to be NavExtras */}
-          <SidebarMenuButton tooltip={'API Documentation'}>
-            <BookText />
-            <span>{'API Documentation'}</span>
-          </SidebarMenuButton>
-        </Link>
+
+        <SidebarMenu>
+          <Collapsible asChild open={pathname === openChatUrl} className='group/collapsible p-2'>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip={'Open Chat'}
+                onClick={() => {
+                  if (pathname !== openChatUrl) {
+                    router.push(openChatUrl)
+                  }
+                }}
+              >
+                <Bot />
+                <span>Open Chat</span>
+              </SidebarMenuButton>
+              {pathname === openChatUrl && (
+                <CollapsibleContent>
+                  <SidebarMenuSub className='mr-0'>
+                    <ThreadList />
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              )}
+            </SidebarMenuItem>
+          </Collapsible>
+          <Link href={`${apiUrl}/docs`} target='_blank' className='p-2'>
+            {' '}
+            {/* Temporary, to be NavExtras */}
+            <SidebarMenuButton tooltip={'API Documentation'}>
+              <BookText />
+              <span>{'API Documentation'}</span>
+            </SidebarMenuButton>
+          </Link>
+        </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
