@@ -27,7 +27,9 @@ import {
   SidebarRail,
   SidebarMenu,
   SidebarMenuItem,
-  SidebarMenuSub
+  SidebarMenuSub,
+  SidebarGroup,
+  SidebarGroupLabel
 } from '@/components/ui/sidebar'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { ThreadList } from '@/components/assistant-ui/thread-list'
@@ -177,41 +179,49 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Chats</SidebarGroupLabel>
+          <SidebarMenu>
+            <Collapsible asChild open={pathname === openChatUrl} className='group/collapsible'>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  tooltip={'Open Chat'}
+                  onClick={() => {
+                    if (pathname !== openChatUrl) {
+                      router.push(openChatUrl)
+                    }
+                  }}
+                >
+                  <Bot />
+                  <span>Open Chat</span>
+                </SidebarMenuButton>
+                {pathname === openChatUrl && (
+                  <CollapsibleContent>
+                    <SidebarMenuSub className='mr-0'>
+                      <ThreadList />
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                )}
+              </SidebarMenuItem>
+            </Collapsible>
+          </SidebarMenu>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Resources</SidebarGroupLabel>
+          <SidebarMenu>
+            <Link href={`${apiUrl}/docs`} target='_blank'>
+              {' '}
+              <SidebarMenuButton tooltip={'API Documentation'}>
+                <BookText />
+                <span>{'API Documentation'}</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenu>
+        </SidebarGroup>
+
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
-
-        <SidebarMenu>
-          <Collapsible asChild open={pathname === openChatUrl} className='group/collapsible p-2'>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                tooltip={'Open Chat'}
-                onClick={() => {
-                  if (pathname !== openChatUrl) {
-                    router.push(openChatUrl)
-                  }
-                }}
-              >
-                <Bot />
-                <span>Open Chat</span>
-              </SidebarMenuButton>
-              {pathname === openChatUrl && (
-                <CollapsibleContent>
-                  <SidebarMenuSub className='mr-0'>
-                    <ThreadList />
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              )}
-            </SidebarMenuItem>
-          </Collapsible>
-          <Link href={`${apiUrl}/docs`} target='_blank' className='p-2'>
-            {' '}
-            {/* Temporary, to be NavExtras */}
-            <SidebarMenuButton tooltip={'API Documentation'}>
-              <BookText />
-              <span>{'API Documentation'}</span>
-            </SidebarMenuButton>
-          </Link>
-        </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
