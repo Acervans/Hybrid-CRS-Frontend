@@ -54,12 +54,16 @@ export default function ThemeSelector() {
       <DropdownMenuContent className='min-w-none'>
         <DropdownMenuLabel>{t('tooltip')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {Object.keys(themeItemProps).map(theme => {
-          const themeProps = themeItemProps[theme as Theme]
+        {Object.keys(themeItemProps).map(themeKey => {
+          const themeProps = themeItemProps[themeKey as Theme]
 
           return (
-            <DropdownMenuItem key={theme} onClick={() => setTheme(theme as Theme)}>
-              <themeProps.icon size='1rem' />
+            <DropdownMenuItem
+              key={themeKey}
+              onClick={() => setTheme(themeKey as Theme)}
+              className={themeKey === theme ? 'font-bold' : ''}
+            >
+              <themeProps.icon size='1rem' strokeWidth={themeKey === theme ? 2.75 : undefined} />
               {themeProps.name}
             </DropdownMenuItem>
           )

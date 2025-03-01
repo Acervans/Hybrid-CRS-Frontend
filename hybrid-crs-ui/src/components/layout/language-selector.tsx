@@ -47,10 +47,12 @@ export default function LanguageSelector() {
             <DropdownMenuItem
               key={code}
               onClick={() => {
-                setLocale(code as Locale, { expires: 400, sameSite: 'lax' })
-                setTimeout(router.refresh, 150)
+                if (code !== locale) {
+                  setLocale(code as Locale, { expires: 400, sameSite: 'lax' })
+                  setTimeout(router.refresh, 200)
+                }
               }}
-              className='justify-between'
+              className={`justify-between ${code === locale ? 'font-bold' : ''}`}
             >
               <span>{availableLanguages[code as Locale]}</span>
               <span>{code.toUpperCase()}</span>

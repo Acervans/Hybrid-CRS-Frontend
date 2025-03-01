@@ -25,7 +25,8 @@
         "notFound": "El modelo solicitado no existe",
         "pullError": "Error durante la descarga del modelo",
         "pullSuccess": "{model} descargado con éxito",
-        "deleteDialogConfirm": "¿Seguro que quieres borrar {model}?"
+        "deleteDialogConfirm": "¿Seguro que quieres borrar {model}?",
+        "refreshModels": "Refrescar Modelos"
     },
     "Titles": {
         "open-chat": "Chat Libre"

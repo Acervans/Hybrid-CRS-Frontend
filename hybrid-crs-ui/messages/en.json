@@ -25,7 +25,8 @@
         "notFound": "Model does not exist",
         "pullError": "Error while pulling model",
         "pullSuccess": "{model} pulled successfully!",
-        "deleteDialogConfirm": "Are you sure you want to delete {model}?"
+        "deleteDialogConfirm": "Are you sure you want to delete {model}?",
+        "refreshModels": "Refresh Models"
     },
     "Titles": {
         "dashboard": "Dashboard",

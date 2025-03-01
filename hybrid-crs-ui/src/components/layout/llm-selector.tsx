@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { Check, Loader2, Trash } from 'lucide-react'
+import { Check, Loader2, RefreshCw, Trash } from 'lucide-react'
 
 import { formatBytes } from '@/lib/utils'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
+import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 
 import { Bot } from 'lucide-react'
 import { MouseEventHandler, useContext, useRef, useState } from 'react'
@@ -74,8 +75,9 @@ function ConfirmDeleteDialog(props: { model: string; onConfirm?: MouseEventHandl
 export default function LlmSelector() {
   const t = useTranslations('LLM')
   const [localModels, setLocalModels] = useState<Array<ModelResponse>>()
-  const [open, setOpen] = useState(false)
-  const [tooltipOpen, setTooltipOpen] = useState(false)
+  const [open, setOpen] = useState<boolean>(false)
+  const [tooltipOpen, setTooltipOpen] = useState<boolean>(false)
+  const [refreshing, setRefreshing] = useState<boolean>(false)
   const [search, setSearch] = useState<string>()
   const [pulling, setPulling] = useState<boolean>(false)
   const [progress, setProgress] = useState<number>(0)
@@ -164,6 +166,9 @@ export default function LlmSelector() {
             clearTimeout(e.currentTarget.dataset.tooltipTimeout)
             setTooltipOpen(false)
           }}
+          onFocus={e => {
+            if (!e.relatedTarget) e.preventDefault()
+          }}
         >
           <PopoverTrigger>
             <Bot />
@@ -184,6 +189,20 @@ export default function LlmSelector() {
               className='h-9'
               value={search}
               onValueChange={value => setSearch(value)}
+              append={
+                <TooltipIconButton
+                  tooltip={t('refreshModels')}
+                  onClick={() => {
+                    if (!refreshing) {
+                      setRefreshing(true)
+                      refreshModels()
+                      setTimeout(() => setRefreshing(false), 1000)
+                    }
+                  }}
+                >
+                  <RefreshCw className={refreshing ? 'animate-spin' : ''} />
+                </TooltipIconButton>
+              }
             />
             <CommandList>
               <CommandEmpty className='flex flex-col gap-2 p-4 min-w-full w-fit'>
