@@ -51,7 +51,7 @@ export default function ThemeSelector() {
           <p>{t('tooltip')}</p>
         </TooltipContent>
       </Tooltip>
-      <DropdownMenuContent className='min-w-none'>
+      <DropdownMenuContent className='min-w-[7rem]'>
         <DropdownMenuLabel>{t('tooltip')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {Object.keys(themeItemProps).map(themeKey => {

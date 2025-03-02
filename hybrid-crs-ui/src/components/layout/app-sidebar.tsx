@@ -6,6 +6,7 @@ import {
   BookOpen,
   BookText,
   Bot,
+  ChevronRight,
   Command,
   Frame,
   Map,
@@ -37,6 +38,7 @@ import Image from 'next/image'
 import { apiUrl } from '@/constants'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 // This is sample data.
 const data = {
@@ -171,7 +173,9 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter()
   const pathname = usePathname()
-  const openChatUrl = '/chats/open-chat'
+  const t = useTranslations('Titles')
+  const inOpenChat = pathname === '/chats/open-chat'
+  const [open, setOpen] = React.useState<boolean>(inOpenChat)
 
   return (
     <Sidebar collapsible='icon' {...props}>
@@ -180,24 +184,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Chats</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('chats')}</SidebarGroupLabel>
           <SidebarMenu>
-            <Collapsible asChild open={pathname === openChatUrl} className='group/collapsible'>
+            <Collapsible asChild open={inOpenChat && open} className='group/collapsible'>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  tooltip={'Open Chat'}
+                  tooltip={t('open-chat')}
                   onClick={() => {
-                    if (pathname !== openChatUrl) {
-                      router.push(openChatUrl)
+                    if (!inOpenChat) {
+                      router.push('/chats/open-chat')
+                      setOpen(true)
+                    } else {
+                      setOpen(!open)
                     }
                   }}
                 >
                   <Bot />
-                  <span>Open Chat</span>
+                  <span>{t('open-chat')}</span>
+                  <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
                 </SidebarMenuButton>
-                {pathname === openChatUrl && (
+                {inOpenChat && (
                   <CollapsibleContent>
-                    <SidebarMenuSub className='mr-0'>
+                    <SidebarMenuSub className='mr-0 mt-1'>
                       <ThreadList />
                     </SidebarMenuSub>
                   </CollapsibleContent>
@@ -208,13 +216,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Resources</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('resources')}</SidebarGroupLabel>
           <SidebarMenu>
             <Link href={`${apiUrl}/docs`} target='_blank'>
-              {' '}
-              <SidebarMenuButton tooltip={'API Documentation'}>
+              <SidebarMenuButton tooltip={t('api-docs')}>
                 <BookText />
-                <span>{'API Documentation'}</span>
+                <span>{t('api-docs')}</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenu>

@@ -29,7 +29,9 @@
         "refreshModels": "Refrescar Modelos"
     },
     "Titles": {
-        "open-chat": "Chat Libre"
+        "resources": "Recursos",
+        "open-chat": "Chat Libre",
+        "api-docs": "Documentación API"
     },
     "Chats": {
         "welcome": "¿En qué puedo ayudarte?",

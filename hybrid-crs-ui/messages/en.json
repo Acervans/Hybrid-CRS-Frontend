@@ -31,8 +31,10 @@
     "Titles": {
         "dashboard": "Dashboard",
         "chats": "Chats",
+        "resources": "Resources",
         "datasets": "Datasets",
-        "open-chat": "Open Chat"
+        "open-chat": "Open Chat",
+        "api-docs": "API Documentation"
     },
     "Chats": {
         "welcome": "How can I help you today?",
