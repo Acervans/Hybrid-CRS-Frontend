@@ -1,4 +1,4 @@
-import { useContext, type FC } from 'react'
+import { useContext, useEffect, type FC } from 'react'
 import {
   ThreadListItemPrimitive,
   ThreadListPrimitive,
@@ -46,17 +46,24 @@ const ThreadListItem: FC = () => {
   const threadListItem = useThreadListItem()
   const threadListItemRuntime = useThreadListItemRuntime()
 
-  if (!threadListItem.title) {
-    setTimeout(() => {
-      const firstMessage = threadRuntime.getMesssageByIndex(0).getState().content[0]
+  useEffect(() => {
+    if (!threadListItem.title) {
+      setTimeout(() => {
+        const firstMessage = threadRuntime.getMesssageByIndex(0).getState().content[0]
 
-      if (firstMessage.type === 'text') {
-        generateTitle(model, firstMessage.text).then(title => {
-          threadListItemRuntime.rename(title)
-        })
-      }
-    }, 1500)
-  }
+        if (firstMessage.type === 'text') {
+          generateTitle(model, firstMessage.text)
+            .then(title => {
+              threadListItemRuntime.rename(title)
+            })
+            .catch(() => {
+              threadListItemRuntime.rename('New Chat') // TODO translate
+            })
+        }
+      }, 1500)
+    }
+    // eslint-disable-next-line
+  }, [threadListItem.id])
 
   return (
     <ThreadListItemPrimitive.Root className='data-[active]:bg-sidebar-accent hover:bg-sidebar-accent focus-visible:bg-sidebar-accent focus-visible:ring-ring flex items-center gap-2 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2'>
