@@ -1,44 +1,16 @@
 'use client'
 
 import * as React from 'react'
-import {
-  AudioWaveform,
-  BookOpen,
-  BookText,
-  Bot,
-  ChevronRight,
-  Command,
-  Frame,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal
-} from 'lucide-react'
+import { AudioWaveform, BookOpen, Bot, Command, Frame, Map, PieChart, Settings2, SquareTerminal } from 'lucide-react'
 
+import { NavChats } from '@/components/layout/nav-chats'
+import { NavResources } from '@/components/layout/nav-resources'
 import { NavMain } from '@/components/layout/nav-main'
 import { NavProjects } from '@/components/layout/nav-projects'
 import { NavUser } from '@/components/layout/nav-user'
 import { TeamSwitcher } from '@/components/layout/team-switcher'
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenuButton,
-  SidebarRail,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarGroup,
-  SidebarGroupLabel
-} from '@/components/ui/sidebar'
-import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
-import { ThreadList } from '@/components/assistant-ui/thread-list'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar'
 import Image from 'next/image'
-import { apiUrl } from '@/constants'
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
 
 // This is sample data.
 const data = {
@@ -171,62 +143,14 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const t = useTranslations('Titles')
-  const inOpenChat = pathname === '/chats/open-chat'
-  const [open, setOpen] = React.useState<boolean>(inOpenChat)
-
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t('chats')}</SidebarGroupLabel>
-          <SidebarMenu>
-            <Collapsible asChild open={inOpenChat && open} className='group/collapsible'>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  tooltip={t('open-chat')}
-                  onClick={() => {
-                    if (!inOpenChat) {
-                      router.push('/chats/open-chat')
-                      setOpen(true)
-                    } else {
-                      setOpen(!open)
-                    }
-                  }}
-                >
-                  <Bot />
-                  <span>{t('open-chat')}</span>
-                  <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
-                </SidebarMenuButton>
-                {inOpenChat && (
-                  <CollapsibleContent>
-                    <SidebarMenuSub className='mr-0 mt-1'>
-                      <ThreadList />
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                )}
-              </SidebarMenuItem>
-            </Collapsible>
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>{t('resources')}</SidebarGroupLabel>
-          <SidebarMenu>
-            <Link href={`${apiUrl}/docs`} target='_blank'>
-              <SidebarMenuButton tooltip={t('api-docs')}>
-                <BookText />
-                <span>{t('api-docs')}</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenu>
-        </SidebarGroup>
-
+        <NavChats />
+        <NavResources />
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
