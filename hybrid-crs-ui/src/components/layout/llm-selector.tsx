@@ -177,7 +177,7 @@ export default function LlmSelector() {
         <TooltipContent>
           <p>{t('tooltip')}</p>
         </TooltipContent>
-        <PopoverContent className='p-0'>
+        <PopoverContent className='p-0 w-auto max-w-[20rem]'>
           <Command
             filter={(value, search) => {
               return Number(value.toLocaleLowerCase().includes(search.toLowerCase()))
@@ -262,7 +262,7 @@ export default function LlmSelector() {
                       setTimeout(() => setSearch(''), 150)
                     }}
                   >
-                    {m.name}
+                    <span className='max-w-[11rem] break-words'>{m.name}</span>
                     <span className='text-primary ml-auto'>{formatBytes(m.size, 1)}</span>
                     <Check className={model === m.name ? 'opacity-100' : 'opacity-0'} />
                     <ConfirmDeleteDialog model={m.name} onConfirm={() => deleteModel(m.name)} />
