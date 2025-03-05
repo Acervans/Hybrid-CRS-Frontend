@@ -56,7 +56,7 @@ export const Thread: FC = () => {
         <ThreadFollowupSuggestions />
 
         <ThreadPrimitive.If empty={false}>
-          <div className='min-h-8 flex-grow' />
+          <div className='min-h-2 flex-grow' />
         </ThreadPrimitive.If>
 
         <div className='max-w-aui-thread sticky bottom-0 mt-3 flex w-full flex-col items-center justify-end rounded-t-lg bg-inherit pb-4'>
@@ -227,8 +227,8 @@ const EditComposer: FC = () => {
 
 const AssistantMessage: FC = () => {
   return (
-    <MessagePrimitive.Root className='grid grid-cols-[auto_auto_1fr] grid-rows-[auto_1fr] max-w-aui-thread relative w-full py-4'>
-      <Avatar className='col-start-1 row-span-full row-start-1 mr-4 bg-muted'>
+    <MessagePrimitive.Root className='grid grid-cols-[auto_auto_1fr] grid-rows-[auto_1fr] max-w-aui-thread relative w-full py-4 px-2 sm:px-0'>
+      <Avatar className='col-start-1 row-span-full row-start-1 mr-4 bg-muted hidden sm:flex'>
         <Bot className='mx-auto my-auto' />
       </Avatar>
 
