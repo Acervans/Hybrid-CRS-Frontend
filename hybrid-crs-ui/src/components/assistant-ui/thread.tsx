@@ -32,10 +32,11 @@ import {
   UserMessageAttachments
 } from '@/components/assistant-ui/attachment'
 import { ThreadFollowupSuggestions } from '@/components/assistant-ui/follow-up-suggestions'
-
-import { useTranslations } from 'next-intl'
+import { ToolFallback } from '@/components/assistant-ui/tool-fallback'
 import VoiceChat from '@/components/chats/voice-chat'
 import WebSearch from '@/components/chats/web-search'
+
+import { useTranslations } from 'next-intl'
 
 export const Thread: FC = () => {
   const t = useTranslations('Chats')
@@ -233,7 +234,7 @@ const AssistantMessage: FC = () => {
       </Avatar>
 
       <div className='text-foreground max-w-[calc(var(--thread-max-width)*0.8)] break-words leading-7 col-span-2 col-start-2 row-start-1 my-1.5'>
-        <MessagePrimitive.Content components={{ Text: MarkdownText }} />
+        <MessagePrimitive.Content components={{ Text: MarkdownText, tools: { Fallback: ToolFallback } }} />
       </div>
 
       <AssistantActionBar />
