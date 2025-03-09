@@ -97,7 +97,7 @@ export async function generateTitle(model: string | undefined, prompt: string): 
     schema: z.object({
       title: z.string()
     }),
-    prompt: `Generate a concise title for a conversation. User Prompt: "${prompt}"`,
+    prompt: `Generate a concise title for a conversation in the same language as the User Prompt: "${prompt}"`,
     maxRetries: 2
   })
 
