@@ -56,7 +56,7 @@ export function AppHeader() {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <Image src='/icons/icon-96x96.png' alt='logo' width={18} height={18} hidden={!isMobile} />
-                <BreadcrumbLink asChild>
+                <BreadcrumbLink asChild className='font-semibold text-primary'>
                   <Link href={'/'}>HybridCRS</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
