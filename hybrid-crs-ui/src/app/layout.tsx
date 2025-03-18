@@ -57,7 +57,7 @@ export const viewport: Viewport = {
   viewportFit: 'cover'
 }
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], fallback: ['arial', 'system-ui'] })
 
 export default async function RootLayout({
   children
