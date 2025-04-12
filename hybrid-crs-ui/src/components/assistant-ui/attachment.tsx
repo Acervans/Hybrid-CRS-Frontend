@@ -167,7 +167,7 @@ const AttachmentRemove: FC = () => {
 
 export const UserMessageAttachments: FC = () => {
   return (
-    <div className='flex w-full flex-row flex-wrap gap-3 gap-y-0 col-span-full col-start-1 row-start-1 justify-end'>
+    <div className='col-span-full col-start-1 row-start-1 flex w-full flex-row flex-wrap gap-3 gap-y-0 justify-end'>
       <MessagePrimitive.Attachments components={{ Attachment: AttachmentUI }} />
     </div>
   )
