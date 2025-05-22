@@ -1,9 +1,13 @@
 import type { Metadata } from 'next'
-import { getTranslations } from 'next-intl/server'
-import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+
+import { getTranslations } from 'next-intl/server'
+
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { FloatingLabelInput } from '@/components/ui/floating-label-input'
 import { Input } from '@/components/ui/input'
+import MultipleSelector, { Option } from '@/components/ui/multiple-selector'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Titles')
@@ -12,9 +16,6 @@ export async function generateMetadata(): Promise<Metadata> {
     title: t('dashboard')
   }
 }
-
-import MultipleSelector, { Option } from '@/components/ui/multiple-selector'
-import { FloatingLabelInput } from '@/components/ui/floating-label-input'
 
 const OPTIONS: Option[] = [
   { label: 'nextjs', value: 'nextjs' },

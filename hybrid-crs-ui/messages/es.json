@@ -11,6 +11,10 @@
         "light": "Claro",
         "system": "Sistema"
     },
+    "Error": {
+        "somethingWentWrong": "Algo salió mal",
+        "tryAgain": "Por favor, inténtalo de nuevo"
+    },
     "LLM": {
         "tooltip": "Elegir Modelo LLM",
         "searchPlaceholder": "Buscar modelo...",
@@ -31,7 +35,9 @@
     "Titles": {
         "resources": "Recursos",
         "open-chat": "Chat Libre",
-        "api-docs": "Documentación API"
+        "api-docs": "Documentación API",
+        "login": "Iniciar Sesión",
+        "signup": "Registrarse"
     },
     "Chats": {
         "welcome": "¿En qué puedo ayudarte?",
@@ -40,5 +46,31 @@
         "voiceTooltipDisabled": "Micrófono desactivado para esta aplicación",
         "voiceStop": "Dejar de Escuchar",
         "webSearch": "Buscar en Internet"
+    },
+    "Auth": {
+        "auth": "Autenticación",
+        "username": "Nombre de Usuario",
+        "email": "Correo Electrónico",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar Contraseña",
+        "login": "Iniciar Sesión",
+        "signup": "Registrarse",
+        "logout": "Cerrar Sesión",
+        "or": "ó",
+        "validEmail": "Introduce un correo electrónico válido.",
+        "emailNotVerified": "Correo electrónico aún no se ha verificado.",
+        "emailRateLimit": "Verifica tu correo electrónico o inténtalo de nuevo más tarde.",
+        "minLen": "Mínimo {min} caracteres.",
+        "passwordLetter": "Contener una letra.",
+        "passwordNumber": "Contener un número.",
+        "passwordSpecial": "Contener un carácter especial.",
+        "passwordMust": "Contraseña requiere",
+        "passwordsMatch": "Las contraseñas no coinciden.",
+        "invalidCredentials": "Correo electrónico o contraseña inválidos.",
+        "alreadyExists": "Ya existe un usuario con correo {email}.",
+        "welcomeSignup": "¡Bienvenido a HybridCRS!",
+        "welcomeLogin": "¡Bienvenido de nuevo a HybridCRS!",
+        "welcomeDesc": "Una plataforma para crear e interactuar con Agentes de Recomendación 🤖 con IA Generativa ✨ y datos tabulares 💾.",
+        "verifyEmail": "¡Registro con éxito! Comprueba tu buzón y verifica tu dirección de correo."
     }
 }

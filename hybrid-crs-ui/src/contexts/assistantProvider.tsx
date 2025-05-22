@@ -1,30 +1,36 @@
 'use client'
 
 import type { ReactNode } from 'react'
-
-import { pdfToText, streamChat } from '@/lib/api'
 import { useContext } from 'react'
-
-import { WebSpeechSynthesisAdapter } from '@/components/chats/web-speech-adapter'
-
-import { LocaleContext } from '@/contexts/localeContext'
-import { ModelContext } from '@/contexts/modelContext'
-import { useToast } from '@/hooks/use-toast'
 
 import {
   AssistantRuntimeProvider,
-  CompositeAttachmentAdapter,
-  SimpleTextAttachmentAdapter,
-  SimpleImageAttachmentAdapter,
-  useLocalRuntime,
-  CompleteAttachment,
-  PendingAttachment,
   AttachmentAdapter,
-  type ChatModelAdapter
+  type ChatModelAdapter,
+  CompleteAttachment,
+  CompositeAttachmentAdapter,
+  PendingAttachment,
+  SimpleImageAttachmentAdapter,
+  SimpleTextAttachmentAdapter,
+  useLocalRuntime
 } from '@assistant-ui/react'
+import { useTranslations } from 'next-intl'
+
+import { WebSpeechSynthesisAdapter } from '@/components/chats/web-speech-adapter'
+import { AuthContext } from '@/contexts/authContext'
+import { LocaleContext } from '@/contexts/localeContext'
+import { ModelContext } from '@/contexts/modelContext'
+import { useToast } from '@/hooks/use-toast'
+import { pdfToText, streamChat } from '@/lib/api'
+import { createClient } from '@/lib/supabase/client'
 
 export class PdfTextAttachmentAdapter implements AttachmentAdapter {
   public accept = 'application/pdf'
+  private supabase
+
+  constructor(supabase: ReturnType<typeof createClient>) {
+    this.supabase = supabase
+  }
 
   public async add(state: { file: File }): Promise<PendingAttachment> {
     return {
@@ -44,7 +50,7 @@ export class PdfTextAttachmentAdapter implements AttachmentAdapter {
       content: [
         {
           type: 'text',
-          text: `<attachment name=${attachment.name} type=pdf>\n${await pdfToText(attachment.file)}\n</attachment>`
+          text: `<attachment name=${attachment.name} type=pdf>\n${await pdfToText(attachment.file, (await this.supabase.auth.getSession()).data?.session?.access_token)}\n</attachment>`
         }
       ]
     }
@@ -58,14 +64,16 @@ export class PdfTextAttachmentAdapter implements AttachmentAdapter {
 // AssistantProvider to provide Assistant Runtime Context
 export const AssistantProvider = ({ children }: { children: ReactNode }) => {
   const { locale } = useContext(LocaleContext)
-  const { toast } = useToast()
   const { model } = useContext(ModelContext)
+  const { supabase } = useContext(AuthContext)
+  const { toast } = useToast()
+  const t = useTranslations('Error')
 
   const errorToast = () => {
     toast({
       variant: 'destructive',
-      title: 'Something went wrong',
-      description: 'Please try again later'
+      title: t('somethingWentWrong'),
+      description: t('tryAgain')
     })
   }
 
@@ -86,7 +94,8 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
         onFinish: async () => {
           if (context.tools) console.log(context.tools)
           // do something with messageHistory (send to backend DB maybe)
-        }
+        },
+        authToken: (await supabase.auth.getSession()).data?.session?.access_token
       })
       if (response.status !== 200) {
         errorToast()
@@ -124,7 +133,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
     adapters: {
       attachments: new CompositeAttachmentAdapter([
         new SimpleImageAttachmentAdapter(),
-        new PdfTextAttachmentAdapter(),
+        new PdfTextAttachmentAdapter(supabase),
         textAttachmentAdapter
       ]),
       speech: new WebSpeechSynthesisAdapter(locale)

@@ -1,4 +1,5 @@
-import { useContext, useEffect, type FC } from 'react'
+import { type FC, useContext, useEffect } from 'react'
+
 import {
   ThreadListItemPrimitive,
   ThreadListPrimitive,
@@ -8,10 +9,11 @@ import {
 } from '@assistant-ui/react'
 import { ArchiveIcon, PlusIcon, Trash } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
-import { generateTitle } from '@/lib/api'
+import { Button } from '@/components/ui/button'
+import { AuthContext } from '@/contexts/authContext'
 import { ModelContext } from '@/contexts/modelContext'
+import { generateTitle } from '@/lib/api'
 
 export const ThreadList: FC = () => {
   return (
@@ -42,17 +44,18 @@ const ThreadListItems: FC = () => {
 
 const ThreadListItem: FC = () => {
   const { model } = useContext(ModelContext)
+  const { supabase } = useContext(AuthContext)
   const threadRuntime = useThreadRuntime()
   const threadListItem = useThreadListItem()
   const threadListItemRuntime = useThreadListItemRuntime()
 
   useEffect(() => {
     if (!threadListItem.title) {
-      setTimeout(() => {
+      setTimeout(async () => {
         const firstMessage = threadRuntime.getMesssageByIndex(0).getState().content[0]
 
         if (firstMessage.type === 'text') {
-          generateTitle(model, firstMessage.text)
+          generateTitle(model, firstMessage.text, (await supabase.auth.getSession()).data?.session?.access_token)
             .then(title => {
               threadListItemRuntime.rename(title)
             })

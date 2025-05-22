@@ -1,7 +1,12 @@
 'use client'
 
-import { Bot, ChevronRight } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useState } from 'react'
 
+import { Bot, ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+
+import { ThreadList } from '@/components/assistant-ui/thread-list'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import {
   SidebarGroup,
@@ -11,10 +16,6 @@ import {
   SidebarMenuItem,
   SidebarMenuSub
 } from '@/components/ui/sidebar'
-import { ThreadList } from '@/components/assistant-ui/thread-list'
-import { usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useTranslations } from 'next-intl'
 
 export function NavChats() {
   const router = useRouter()

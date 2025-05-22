@@ -1,12 +1,18 @@
 'use client'
 
-import { useSidebar } from '@/components/ui/sidebar'
-import { useEffectOnce } from 'react-use'
-import { useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-import { useIsMobile } from '@/hooks/use-mobile'
+import { useState } from 'react'
+import React from 'react'
 
+import { Menu } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useEffectOnce } from 'react-use'
+
+import LanguageSelector from '@/components/layout/language-selector'
+import { LlmSelector, LlmSelectorDisabled } from '@/components/layout/llm-selector'
+import ThemeSelector from '@/components/layout/theme-selector'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,18 +23,14 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { useSidebar } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Menu } from 'lucide-react'
-import React from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import ThemeSelector from '@/components/layout/theme-selector'
-import LanguageSelector from '@/components/layout/language-selector'
-import LlmSelector from '@/components/layout/llm-selector'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 const excludePaths: Set<string> = new Set<string>(['chats'])
 
-export function AppHeader() {
+export function AppHeader(props: { authenticated: boolean }) {
+  const { authenticated } = props
   const { toggleSidebar } = useSidebar()
 
   const [loaded, setLoaded] = useState<boolean>(false)
@@ -91,7 +93,7 @@ export function AppHeader() {
         <div className='flex gap-4 items-center'>
           {loaded ? (
             <>
-              <LlmSelector />
+              {authenticated ? <LlmSelector /> : <LlmSelectorDisabled />}
               <LanguageSelector />
               <ThemeSelector />
             </>

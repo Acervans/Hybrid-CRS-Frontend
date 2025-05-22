@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
-import OpenChat from '@/views/OpenChat'
+
 import { getTranslations } from 'next-intl/server'
+
+import OpenChat from '@/views/OpenChat'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Titles')

@@ -1,11 +1,12 @@
 'use client'
 
+import Link from 'next/link'
+
 import { BookText } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton } from '@/components/ui/sidebar'
-import Link from 'next/link'
 import { apiUrl } from '@/constants'
-import { useTranslations } from 'next-intl'
 
 export function NavResources() {
   const t = useTranslations('Titles')

@@ -1,18 +1,19 @@
 'use client'
 
+import Image from 'next/image'
 import * as React from 'react'
+
 import { AudioWaveform, BookOpen, Bot, Command, Frame, Map, PieChart, Settings2, SquareTerminal } from 'lucide-react'
 
+import { NavAuth } from '@/components/layout/nav-auth'
 import { NavChats } from '@/components/layout/nav-chats'
-import { NavResources } from '@/components/layout/nav-resources'
 import { NavMain } from '@/components/layout/nav-main'
 import { NavProjects } from '@/components/layout/nav-projects'
+import { NavResources } from '@/components/layout/nav-resources'
 import { NavUser } from '@/components/layout/nav-user'
 import { TeamSwitcher } from '@/components/layout/team-switcher'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar'
-import Image from 'next/image'
 
-// This is sample data.
 const data = {
   user: {
     name: 'shadcn',
@@ -142,21 +143,32 @@ const data = {
   ]
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  authenticated,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { authenticated: boolean }) {
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavChats />
-        <NavResources />
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {authenticated ? (
+          <>
+            <NavChats />
+            <NavResources />
+            <NavMain items={data.navMain} />
+            <NavProjects projects={data.projects} />
+          </>
+        ) : (
+          <NavAuth />
+        )}
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+      {authenticated && (
+        <SidebarFooter>
+          <NavUser />
+        </SidebarFooter>
+      )}
       <SidebarRail />
     </Sidebar>
   )

@@ -11,6 +11,10 @@
         "light": "Light",
         "system": "System"
     },
+    "Error": {
+        "somethingWentWrong": "Something went wrong",
+        "tryAgain": "Please try again"
+    },
     "LLM": {
         "tooltip": "Select LLM Model",
         "searchPlaceholder": "Search model...",
@@ -34,7 +38,9 @@
         "resources": "Resources",
         "datasets": "Datasets",
         "open-chat": "Open Chat",
-        "api-docs": "API Documentation"
+        "api-docs": "API Documentation",
+        "login": "Log-in",
+        "signup": "Sign-up"
     },
     "Chats": {
         "welcome": "How can I help you today?",
@@ -43,5 +49,31 @@
         "voiceTooltipDisabled": "Microphone disabled for this app",
         "voiceStop": "Stop Listening",
         "webSearch": "Search the Web"
+    },
+    "Auth": {
+        "auth": "Authentication",
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "login": "Log In",
+        "signup": "Sign Up",
+        "logout": "Log Out",
+        "or": "or",
+        "validEmail": "Please enter a valid email.",
+        "emailNotVerified": "Email has not been verified.",
+        "emailRateLimit": "Please verify your email or try again later.",
+        "minLen": "Minimum {min} characters long.",
+        "passwordLetter": "At least one letter.",
+        "passwordNumber": "At least one number.",
+        "passwordSpecial": "At least one special character.",
+        "passwordMust": "Password requires",
+        "passwordsMatch": "Passwords don't match.",
+        "invalidCredentials": "Invalid email or password.",
+        "alreadyExists": "User with email {email} already exists.",
+        "welcomeSignup": "Welcome to HybridCRS!",
+        "welcomeLogin": "Welcome back to HybridCRS!",
+        "welcomeDesc": "A platform to create and interact with Recommender Agents 🤖 by leveraging Generative AI ✨ and tabular data 💾.",
+        "verifyEmail": "Sign-up success! Please check your inbox and verify your email."
     }
 }

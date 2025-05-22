@@ -169,3 +169,8 @@ button[data-slot='sidebar-menu-button'],
 [type='button'] {
   cursor: pointer;
 }
+
+#credential_picker_container,
+.g_id_signin {
+  color-scheme: light;
+}

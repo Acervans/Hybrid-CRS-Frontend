@@ -1,7 +1,8 @@
 'use client'
 
-import { useThread, ThreadPrimitive } from '@assistant-ui/react'
 import type { FC } from 'react'
+
+import { ThreadPrimitive, useThread } from '@assistant-ui/react'
 
 export const ThreadFollowupSuggestions: FC = () => {
   const suggestions = useThread(t => t.suggestions)

@@ -1,5 +1,9 @@
 'use client'
 
+import { Moon, Sun, SunMoon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useTheme } from 'next-themes'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,11 +13,6 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-
-import { Sun, Moon, SunMoon } from 'lucide-react'
-
-import { useTranslations } from 'next-intl'
-import { useTheme } from 'next-themes'
 
 export default function ThemeSelector() {
   const { theme, setTheme } = useTheme()

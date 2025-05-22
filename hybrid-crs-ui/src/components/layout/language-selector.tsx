@@ -1,5 +1,11 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { useContext } from 'react'
+
+import { Globe } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,15 +15,8 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-
-import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
-
 import { availableLanguages } from '@/constants'
-
-import { useContext } from 'react'
 import { LocaleContext } from '@/contexts/localeContext'
-import { Globe } from 'lucide-react'
 
 export default function LanguageSelector() {
   const { locale, setLocale } = useContext(LocaleContext)

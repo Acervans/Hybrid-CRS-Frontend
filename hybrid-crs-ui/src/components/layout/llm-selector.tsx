@@ -1,12 +1,17 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-import { Check, Loader2, RefreshCw, Trash } from 'lucide-react'
+import Link from 'next/link'
+import { MouseEventHandler, useContext, useRef, useState } from 'react'
 
-import { formatBytes } from '@/lib/utils'
+import { BotOff, Check, Loader2, RefreshCw, Trash } from 'lucide-react'
+import { Bot } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { ModelResponse, ProgressResponse } from 'ollama/browser'
+import { useEffectOnce } from 'react-use'
+
+import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
+import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Dialog,
   DialogClose,
@@ -17,18 +22,14 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Progress } from '@/components/ui/progress'
-import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
-
-import { Bot } from 'lucide-react'
-import { MouseEventHandler, useContext, useRef, useState } from 'react'
-import { ollamaDelete, ollamaList, ollamaPull } from '@/lib/api'
-import { ModelResponse, ProgressResponse } from 'ollama/browser'
-import { useEffectOnce } from 'react-use'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { AuthContext } from '@/contexts/authContext'
 import { ModelContext } from '@/contexts/modelContext'
-import Link from 'next/link'
 import { useToast } from '@/hooks/use-toast'
+import { ollamaDelete, ollamaList, ollamaPull } from '@/lib/api'
+import { formatBytes } from '@/lib/utils'
 
 function ConfirmDeleteDialog(props: { model: string; onConfirm?: MouseEventHandler<HTMLButtonElement> }) {
   const t = useTranslations('LLM')
@@ -72,7 +73,22 @@ function ConfirmDeleteDialog(props: { model: string; onConfirm?: MouseEventHandl
   )
 }
 
-export default function LlmSelector() {
+export function LlmSelectorDisabled() {
+  const t = useTranslations('LLM')
+
+  return (
+    <Tooltip>
+      <TooltipTrigger>
+        <BotOff className='text-gray-400 cursor-not-allowed' />
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{t('tooltip')}</p>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+export function LlmSelector() {
   const t = useTranslations('LLM')
   const [localModels, setLocalModels] = useState<Array<ModelResponse>>()
   const [open, setOpen] = useState<boolean>(false)
@@ -83,10 +99,11 @@ export default function LlmSelector() {
   const [progress, setProgress] = useState<number>(0)
   const progressGen = useRef<AsyncIterable<ProgressResponse> & { abort(): void }>(null)
   const { model, setModel } = useContext(ModelContext)
+  const { supabase } = useContext(AuthContext)
   const { toast } = useToast()
 
   const refreshModels = async () => {
-    return ollamaList().then(listResponse => {
+    return ollamaList((await supabase.auth.getSession()).data?.session?.access_token).then(listResponse => {
       setLocalModels(listResponse.models)
     })
   }
@@ -101,7 +118,7 @@ export default function LlmSelector() {
       return
     }
     setPulling(true)
-    ollamaPull(search)
+    ollamaPull(search, (await supabase.auth.getSession()).data?.session?.access_token)
       .then(async response => {
         if (!response) {
           return
@@ -133,7 +150,7 @@ export default function LlmSelector() {
   }
 
   const deleteModel = async (model: string) => {
-    return ollamaDelete(model)
+    return ollamaDelete(model, (await supabase.auth.getSession()).data?.session?.access_token)
       .then(() => {
         toast({
           title: t('deleteSuccess', { model: model })

@@ -1,7 +1,9 @@
-import { getRequestConfig } from 'next-intl/server'
 import { cookies, headers } from 'next/headers'
-import { availableLanguages } from '@/constants'
+
 import deepmerge from 'deepmerge'
+import { getRequestConfig } from 'next-intl/server'
+
+import { availableLanguages } from '@/constants'
 
 export default getRequestConfig(async () => {
   const reqCookies = await cookies()

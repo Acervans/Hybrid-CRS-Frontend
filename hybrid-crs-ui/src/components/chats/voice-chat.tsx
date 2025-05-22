@@ -1,16 +1,17 @@
 'use client'
 
 import { HTMLAttributes, ReactElement, useCallback, useContext, useEffect, useState } from 'react'
-import { useTranslations } from 'next-intl'
-import { Mic } from 'lucide-react'
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-import { availableLanguages } from '@/constants'
 
-import { useEffectOnce } from 'react-use'
-import { LocaleContext } from '@/contexts/localeContext'
-import { Skeleton } from '@/components/ui/skeleton'
-import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import { useComposerRuntime } from '@assistant-ui/react'
+import { Mic } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import { useEffectOnce } from 'react-use'
+
+import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { availableLanguages } from '@/constants'
+import { LocaleContext } from '@/contexts/localeContext'
 
 const localeToSpeechLang: Record<Locale, string> = {
   en: 'en-GB',

@@ -1,6 +1,6 @@
 'use client'
 
-import '@assistant-ui/react-markdown/styles/dot.css'
+import { FC, memo, useState } from 'react'
 
 import {
   CodeHeaderProps,
@@ -8,15 +8,15 @@ import {
   unstable_memoizeMarkdownComponents as memoizeMarkdownComponents,
   useIsMarkdownCodeBlock
 } from '@assistant-ui/react-markdown'
-import remarkGfm from 'remark-gfm'
-import rehypeKatex from 'rehype-katex'
-import remarkMath from 'remark-math'
-import { FC, memo, useState } from 'react'
+import '@assistant-ui/react-markdown/styles/dot.css'
 import { CheckIcon, CopyIcon } from 'lucide-react'
+import rehypeKatex from 'rehype-katex'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
 
+import { SyntaxHighlighter } from '@/components/assistant-ui/syntax-highlighter'
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import { cn } from '@/lib/utils'
-import { SyntaxHighlighter } from '@/components/assistant-ui/syntax-highlighter'
 
 const MarkdownTextImpl = () => {
   return (

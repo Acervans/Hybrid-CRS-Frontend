@@ -2,8 +2,9 @@
 
 import type { ReactNode } from 'react'
 import { createContext } from 'react'
-import { useCookie } from 'react-use'
+
 import { useLocale } from 'next-intl'
+import { useCookie } from 'react-use'
 
 interface LocaleContextType {
   locale: Locale

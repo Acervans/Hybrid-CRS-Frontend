@@ -1,3 +1,5 @@
+import type { FC } from 'react'
+
 import {
   ActionBarPrimitive,
   BranchPickerPrimitive,
@@ -6,7 +8,6 @@ import {
   ThreadPrimitive,
   useComposerRuntime
 } from '@assistant-ui/react'
-import type { FC } from 'react'
 import {
   ArrowDownIcon,
   AudioLinesIcon,
@@ -20,26 +21,25 @@ import {
   SendHorizontalIcon,
   StopCircleIcon
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
-import { Avatar } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { MarkdownText } from '@/components/assistant-ui/markdown-text'
-import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import {
   ComposerAddAttachment,
   ComposerAttachments,
   UserMessageAttachments
 } from '@/components/assistant-ui/attachment'
 import { ThreadFollowupSuggestions } from '@/components/assistant-ui/follow-up-suggestions'
+import { MarkdownText } from '@/components/assistant-ui/markdown-text'
 import { ToolFallback } from '@/components/assistant-ui/tool-fallback'
+import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import VoiceChat from '@/components/chats/voice-chat'
 import WebSearch from '@/components/chats/web-search'
-
-import { useTranslations } from 'next-intl'
+import { Avatar } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export const Thread: FC = () => {
-  const t = useTranslations('Chats')
+  const t = useTranslations('Chats') as (key?: string) => string
 
   return (
     <ThreadPrimitive.Root className='bg-background box-border h-[calc(100dvh-3rem)] md:h-[calc(100dvh-4rem)] group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-[calc(100dvh-3rem)]'>

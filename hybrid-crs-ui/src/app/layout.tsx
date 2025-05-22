@@ -2,14 +2,14 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { cookies } from 'next/headers'
 
-import { ThemeProvider } from 'next-themes'
-
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages, getTranslations } from 'next-intl/server'
-import { LocaleProvider } from '@/contexts/localeContext'
+import { ThemeProvider } from 'next-themes'
 
-import { ModelProvider } from '@/contexts/modelContext'
 import { SidebarProvider } from '@/components/ui/sidebar'
+import { AuthProvider } from '@/contexts/authContext'
+import { LocaleProvider } from '@/contexts/localeContext'
+import { ModelProvider } from '@/contexts/modelContext'
 
 import './globals.css'
 
@@ -76,9 +76,11 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider defaultTheme='system'>
             <LocaleProvider>
-              <ModelProvider>
-                <SidebarProvider defaultOpen={defaultOpen}>{children}</SidebarProvider>
-              </ModelProvider>
+              <AuthProvider>
+                <ModelProvider>
+                  <SidebarProvider defaultOpen={defaultOpen}>{children}</SidebarProvider>
+                </ModelProvider>
+              </AuthProvider>
             </LocaleProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
