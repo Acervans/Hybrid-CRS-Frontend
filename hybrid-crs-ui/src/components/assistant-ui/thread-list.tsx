@@ -11,8 +11,8 @@ import { ArchiveIcon, PlusIcon, Trash } from 'lucide-react'
 
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import { Button } from '@/components/ui/button'
-import { AuthContext } from '@/contexts/authContext'
 import { ModelContext } from '@/contexts/modelContext'
+import { SupabaseContext } from '@/contexts/supabaseContext'
 import { generateTitle } from '@/lib/api'
 
 export const ThreadList: FC = () => {
@@ -44,7 +44,7 @@ const ThreadListItems: FC = () => {
 
 const ThreadListItem: FC = () => {
   const { model } = useContext(ModelContext)
-  const { supabase } = useContext(AuthContext)
+  const { supabase } = useContext(SupabaseContext)
   const threadRuntime = useThreadRuntime()
   const threadListItem = useThreadListItem()
   const threadListItemRuntime = useThreadListItemRuntime()

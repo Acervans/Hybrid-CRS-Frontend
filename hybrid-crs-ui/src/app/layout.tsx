@@ -7,9 +7,9 @@ import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import { ThemeProvider } from 'next-themes'
 
 import { SidebarProvider } from '@/components/ui/sidebar'
-import { AuthProvider } from '@/contexts/authContext'
 import { LocaleProvider } from '@/contexts/localeContext'
 import { ModelProvider } from '@/contexts/modelContext'
+import { SupabaseProvider } from '@/contexts/supabaseContext'
 
 import './globals.css'
 
@@ -76,11 +76,11 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider defaultTheme='system'>
             <LocaleProvider>
-              <AuthProvider>
+              <SupabaseProvider>
                 <ModelProvider>
                   <SidebarProvider defaultOpen={defaultOpen}>{children}</SidebarProvider>
                 </ModelProvider>
-              </AuthProvider>
+              </SupabaseProvider>
             </LocaleProvider>
           </ThemeProvider>
         </NextIntlClientProvider>

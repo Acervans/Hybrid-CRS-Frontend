@@ -9,22 +9,22 @@ import { useEffectOnce } from 'react-use'
 
 import { createClient } from '@/lib/supabase/client'
 
-interface AuthContextType {
+interface SupabaseContextType {
   auth: UserResponse | undefined
   setAuth: Dispatch<SetStateAction<UserResponse | undefined>>
   supabase: ReturnType<typeof createClient>
   handleLogin: (redirectTo?: string) => Promise<void>
 }
 
-export const AuthContext = createContext<AuthContextType>({
+export const SupabaseContext = createContext<SupabaseContextType>({
   auth: undefined,
   setAuth: () => {},
   supabase: createClient(),
   handleLogin: async () => {}
 })
 
-// AuthProvider component to provide auth and session configuration
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+// SupabaseProvider component to provide auth configuration, supabase client
+export const SupabaseProvider = ({ children }: { children: ReactNode }) => {
   const [auth, setAuth] = useState<UserResponse | undefined>()
   const supabase = createClient()
   const router = useRouter()
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   })
 
   return (
-    <AuthContext.Provider
+    <SupabaseContext.Provider
       value={{
         auth,
         setAuth,
@@ -56,6 +56,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </SupabaseContext.Provider>
   )
 }

@@ -16,14 +16,14 @@ import { Card, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { AuthContext } from '@/contexts/authContext'
+import { SupabaseContext } from '@/contexts/supabaseContext'
 import { login, signup } from '@/lib/actions'
 
 export default function AuthForm(props: { isSignup?: boolean; params: SearchParams }) {
   const { isSignup, params } = props
   const nextParam = params.next ? `?next=${params.next}` : ''
   const t = useTranslations('Auth')
-  const { handleLogin } = useContext(AuthContext)
+  const { handleLogin } = useContext(SupabaseContext)
 
   const LoginFormSchema = z.object({
     email: z
@@ -154,9 +154,16 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
               <AlertTitle className='line-clamp-none'>{errors.email.message}</AlertTitle>
             </Alert>
           )}
-          <Label htmlFor='password' className='mt-2'>
-            {t('password')}
-          </Label>
+          <div className='flex justify-between items-baseline'>
+            <Label htmlFor='password' className='mt-2'>
+              {t('password')}
+            </Label>
+            {!isSignup && (
+              <Link href='/reset-password' className='text-sm text-primary hover:underline'>
+                {t('forgotPassword')}
+              </Link>
+            )}
+          </div>
           <Input id='password' type='password' {...register('password')} aria-invalid={!!errors.password} required />
           {errors.password && (
             <Alert className='text-destructive-foreground bg-destructive'>

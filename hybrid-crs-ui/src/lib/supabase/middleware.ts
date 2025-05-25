@@ -2,6 +2,9 @@ import { type NextRequest, NextResponse } from 'next/server'
 
 import { createServerClient } from '@supabase/ssr'
 
+const authPaths = ['/login', '/signup']
+const publicPaths = ['/reset-password', '/auth']
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request
@@ -36,18 +39,21 @@ export async function updateSession(request: NextRequest) {
     data: { user }
   } = await supabase.auth.getUser()
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/signup') &&
-    !request.nextUrl.pathname.startsWith('/auth')
-  ) {
+  const inAuthPage = authPaths.some(path => request.nextUrl.pathname.startsWith(path))
+  const inPublicPage = publicPaths.some(path => request.nextUrl.pathname.startsWith(path))
+
+  if (!user && !inAuthPage && !inPublicPage) {
     // no user, redirect the user to the login page
     const url = request.nextUrl.clone()
     const nextPath = new URL(request.url).pathname
 
     url.pathname = '/login'
     url.searchParams.set('next', nextPath)
+    return NextResponse.redirect(url)
+  } else if (user && inAuthPage) {
+    const url = request.nextUrl.clone()
+
+    url.pathname = '/'
     return NextResponse.redirect(url)
   }
 

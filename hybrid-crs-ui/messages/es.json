@@ -37,7 +37,8 @@
         "open-chat": "Chat Libre",
         "api-docs": "Documentación API",
         "login": "Iniciar Sesión",
-        "signup": "Registrarse"
+        "signup": "Registrarse",
+        "reset-password": "Cambio de Contraseña"
     },
     "Chats": {
         "welcome": "¿En qué puedo ayudarte?",
@@ -71,6 +72,13 @@
         "welcomeSignup": "¡Bienvenido a HybridCRS!",
         "welcomeLogin": "¡Bienvenido de nuevo a HybridCRS!",
         "welcomeDesc": "Una plataforma para crear e interactuar con Agentes de Recomendación 🤖 con IA Generativa ✨ y datos tabulares 💾.",
-        "verifyEmail": "¡Registro con éxito! Comprueba tu buzón y verifica tu dirección de correo."
+        "verifyEmail": "¡Registro con éxito! Comprueba tu buzón y verifica tu dirección de correo.",
+        "forgotPassword": "¿Olvidaste tu contraseña?",
+        "resetPassword": "Modificar Contraseña",
+        "resetTitle": "Cambio De Contraseña",
+        "resetSent": "Se ha enviado un correo para cambiar tu contraseña.",
+        "resetSuccess": "Tu contraseña se ha cambiado con éxito.",
+        "error": "Ha ocurrido un error, inténtalo de nuevo más tarde.",
+        "samePassword": "La contraseña nueva no puede ser igual que la anterior."
     }
 }

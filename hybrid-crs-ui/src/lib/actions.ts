@@ -63,3 +63,14 @@ export async function handleLoginWithGoogle(response: CredentialResponse) {
 
   revalidatePath('/', 'layout')
 }
+
+export async function resetPasswordRequest(email: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`
+  })
+
+  if (error) {
+    return error.code
+  }
+}

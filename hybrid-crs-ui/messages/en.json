@@ -40,7 +40,8 @@
         "open-chat": "Open Chat",
         "api-docs": "API Documentation",
         "login": "Log-in",
-        "signup": "Sign-up"
+        "signup": "Sign-up",
+        "reset-password": "Password Reset" 
     },
     "Chats": {
         "welcome": "How can I help you today?",
@@ -53,7 +54,7 @@
     "Auth": {
         "auth": "Authentication",
         "username": "Username",
-        "email": "Email",
+        "email": "Email Address",
         "password": "Password",
         "confirmPassword": "Confirm Password",
         "login": "Log In",
@@ -74,6 +75,13 @@
         "welcomeSignup": "Welcome to HybridCRS!",
         "welcomeLogin": "Welcome back to HybridCRS!",
         "welcomeDesc": "A platform to create and interact with Recommender Agents 🤖 by leveraging Generative AI ✨ and tabular data 💾.",
-        "verifyEmail": "Sign-up success! Please check your inbox and verify your email."
+        "verifyEmail": "Sign-up success! Please check your inbox and verify your email.",
+        "forgotPassword": "Forgot your password?",
+        "resetPassword": "Reset Password",
+        "resetTitle": "Password Reset",
+        "resetSent": "An email has been sent to you to reset your password.",
+        "resetSuccess": "Password has been reset successfully.",
+        "error": "Something went wrong, please try again later.",
+        "samePassword": "New password can't be the same as the old password."
     }
 }

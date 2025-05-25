@@ -17,9 +17,9 @@ import {
 import { useTranslations } from 'next-intl'
 
 import { WebSpeechSynthesisAdapter } from '@/components/chats/web-speech-adapter'
-import { AuthContext } from '@/contexts/authContext'
 import { LocaleContext } from '@/contexts/localeContext'
 import { ModelContext } from '@/contexts/modelContext'
+import { SupabaseContext } from '@/contexts/supabaseContext'
 import { useToast } from '@/hooks/use-toast'
 import { pdfToText, streamChat } from '@/lib/api'
 import { createClient } from '@/lib/supabase/client'
@@ -65,7 +65,7 @@ export class PdfTextAttachmentAdapter implements AttachmentAdapter {
 export const AssistantProvider = ({ children }: { children: ReactNode }) => {
   const { locale } = useContext(LocaleContext)
   const { model } = useContext(ModelContext)
-  const { supabase } = useContext(AuthContext)
+  const { supabase } = useContext(SupabaseContext)
   const { toast } = useToast()
   const t = useTranslations('Error')
 

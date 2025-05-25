@@ -25,8 +25,8 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Progress } from '@/components/ui/progress'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { AuthContext } from '@/contexts/authContext'
 import { ModelContext } from '@/contexts/modelContext'
+import { SupabaseContext } from '@/contexts/supabaseContext'
 import { useToast } from '@/hooks/use-toast'
 import { ollamaDelete, ollamaList, ollamaPull } from '@/lib/api'
 import { formatBytes } from '@/lib/utils'
@@ -99,7 +99,7 @@ export function LlmSelector() {
   const [progress, setProgress] = useState<number>(0)
   const progressGen = useRef<AsyncIterable<ProgressResponse> & { abort(): void }>(null)
   const { model, setModel } = useContext(ModelContext)
-  const { supabase } = useContext(AuthContext)
+  const { supabase } = useContext(SupabaseContext)
   const { toast } = useToast()
 
   const refreshModels = async () => {

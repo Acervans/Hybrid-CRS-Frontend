@@ -1,10 +1,11 @@
 'use client'
 
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { useContext } from 'react'
 
 import { User } from '@supabase/supabase-js'
-import { LogOut } from 'lucide-react'
+import { ChevronRight, LogOut, RotateCcwKey } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -17,14 +18,14 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
-import { AuthContext } from '@/contexts/authContext'
+import { SupabaseContext } from '@/contexts/supabaseContext'
 import { useToast } from '@/hooks/use-toast'
 
 export function NavUser() {
   const t = useTranslations('Auth')
   const { isMobile } = useSidebar()
   const { toast } = useToast()
-  const { auth, setAuth, supabase } = useContext(AuthContext)
+  const { auth, setAuth, supabase } = useContext(SupabaseContext)
   const user = auth?.data?.user as User
 
   const logout = async () => {
@@ -58,7 +59,7 @@ export function NavUser() {
                 <span className='truncate font-semibold'>{user?.user_metadata.full_name}</span>
                 <span className='truncate text-xs'>{user?.email}</span>
               </div>
-              <LogOut className='ml-auto size-4' />
+              <ChevronRight className='ml-auto size-4' />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -80,6 +81,12 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <Link href='/reset-password'>
+              <DropdownMenuItem>
+                <RotateCcwKey />
+                {t('resetPassword')}
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem onClick={logout}>
               <LogOut />
               {t('logout')}

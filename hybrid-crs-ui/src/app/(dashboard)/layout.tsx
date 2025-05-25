@@ -12,7 +12,7 @@ import { AppSidebar } from '@/components/layout/app-sidebar'
 import { SidebarInset } from '@/components/ui/sidebar'
 import { Toaster } from '@/components/ui/toaster'
 import { AssistantProvider } from '@/contexts/assistantProvider'
-import { AuthContext } from '@/contexts/authContext'
+import { SupabaseContext } from '@/contexts/supabaseContext'
 import { handleLoginWithGoogle } from '@/lib/actions'
 
 export default function DashboardLayout({
@@ -20,7 +20,7 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const { auth, handleLogin } = useContext(AuthContext)
+  const { auth, handleLogin } = useContext(SupabaseContext)
   const next = useSearchParams().get('next')
 
   useEffectOnce(() => {
