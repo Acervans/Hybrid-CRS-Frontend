@@ -76,6 +76,8 @@
         "forgotPassword": "¿Olvidaste tu contraseña?",
         "resetPassword": "Modificar Contraseña",
         "resetTitle": "Cambio De Contraseña",
+        "resetDescEmail": "Te enviaremos un correo para cambiar tu contraseña.",
+        "resetDescPassword": "Por favor, introduce tu nueva contraseña.",
         "resetSent": "Se ha enviado un correo para cambiar tu contraseña.",
         "resetSuccess": "Tu contraseña se ha cambiado con éxito.",
         "error": "Ha ocurrido un error, inténtalo de nuevo más tarde.",

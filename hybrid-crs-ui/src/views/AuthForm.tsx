@@ -154,16 +154,9 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
               <AlertTitle className='line-clamp-none'>{errors.email.message}</AlertTitle>
             </Alert>
           )}
-          <div className='flex justify-between items-baseline'>
-            <Label htmlFor='password' className='mt-2'>
-              {t('password')}
-            </Label>
-            {!isSignup && (
-              <Link href='/reset-password' className='text-sm text-primary hover:underline'>
-                {t('forgotPassword')}
-              </Link>
-            )}
-          </div>
+          <Label htmlFor='password' className='mt-2'>
+            {t('password')}
+          </Label>
           <Input id='password' type='password' {...register('password')} aria-invalid={!!errors.password} required />
           {errors.password && (
             <Alert className='text-destructive-foreground bg-destructive'>
@@ -199,26 +192,33 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
               )}
             </>
           )}
-          <div className='flex flex-col gap-2 mx-auto mt-2 w-73.5'>
+          <div className='flex flex-col gap-4 mx-auto mt-2 w-73.5'>
             {isSignup ? (
-              <>
+              <div className='grid grid-cols-2 gap-2'>
                 <Button type='submit' disabled={isSubmitting}>
                   {t('signup')}
                 </Button>
                 <Link href={`/login${nextParam}`}>
-                  <Button type='button' variant='link' className='w-full'>
+                  <Button type='button' variant='link' tabIndex={-1} className='w-full'>
                     {t('login')}
                   </Button>
                 </Link>
-              </>
+              </div>
             ) : (
               <>
-                <Button type='submit' disabled={isSubmitting}>
-                  {t('login')}
-                </Button>
-                <Link href={`/signup${nextParam}`}>
-                  <Button type='button' variant='link' className='w-full'>
-                    {t('signup')}
+                <div className='grid grid-cols-2 gap-2'>
+                  <Button type='submit' disabled={isSubmitting}>
+                    {t('login')}
+                  </Button>
+                  <Link href={`/signup${nextParam}`}>
+                    <Button type='button' variant='link' tabIndex={-1} className='w-full'>
+                      {t('signup')}
+                    </Button>
+                  </Link>
+                </div>
+                <Link href='/reset-password'>
+                  <Button type='button' variant='link' tabIndex={-1} className='w-full'>
+                    {t('forgotPassword')}
                   </Button>
                 </Link>
               </>

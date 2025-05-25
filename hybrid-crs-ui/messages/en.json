@@ -79,6 +79,8 @@
         "forgotPassword": "Forgot your password?",
         "resetPassword": "Reset Password",
         "resetTitle": "Password Reset",
+        "resetDescEmail": "We will send you an email to reset your password.",
+        "resetDescPassword": "Please enter your new password.",
         "resetSent": "An email has been sent to you to reset your password.",
         "resetSuccess": "Password has been reset successfully.",
         "error": "Something went wrong, please try again later.",

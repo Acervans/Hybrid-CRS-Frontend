@@ -12,7 +12,7 @@ import { z } from 'zod'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Card, CardTitle } from '@/components/ui/card'
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
@@ -106,11 +106,11 @@ export default function ResetPasswordForm() {
 
   return (
     <div className='flex flex-col gap-4 max-w-2xl m-auto'>
-      <div className='flex flex-col gap-4 mx-4 mt-2 px-2 whitespace-break-spaces'>
-        <h2 className='font-semibold text-xl'>{t('resetTitle')}</h2>
-      </div>
       <Card className='mx-4 px-4'>
-        <CardTitle>{t('resetPassword')}</CardTitle>
+        <CardHeader className='px-0'>
+          <CardTitle>{t('resetTitle')}</CardTitle>
+          <CardDescription>{!auth?.data.user ? t('resetDescEmail') : t('resetDescPassword')}</CardDescription>
+        </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-2'>
           {serverMessage && (
             <Alert
@@ -191,14 +191,14 @@ export default function ResetPasswordForm() {
                 <span className='text-muted-foreground'>{t('or')}</span>
                 <Separator className='flex-1' />
               </div>
-              <div className='flex flex-row justify-center gap-2 mt-2'>
+              <div className='grid grid-cols-2 gap-2'>
                 <Link href='/login'>
-                  <Button type='button' variant='link' className='w-full'>
+                  <Button type='button' variant='link' tabIndex={-1} className='w-full'>
                     {t('login')}
                   </Button>
                 </Link>
                 <Link href='/signup'>
-                  <Button type='button' variant='link' className='w-full'>
+                  <Button type='button' variant='link' tabIndex={-1} className='w-full'>
                     {t('signup')}
                   </Button>
                 </Link>
