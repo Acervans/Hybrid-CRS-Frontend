@@ -1,17 +1,16 @@
 'use client'
 
-import Image from 'next/image'
 import * as React from 'react'
 
-import { AudioWaveform, BookOpen, Bot, Command, Frame, Map, PieChart, Settings2, SquareTerminal } from 'lucide-react'
+import { BookOpen, Bot, Frame, Map, PieChart, Settings2, SquareTerminal } from 'lucide-react'
 
 import { NavAuth } from '@/components/layout/nav-auth'
 import { NavChats } from '@/components/layout/nav-chats'
+import { NavHeader } from '@/components/layout/nav-header'
 import { NavMain } from '@/components/layout/nav-main'
 import { NavProjects } from '@/components/layout/nav-projects'
 import { NavResources } from '@/components/layout/nav-resources'
 import { NavUser } from '@/components/layout/nav-user'
-import { TeamSwitcher } from '@/components/layout/team-switcher'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar'
 
 const data = {
@@ -20,23 +19,6 @@ const data = {
     email: 'm@example.com',
     avatar: '/icons/icon-96x96.png'
   },
-  teams: [
-    {
-      name: 'Acme Inc',
-      logo: () => <Image src='/icons/icon-256x256.png' width={45} height={45} alt='Logo' />,
-      plan: 'Enterprise'
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup'
-    },
-    {
-      name: 'Evil Corp.',
-      logo: Command,
-      plan: 'Free'
-    }
-  ],
   navMain: [
     {
       title: 'Playground',
@@ -150,7 +132,7 @@ export function AppSidebar({
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <NavHeader />
       </SidebarHeader>
       <SidebarContent>
         {authenticated ? (
