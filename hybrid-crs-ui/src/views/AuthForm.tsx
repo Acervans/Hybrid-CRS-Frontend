@@ -119,7 +119,7 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
         <CardTitle>{isSignup ? t('signup') : t('login')}</CardTitle>
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-2'>
           {verifyEmail && (
-            <Alert className='text-emerald-500 bg-secondary'>
+            <Alert className='text-primary bg-secondary'>
               <Check />
               <AlertTitle className='line-clamp-none'>{t('verifyEmail')}</AlertTitle>
             </Alert>

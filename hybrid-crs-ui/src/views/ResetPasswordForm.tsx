@@ -114,9 +114,7 @@ export default function ResetPasswordForm() {
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-2'>
           {serverMessage && (
             <Alert
-              className={
-                serverMessage.ok ? 'text-emerald-500 bg-secondary' : 'text-destructive-foreground bg-destructive'
-              }
+              className={serverMessage.ok ? 'text-primary bg-secondary' : 'text-destructive-foreground bg-destructive'}
             >
               {serverMessage.ok ? <Check /> : <AlertCircle />}
               <AlertTitle className='line-clamp-none'>{serverMessage.msg}</AlertTitle>
