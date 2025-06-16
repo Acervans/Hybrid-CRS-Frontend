@@ -6,7 +6,7 @@ import { useContext, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AlertCircle, Check } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useForm } from 'react-hook-form'
+import { FieldErrors, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import GoogleButton from '@/components/auth/google-button'
@@ -25,7 +25,7 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
   const t = useTranslations('Auth')
   const { handleLogin } = useContext(SupabaseContext)
 
-  const LoginFormSchema = z.object({
+  const loginFormSchema = z.object({
     email: z
       .string()
       .email({ message: t('validEmail') })
@@ -41,7 +41,7 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
       .trim()
   })
 
-  const SignupFormSchema = z
+  const signupFormSchema = z
     .object({
       username: z
         .string()
@@ -67,17 +67,22 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
       path: ['confirmPassword']
     })
 
-  const schema = isSignup ? SignupFormSchema : LoginFormSchema
+  type SignupSchemaType = z.infer<typeof signupFormSchema>
+  type LoginSchemaType = z.infer<typeof loginFormSchema>
+
+  const schema = isSignup ? signupFormSchema : loginFormSchema
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm({
-    resolver: zodResolver(schema as typeof SignupFormSchema),
+  } = useForm<SignupSchemaType | LoginSchemaType>({
+    resolver: zodResolver(schema),
     mode: isSignup ? 'onChange' : 'onSubmit',
     criteriaMode: 'all'
   })
+
+  const typedErrors = errors as FieldErrors<SignupSchemaType & LoginSchemaType>
 
   const [serverMessage, setServerMessage] = useState<string | null>(null)
   const [verifyEmail, setVerifyEmail] = useState(false)
@@ -112,7 +117,7 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
   return (
     <div className='flex flex-col gap-4 max-w-2xl m-auto'>
       <div className='flex flex-col gap-4 mx-4 mt-2 px-2 whitespace-break-spaces'>
-        <h2 className='font-semibold text-xl'>{isSignup ? t('welcomeSignup') : t('welcomeLogin')}</h2>
+        <h2 className='font-semibold text-xl'>{t('welcome')}</h2>
         <p>{t('welcomeDesc')}</p>
       </div>
       <Card className='mx-4 px-4'>
@@ -135,11 +140,17 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
               <Label htmlFor='username' className='mt-2'>
                 {t('username')}
               </Label>
-              <Input id='username' type='text' {...register('username')} aria-invalid={!!errors.username} required />
-              {errors.username && (
+              <Input
+                id='username'
+                type='text'
+                {...register('username')}
+                aria-invalid={!!typedErrors.username}
+                required
+              />
+              {typedErrors.username && (
                 <Alert className='text-destructive-foreground bg-destructive'>
                   <AlertCircle />
-                  <AlertTitle className='line-clamp-none'>{errors.username.message}</AlertTitle>
+                  <AlertTitle className='line-clamp-none'>{typedErrors.username.message}</AlertTitle>
                 </Alert>
               )}
             </>
@@ -147,25 +158,31 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
           <Label htmlFor='email' className='mt-2'>
             {t('email')}
           </Label>
-          <Input id='email' type='email' {...register('email')} aria-invalid={!!errors.email} required />
-          {errors.email && (
+          <Input id='email' type='email' {...register('email')} aria-invalid={!!typedErrors.email} required />
+          {typedErrors.email && (
             <Alert className='text-destructive-foreground bg-destructive'>
               <AlertCircle />
-              <AlertTitle className='line-clamp-none'>{errors.email.message}</AlertTitle>
+              <AlertTitle className='line-clamp-none'>{typedErrors.email.message}</AlertTitle>
             </Alert>
           )}
           <Label htmlFor='password' className='mt-2'>
             {t('password')}
           </Label>
-          <Input id='password' type='password' {...register('password')} aria-invalid={!!errors.password} required />
-          {errors.password && (
+          <Input
+            id='password'
+            type='password'
+            {...register('password')}
+            aria-invalid={!!typedErrors.password}
+            required
+          />
+          {typedErrors.password && (
             <Alert className='text-destructive-foreground bg-destructive'>
               <AlertCircle />
               <AlertTitle className='line-clamp-none'>{t('passwordMust')}:</AlertTitle>
               <AlertDescription className='text-destructive-foreground'>
                 <ul className='list-disc list-inside'>
-                  {errors?.password?.types &&
-                    Object.values(errors.password.types)
+                  {typedErrors?.password?.types &&
+                    Object.values(typedErrors.password.types)
                       .flat()
                       .map((error, i) => <li key={i}>{error}</li>)}
                 </ul>
@@ -181,13 +198,13 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
                 id='confirmPassword'
                 type='password'
                 {...register('confirmPassword')}
-                aria-invalid={!!errors.confirmPassword}
+                aria-invalid={!!typedErrors.confirmPassword}
                 required
               />
-              {errors.confirmPassword && (
+              {typedErrors.confirmPassword && (
                 <Alert className='text-destructive-foreground bg-destructive'>
                   <AlertCircle />
-                  <AlertTitle className='line-clamp-none'>{errors.confirmPassword.message}</AlertTitle>
+                  <AlertTitle className='line-clamp-none'>{typedErrors.confirmPassword.message}</AlertTitle>
                 </Alert>
               )}
             </>

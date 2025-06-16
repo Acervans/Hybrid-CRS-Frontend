@@ -24,14 +24,14 @@ export default function ResetPasswordForm() {
   const { supabase, auth } = useContext(SupabaseContext)
   const router = useRouter()
 
-  const ResetFormSchema = z.object({
+  const resetFormSchema = z.object({
     email: z
       .string()
       .email({ message: t('validEmail') })
       .trim()
   })
 
-  const PasswordFormSchema = z
+  const passwordFormSchema = z
     .object({
       password: z
         .string()
@@ -49,20 +49,18 @@ export default function ResetPasswordForm() {
       path: ['confirmPassword']
     })
 
-  type ResetSchemaType = z.infer<typeof ResetFormSchema>
-  type PasswordSchemaType = z.infer<typeof PasswordFormSchema>
+  type ResetSchemaType = z.infer<typeof resetFormSchema>
+  type PasswordSchemaType = z.infer<typeof passwordFormSchema>
 
-  const schema: z.ZodType<ResetSchemaType | PasswordSchemaType> = !auth?.data.user
-    ? ResetFormSchema
-    : PasswordFormSchema
+  const schema = !auth?.data.user ? resetFormSchema : passwordFormSchema
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting }
-  } = useForm({
-    resolver: zodResolver(schema),
+  } = useForm<ResetSchemaType | PasswordSchemaType>({
+    resolver: zodResolver(schema as unknown as z.ZodUnion<[z.ZodType<ResetSchemaType>, z.ZodType<PasswordSchemaType>]>),
     mode: !auth?.data.user ? 'onSubmit' : 'onChange',
     criteriaMode: 'all'
   })
@@ -88,7 +86,7 @@ export default function ResetPasswordForm() {
         reset()
         setTimeout(() => {
           router.push('/')
-        }, 3000)
+        }, 2500)
       }
     } else {
       const errorCode = await resetPasswordRequest(data['email'])
@@ -105,7 +103,7 @@ export default function ResetPasswordForm() {
   }
 
   return (
-    <div className='flex flex-col gap-4 max-w-2xl m-auto'>
+    <div className='flex flex-col gap-4 max-w-2xl m-auto mt-6'>
       <Card className='mx-4 px-4'>
         <CardHeader className='px-0'>
           <CardTitle>{t('resetTitle')}</CardTitle>
