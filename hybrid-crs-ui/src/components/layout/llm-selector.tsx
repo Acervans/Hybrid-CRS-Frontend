@@ -99,12 +99,13 @@ export function LlmSelector() {
   const [progress, setProgress] = useState<number>(0)
   const progressGen = useRef<AsyncIterable<ProgressResponse> & { abort(): void }>(null)
   const { model, setModel } = useContext(ModelContext)
-  const { supabase } = useContext(SupabaseContext)
+  const { getAccessToken } = useContext(SupabaseContext)
   const { toast } = useToast()
 
   const refreshModels = async () => {
-    return ollamaList((await supabase.auth.getSession()).data?.session?.access_token).then(listResponse => {
+    return ollamaList(await getAccessToken()).then(listResponse => {
       setLocalModels(listResponse.models)
+      return listResponse.models
     })
   }
 
@@ -118,7 +119,7 @@ export function LlmSelector() {
       return
     }
     setPulling(true)
-    ollamaPull(search, (await supabase.auth.getSession()).data?.session?.access_token)
+    ollamaPull(search, await getAccessToken())
       .then(async response => {
         if (!response) {
           return
@@ -149,19 +150,21 @@ export function LlmSelector() {
       })
   }
 
-  const deleteModel = async (model: string) => {
-    return ollamaDelete(model, (await supabase.auth.getSession()).data?.session?.access_token)
+  const deleteModel = async (modelToDelete: string) => {
+    return ollamaDelete(modelToDelete, await getAccessToken())
       .then(() => {
         toast({
-          title: t('deleteSuccess', { model: model })
+          title: t('deleteSuccess', { model: modelToDelete })
         })
-        refreshModels()
+        refreshModels().then(models => {
+          if (modelToDelete === model && models.length) setModel(models[0].name)
+        })
       })
       .catch(err => {
         console.error(err)
         toast({
           variant: 'destructive',
-          title: t('deleteFail', { model: model })
+          title: t('deleteFail', { model: modelToDelete })
         })
       })
   }

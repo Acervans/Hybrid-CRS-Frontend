@@ -19,13 +19,13 @@ export function NavAuth() {
       <SidebarGroupLabel>{t('auth')}</SidebarGroupLabel>
       <SidebarMenu>
         <Link href={`/login${nextParam}`}>
-          <SidebarMenuButton tooltip={t('login')} className={path.startsWith('/login') ? 'bg-sidebar-accent' : ''}>
+          <SidebarMenuButton tooltip={t('login')} className={path === '/login' ? 'bg-sidebar-accent' : ''}>
             <LogIn />
             <span>{t('login')}</span>
           </SidebarMenuButton>
         </Link>
         <Link href={`/signup${nextParam}`}>
-          <SidebarMenuButton tooltip={t('signup')} className={path.startsWith('/signup') ? 'bg-sidebar-accent' : ''}>
+          <SidebarMenuButton tooltip={t('signup')} className={path === '/signup' ? 'bg-sidebar-accent' : ''}>
             <UserPlus />
             <span>{t('signup')}</span>
           </SidebarMenuButton>

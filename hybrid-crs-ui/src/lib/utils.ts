@@ -75,3 +75,134 @@ export function rgbaToHex(colorStr: string, forceRemoveAlpha: boolean = false) {
     )
   }
 }
+
+/**
+ * Convert data to CSV format
+ */
+export function convertToCSV(
+  columns: { name: string; role: string; id: string }[],
+  data: string[][],
+  options: { includeAllColumns?: boolean; includeHeaders?: boolean } = {}
+): string {
+  const { includeAllColumns = false, includeHeaders = false } = options
+
+  // Filter columns if not including all (exclude "extra" role columns unless includeAllColumns is true)
+  const filteredColumns = includeAllColumns ? columns : columns.filter(col => col.role !== 'extra')
+
+  // Get indices of columns to include
+  const columnIndices = filteredColumns.map(col => columns.findIndex(c => c.id === col.id))
+
+  // Create CSV rows
+  const rows: string[] = []
+
+  // Add headers if requested
+  if (includeHeaders) {
+    const headerRow = filteredColumns.map(col => `"${col.name}"`).join(',')
+    rows.push(headerRow)
+  }
+
+  // Add data rows
+  data.forEach(row => {
+    const filteredRow = columnIndices.map(index => {
+      const value = index < row.length ? row[index] : ''
+      // Escape quotes and wrap in quotes if contains comma or quotes
+      const needsQuotes = value.includes(',') || value.includes('"')
+      return needsQuotes ? `"${value.replace(/"/g, '""')}"` : value
+    })
+    rows.push(filteredRow.join(','))
+  })
+
+  return rows.join('\n')
+}
+
+/**
+ * Download data as a CSV file
+ */
+export function downloadCSV(csvContent: string, filename: string): void {
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+
+  link.setAttribute('href', url)
+  link.setAttribute('download', filename)
+  link.style.visibility = 'hidden'
+
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
+/**
+ * Get lines from text up to limit
+ */
+export const getLines = (text: string, newlineStr: string | RegExp, limit?: number) => {
+  return text.split(newlineStr, limit).filter(line => line.trim())
+}
+
+/**
+ * Parse CSV with detected format
+ */
+export const parseCSVWithFormat = (
+  text: string,
+  delimiter: string,
+  quoteChar: string,
+  newlineStr: string,
+  limit?: number
+): string[][] => {
+  const lines = getLines(text, newlineStr, limit)
+
+  try {
+    return lines.map(line => {
+      const result = []
+      let inQuote = false
+      let currentValue = ''
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i]
+
+        if (char === quoteChar && (i === 0 || line[i - 1] !== '\\')) {
+          inQuote = !inQuote
+        } else if (char === delimiter && !inQuote) {
+          result.push(currentValue.trim())
+          currentValue = ''
+        } else {
+          currentValue += char
+        }
+      }
+
+      result.push(currentValue.trim())
+      return result
+    })
+  } catch {
+    return parseCSVSimple(text, limit)
+  }
+}
+
+/**
+ * Simple CSV parser as fallback
+ */
+export const parseCSVSimple = (text: string, limit?: number): string[][] => {
+  const lines = getLines(text, /\r\n|\n/, limit)
+
+  return lines.map(line => {
+    const result = []
+    let inQuote = false
+    let currentValue = ''
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i]
+
+      if (char === '"' && (i === 0 || line[i - 1] !== '\\')) {
+        inQuote = !inQuote
+      } else if (char === ',' && !inQuote) {
+        result.push(currentValue.trim())
+        currentValue = ''
+      } else {
+        currentValue += char
+      }
+    }
+
+    result.push(currentValue.trim())
+    return result
+  })
+}

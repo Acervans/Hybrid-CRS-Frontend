@@ -1,38 +1,42 @@
-import { type FC, useContext, useEffect } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { type FC } from 'react'
 
-import {
-  ThreadListItemPrimitive,
-  ThreadListPrimitive,
-  useThreadListItem,
-  useThreadListItemRuntime,
-  useThreadRuntime
-} from '@assistant-ui/react'
+import { ThreadListItemPrimitive, ThreadListPrimitive, useThreadListItem } from '@assistant-ui/react'
 import { ArchiveIcon, PlusIcon, Trash } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import { Button } from '@/components/ui/button'
-import { ModelContext } from '@/contexts/modelContext'
-import { SupabaseContext } from '@/contexts/supabaseContext'
-import { generateTitle } from '@/lib/api'
 
 export const ThreadList: FC = () => {
+  const t = useTranslations('Chat.Thread')
+
   return (
     <ThreadListPrimitive.Root className='flex flex-col items-stretch gap-1.5'>
-      <ThreadListNew />
+      <ThreadListNew t={t} />
       <ThreadListItems />
     </ThreadListPrimitive.Root>
   )
 }
 
-const ThreadListNew: FC = () => {
+const ThreadListNew: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
+  const router = useRouter()
+  const path = usePathname()
+  const searchParams = useSearchParams()
+
   return (
     <ThreadListPrimitive.New asChild>
       <Button
         className='data-[active]:bg-sidebar-accent hover:bg-sidebar-accent flex items-center justify-start gap-1 rounded-lg px-2.5 py-2 text-start'
         variant='ghost'
+        onClick={async () => {
+          if (searchParams.has('chatId')) {
+            router.replace(path)
+          }
+        }}
       >
         <PlusIcon />
-        New Thread
+        {t('newThread')}
       </Button>
     </ThreadListPrimitive.New>
   )
@@ -43,57 +47,42 @@ const ThreadListItems: FC = () => {
 }
 
 const ThreadListItem: FC = () => {
-  const { model } = useContext(ModelContext)
-  const { supabase } = useContext(SupabaseContext)
-  const threadRuntime = useThreadRuntime()
+  const t = useTranslations('Chat.Thread')
+  const router = useRouter()
+  const path = usePathname()
   const threadListItem = useThreadListItem()
-  const threadListItemRuntime = useThreadListItemRuntime()
-
-  useEffect(() => {
-    if (!threadListItem.title) {
-      setTimeout(async () => {
-        const firstMessage = threadRuntime.getMesssageByIndex(0).getState().content[0]
-
-        if (firstMessage.type === 'text') {
-          generateTitle(model, firstMessage.text, (await supabase.auth.getSession()).data?.session?.access_token)
-            .then(title => {
-              threadListItemRuntime.rename(title)
-            })
-            .catch(() => {
-              threadListItemRuntime.rename('New Chat') // TODO translate
-            })
-        }
-      }, 1500)
-    }
-    // eslint-disable-next-line
-  }, [threadListItem.id])
 
   return (
     <ThreadListItemPrimitive.Root className='data-[active]:bg-sidebar-accent hover:bg-sidebar-accent focus-visible:bg-sidebar-accent focus-visible:ring-ring flex items-center gap-2 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2'>
-      <ThreadListItemPrimitive.Trigger className='flex-grow px-3 py-2 text-start'>
-        <ThreadListItemTitle />
+      <ThreadListItemPrimitive.Trigger
+        className='flex-grow px-3 py-2 text-start'
+        onClick={async () => {
+          router.replace(`${path}?chatId=${encodeURIComponent(threadListItem.remoteId!)}`)
+        }}
+      >
+        <ThreadListItemTitle t={t} />
       </ThreadListItemPrimitive.Trigger>
-      <ThreadListItemDelete />
+      <ThreadListItemDelete t={t} />
     </ThreadListItemPrimitive.Root>
   )
 }
 
-const ThreadListItemTitle: FC = () => {
+const ThreadListItemTitle: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <p className='text-sm'>
-      <ThreadListItemPrimitive.Title fallback='New Chat' />
+      <ThreadListItemPrimitive.Title fallback={t('newChat')} />
     </p>
   )
 }
 
 // eslint-disable-next-line
-const ThreadListItemArchive: FC = () => {
+const ThreadListItemArchive: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <ThreadListItemPrimitive.Archive asChild>
       <TooltipIconButton
         className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
         variant='ghost'
-        tooltip='Archive thread'
+        tooltip={t('archiveThread')}
       >
         <ArchiveIcon />
       </TooltipIconButton>
@@ -101,13 +90,22 @@ const ThreadListItemArchive: FC = () => {
   )
 }
 
-const ThreadListItemDelete: FC = () => {
+const ThreadListItemDelete: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
+  const router = useRouter()
+  const path = usePathname()
+  const searchParams = useSearchParams()
+
   return (
     <ThreadListItemPrimitive.Delete asChild>
       <TooltipIconButton
         className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
         variant='ghost'
-        tooltip='Delete thread'
+        tooltip={t('deleteThread')}
+        onClick={() => {
+          if (searchParams.has('chatId')) {
+            router.replace(path)
+          }
+        }}
       >
         <Trash />
       </TooltipIconButton>

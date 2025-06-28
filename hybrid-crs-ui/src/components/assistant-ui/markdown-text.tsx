@@ -10,6 +10,7 @@ import {
 } from '@assistant-ui/react-markdown'
 import '@assistant-ui/react-markdown/styles/dot.css'
 import { CheckIcon, CopyIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import rehypeKatex from 'rehype-katex'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -32,6 +33,7 @@ const MarkdownTextImpl = () => {
 export const MarkdownText = memo(MarkdownTextImpl)
 
 const CodeHeader: FC<CodeHeaderProps> = ({ language, code }) => {
+  const t = useTranslations('Chat')
   const { isCopied, copyToClipboard } = useCopyToClipboard()
   const onCopy = () => {
     if (!code || isCopied) return
@@ -41,7 +43,7 @@ const CodeHeader: FC<CodeHeaderProps> = ({ language, code }) => {
   return (
     <div className='flex items-center justify-between gap-4 rounded-t-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white'>
       <span className='lowercase [&>span]:text-xs'>{language}</span>
-      <TooltipIconButton tooltip='Copy' onClick={onCopy}>
+      <TooltipIconButton tooltip={t('copy')} onClick={onCopy}>
         {!isCopied && <CopyIcon />}
         {isCopied && <CheckIcon />}
       </TooltipIconButton>

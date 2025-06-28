@@ -4,6 +4,7 @@ import { type FC, PropsWithChildren, useEffect, useState } from 'react'
 
 import { AttachmentPrimitive, ComposerPrimitive, MessagePrimitive, useAttachment } from '@assistant-ui/react'
 import { CircleXIcon, FileIcon, PaperclipIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useShallow } from 'zustand/shallow'
 
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
@@ -70,7 +71,7 @@ const AttachmentPreview: FC<AttachmentPreviewProps> = ({ src }) => {
   )
 }
 
-const AttachmentPreviewDialog: FC<PropsWithChildren> = ({ children }) => {
+const AttachmentPreviewDialog: FC<PropsWithChildren<{ title: string }>> = ({ children, title }) => {
   const src = useAttachmentSrc()
 
   if (!src) return children
@@ -80,8 +81,8 @@ const AttachmentPreviewDialog: FC<PropsWithChildren> = ({ children }) => {
       <DialogTrigger className='hover:bg-accent/50 cursor-pointer transition-colors' asChild>
         {children}
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className='w-auto min-w-80 max-w-[75dvh]'>
-        <DialogTitle className='aui-sr-only'>Image Attachment Preview</DialogTitle>
+      <DialogContent className='w-auto min-w-80 max-w-[75dvh]'>
+        <DialogTitle className='aui-sr-only'>{title}</DialogTitle>
         <AttachmentPreview src={src} />
       </DialogContent>
     </Dialog>
@@ -102,16 +103,17 @@ const AttachmentThumb: FC = () => {
 }
 
 const AttachmentUI: FC = () => {
+  const t = useTranslations('Chat.Attachment')
   const canRemove = useAttachment(a => a.source !== 'message')
   const typeLabel = useAttachment(a => {
     const type = a.type
     switch (type) {
       case 'image':
-        return 'Image'
+        return t('image')
       case 'document':
-        return 'Document'
+        return t('document')
       case 'file':
-        return 'File'
+        return t('file')
       default:
         const _exhaustiveCheck: never = type
         throw new Error(`Unknown attachment type: ${_exhaustiveCheck}`)
@@ -122,7 +124,7 @@ const AttachmentUI: FC = () => {
   return (
     <Tooltip open={open} onOpenChange={setOpen}>
       <AttachmentPrimitive.Root className='relative mt-3'>
-        <AttachmentPreviewDialog>
+        <AttachmentPreviewDialog title={t('imagePreviewTitle')}>
           <TooltipTrigger
             asChild
             onTouchStart={e => {
@@ -144,7 +146,7 @@ const AttachmentUI: FC = () => {
             </div>
           </TooltipTrigger>
         </AttachmentPreviewDialog>
-        {canRemove && <AttachmentRemove />}
+        {canRemove && <AttachmentRemove t={t} />}
       </AttachmentPrimitive.Root>
       <TooltipContent side='top'>
         <AttachmentPrimitive.Name />
@@ -153,11 +155,11 @@ const AttachmentUI: FC = () => {
   )
 }
 
-const AttachmentRemove: FC = () => {
+const AttachmentRemove: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <AttachmentPrimitive.Remove asChild>
       <TooltipIconButton
-        tooltip='Remove file'
+        tooltip={t('removeFile')}
         className='text-muted-foreground [&>svg]:bg-background absolute -right-3 -top-3 size-6 [&>svg]:size-4 [&>svg]:rounded-full'
         side='top'
       >
@@ -183,12 +185,12 @@ export const ComposerAttachments: FC = () => {
   )
 }
 
-export const ComposerAddAttachment: FC = () => {
+export const ComposerAddAttachment: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <ComposerPrimitive.AddAttachment asChild>
       <TooltipIconButton
         className='my-2.5 size-8 p-2 transition-opacity ease-in'
-        tooltip='Add Attachment'
+        tooltip={t('addAttachment')}
         variant='ghost'
       >
         <PaperclipIcon />

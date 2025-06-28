@@ -5,6 +5,7 @@ import { forwardRef, useEffect } from 'react'
 
 import { Command as CommandPrimitive, useCommandState } from 'cmdk'
 import { X } from 'lucide-react'
+import { useDebounce } from 'use-debounce'
 
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
@@ -82,20 +83,6 @@ export interface MultipleSelectorRef {
   input: HTMLInputElement
   focus: () => void
   reset: () => void
-}
-
-export function useDebounce<T>(value: T, delay?: number): T {
-  const [debouncedValue, setDebouncedValue] = React.useState<T>(value)
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay || 500)
-
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [value, delay])
-
-  return debouncedValue
 }
 
 function transToGroupOption(options: Option[], groupBy?: string) {
@@ -201,7 +188,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
     const [selected, setSelected] = React.useState<Option[]>(value || [])
     const [options, setOptions] = React.useState<GroupOption>(transToGroupOption(arrayDefaultOptions, groupBy))
     const [inputValue, setInputValue] = React.useState('')
-    const debouncedSearchTerm = useDebounce(inputValue, delay || 500)
+    const [debouncedSearchTerm] = useDebounce(inputValue, delay || 500)
 
     React.useImperativeHandle(
       ref,

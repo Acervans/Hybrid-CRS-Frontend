@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export default function WebSearch(props: HTMLAttributes<HTMLElement>): ReactElement {
   const { ...rest } = props
-  const t = useTranslations('Chats')
+  const t = useTranslations('Chat')
 
   const [loaded, setLoaded] = useState<boolean>(false)
   const [active, setActive] = useState<boolean>(false)

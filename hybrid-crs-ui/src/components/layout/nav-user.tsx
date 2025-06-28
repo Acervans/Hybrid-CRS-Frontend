@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import { User } from '@supabase/supabase-js'
-import { ChevronRight, LogOut, RotateCcwKey } from 'lucide-react'
+import { ChevronRight, KeyRound, LogOut, RotateCcwKey } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { AccessKeyModal } from '@/components/layout/access-key-modal'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -25,7 +26,8 @@ export function NavUser() {
   const t = useTranslations('Auth')
   const { isMobile } = useSidebar()
   const { toast } = useToast()
-  const { auth, setAuth, supabase } = useContext(SupabaseContext)
+  const { auth, setAuth, supabase, getAccessToken } = useContext(SupabaseContext)
+  const [keyModalOpen, setKeyModalOpen] = useState(false)
   const user = auth?.data?.user as User
 
   const logout = async () => {
@@ -34,7 +36,7 @@ export function NavUser() {
     if (error) {
       toast({
         variant: 'destructive',
-        title: 'Error during Log out'
+        title: t('logoutErrorTitle')
       })
     } else {
       setAuth(undefined)
@@ -42,34 +44,20 @@ export function NavUser() {
     }
   }
 
+  const getAccessKey = async () => {
+    return (await getAccessToken()) || '*'.repeat(16)
+  }
+
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size='lg'
-              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
-            >
-              <Avatar className='h-8 w-8 rounded-lg'>
-                <AvatarImage src={user?.user_metadata.picture} alt={user?.user_metadata.full_name} />
-                <AvatarFallback className='rounded-lg'>{user?.user_metadata.full_name[0]}</AvatarFallback>
-              </Avatar>
-              <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-semibold'>{user?.user_metadata.full_name}</span>
-                <span className='truncate text-xs'>{user?.email}</span>
-              </div>
-              <ChevronRight className='ml-auto size-4' />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
-            side={isMobile ? 'bottom' : 'right'}
-            align='end'
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className='p-0 font-normal'>
-              <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+    <>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton
+                size='lg'
+                className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+              >
                 <Avatar className='h-8 w-8 rounded-lg'>
                   <AvatarImage src={user?.user_metadata.picture} alt={user?.user_metadata.full_name} />
                   <AvatarFallback className='rounded-lg'>{user?.user_metadata.full_name[0]}</AvatarFallback>
@@ -78,22 +66,47 @@ export function NavUser() {
                   <span className='truncate font-semibold'>{user?.user_metadata.full_name}</span>
                   <span className='truncate text-xs'>{user?.email}</span>
                 </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <Link href='/reset-password'>
-              <DropdownMenuItem>
-                <RotateCcwKey />
-                {t('resetPassword')}
+                <ChevronRight className='ml-auto size-4' />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
+              side={isMobile ? 'bottom' : 'right'}
+              align='end'
+              sideOffset={4}
+            >
+              <DropdownMenuLabel className='p-0 font-normal'>
+                <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+                  <Avatar className='h-8 w-8 rounded-lg'>
+                    <AvatarImage src={user?.user_metadata.picture} alt={user?.user_metadata.full_name} />
+                    <AvatarFallback className='rounded-lg'>{user?.user_metadata.full_name[0]}</AvatarFallback>
+                  </Avatar>
+                  <div className='grid flex-1 text-left text-sm leading-tight'>
+                    <span className='truncate font-semibold'>{user?.user_metadata.full_name}</span>
+                    <span className='truncate text-xs'>{user?.email}</span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <Link href='/reset-password'>
+                <DropdownMenuItem>
+                  <RotateCcwKey />
+                  {t('resetPassword')}
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem onClick={() => setKeyModalOpen(true)}>
+                <KeyRound />
+                {t('viewAccessKey')}
               </DropdownMenuItem>
-            </Link>
-            <DropdownMenuItem onClick={logout}>
-              <LogOut />
-              {t('logout')}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+              <DropdownMenuItem onClick={logout}>
+                <LogOut />
+                {t('logout')}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+      <AccessKeyModal open={keyModalOpen} onOpenChange={setKeyModalOpen} getAccessKey={getAccessKey} />
+    </>
   )
 }

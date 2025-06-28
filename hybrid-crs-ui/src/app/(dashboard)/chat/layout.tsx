@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-export default function ChatsLayout({
+export default function ChatLayout({
   children
 }: Readonly<{
   children: React.ReactNode

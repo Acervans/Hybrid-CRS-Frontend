@@ -27,7 +27,7 @@ import { useSidebar } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useIsMobile } from '@/hooks/use-mobile'
 
-const excludePaths: Set<string> = new Set<string>(['chats'])
+const excludePaths: Set<string> = new Set<string>(['chat'])
 
 export function AppHeader(props: { authenticated: boolean }) {
   const { authenticated } = props
@@ -46,7 +46,7 @@ export function AppHeader(props: { authenticated: boolean }) {
 
   return (
     <header
-      className={`flex sticky top-0 z-50 h-12 md:h-16 bg-background/30 backdrop-blur-md shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12`}
+      className={`flex sticky top-0 z-5 h-12 md:h-16 bg-background/30 backdrop-blur-md shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12`}
     >
       <div className='flex w-full justify-between gap-2 px-4'>
         <div className='flex items-center'>
@@ -68,11 +68,16 @@ export function AppHeader(props: { authenticated: boolean }) {
                   {pathNames.map((link, index) => {
                     const href = `/${pathNames.slice(0, index + 1).join('/')}`
                     const isLast = path === href
-                    const title = t(link)
+                    const title =
+                      isLast &&
+                      pathNames[pathNames.length - 2] === 'chat' &&
+                      pathNames[pathNames.length - 1] !== 'open-chat'
+                        ? t('agent-chat')
+                        : t(link)
 
                     return (
                       <React.Fragment key={link}>
-                        <BreadcrumbItem className='capitalize'>
+                        <BreadcrumbItem>
                           {!isLast && !excludePaths.has(link) ? (
                             <BreadcrumbLink asChild>
                               <Link href={href}>{title}</Link>

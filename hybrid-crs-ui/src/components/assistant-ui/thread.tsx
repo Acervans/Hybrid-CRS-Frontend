@@ -4,6 +4,7 @@ import {
   ActionBarPrimitive,
   BranchPickerPrimitive,
   ComposerPrimitive,
+  ErrorPrimitive,
   MessagePrimitive,
   ThreadPrimitive,
   useComposerRuntime
@@ -32,14 +33,14 @@ import { ThreadFollowupSuggestions } from '@/components/assistant-ui/follow-up-s
 import { MarkdownText } from '@/components/assistant-ui/markdown-text'
 import { ToolFallback } from '@/components/assistant-ui/tool-fallback'
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
-import VoiceChat from '@/components/chats/voice-chat'
-import WebSearch from '@/components/chats/web-search'
+import VoiceChat from '@/components/chat/voice-chat'
+import WebSearch from '@/components/chat/web-search'
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 export const Thread: FC = () => {
-  const t = useTranslations('Chats') as (key?: string) => string
+  const t = useTranslations('Chat')
 
   return (
     <ThreadPrimitive.Root className='bg-background box-border h-[calc(100dvh-3rem)] md:h-[calc(100dvh-4rem)] group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-[calc(100dvh-3rem)]'>
@@ -61,7 +62,7 @@ export const Thread: FC = () => {
         </ThreadPrimitive.If>
 
         <div className='max-w-aui-thread sticky bottom-0 mt-3 flex w-full flex-col items-center justify-end rounded-t-lg bg-inherit pb-4'>
-          <ThreadScrollToBottom />
+          <ThreadScrollToBottom t={t} />
           <Composer t={t} />
         </div>
       </ThreadPrimitive.Viewport>
@@ -69,11 +70,11 @@ export const Thread: FC = () => {
   )
 }
 
-const ThreadScrollToBottom: FC = () => {
+const ThreadScrollToBottom: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <ThreadPrimitive.ScrollToBottom asChild>
       <TooltipIconButton
-        tooltip='Scroll to bottom'
+        tooltip={t('scrollBottom')}
         variant='outline'
         className='absolute -top-8 rounded-full disabled:invisible'
       >
@@ -83,7 +84,7 @@ const ThreadScrollToBottom: FC = () => {
   )
 }
 
-const ThreadWelcome: FC<{ t: (key?: string) => string }> = props => {
+const ThreadWelcome: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <ThreadPrimitive.Empty>
       <div className='max-w-aui-thread flex w-full flex-grow flex-col'>
@@ -91,49 +92,49 @@ const ThreadWelcome: FC<{ t: (key?: string) => string }> = props => {
           <Avatar>
             <Bot className='mx-auto my-auto' />
           </Avatar>
-          <p className='mt-4 font-medium'>{props.t('welcome')}</p>
+          <p className='mt-4 font-medium'>{t('welcome')}</p>
         </div>
-        <ThreadWelcomeSuggestions />
+        <ThreadWelcomeSuggestions t={t} />
       </div>
     </ThreadPrimitive.Empty>
   )
 }
 
-const ThreadWelcomeSuggestions: FC = () => {
+const ThreadWelcomeSuggestions: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <div className='mt-3 flex w-full items-stretch justify-center gap-4'>
       <ThreadPrimitive.Suggestion
         className='hover:bg-muted/80 flex max-w-sm grow basis-0 flex-col items-center justify-center rounded-lg border p-3 transition-colors ease-in'
-        prompt='Give me ideas for a trip'
+        prompt={t('suggestionA')}
         method='replace'
         autoSend
       >
-        <span className='line-clamp-2 text-ellipsis text-sm font-semibold'>Give me ideas for a trip</span>
+        <span className='line-clamp-2 text-ellipsis text-sm font-semibold'>{t('suggestionA')}</span>
       </ThreadPrimitive.Suggestion>
       <ThreadPrimitive.Suggestion
         className='hover:bg-muted/80 flex max-w-sm grow basis-0 flex-col items-center justify-center rounded-lg border p-3 transition-colors ease-in'
-        prompt='What are the healthiest foods?'
+        prompt={t('suggestionB')}
         method='replace'
         autoSend
       >
-        <span className='line-clamp-2 text-ellipsis text-sm font-semibold'>What are the healthiest foods?</span>
+        <span className='line-clamp-2 text-ellipsis text-sm font-semibold'>{t('suggestionB')}</span>
       </ThreadPrimitive.Suggestion>
     </div>
   )
 }
 
-const Composer: FC<{ t: (key?: string) => string }> = props => {
+const Composer: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   const composerRuntime = useComposerRuntime()
 
   return (
     <ComposerPrimitive.Root className='focus-within:border-ring/20 flex w-full flex-wrap items-end rounded-lg border bg-inherit px-2.5 shadow-sm transition-colors ease-in'>
       <ComposerAttachments />
-      <ComposerAddAttachment />
+      <ComposerAddAttachment t={t} />
 
       <ComposerPrimitive.Input
         rows={1}
         autoFocus
-        placeholder={props.t('placeholder')}
+        placeholder={t('placeholder')}
         className='placeholder:text-muted-foreground max-h-40 w-0 grow resize-none border-none bg-transparent pl-2 sm:px-2 py-4 text-sm outline-none focus:ring-0 disabled:cursor-not-allowed'
         onPaste={e => {
           const files = e.clipboardData.files
@@ -146,19 +147,23 @@ const Composer: FC<{ t: (key?: string) => string }> = props => {
           }
         }}
       />
-      <ComposerAction />
+      <ComposerAction t={t} />
     </ComposerPrimitive.Root>
   )
 }
 
-const ComposerAction: FC = () => {
+const ComposerAction: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <div className='flex flex-row gap-1'>
       <VoiceChat className='my-2.5 size-8 p-2 transition-opacity ease-in' />
       <WebSearch className='my-2.5 mr-2 size-8 p-2 transition-opacity ease-in' />
       <ThreadPrimitive.If running={false}>
         <ComposerPrimitive.Send asChild>
-          <TooltipIconButton tooltip='Send' variant='default' className='my-2.5 size-8 p-2 transition-opacity ease-in'>
+          <TooltipIconButton
+            tooltip={t('send')}
+            variant='default'
+            className='my-2.5 size-8 p-2 transition-opacity ease-in'
+          >
             <SendHorizontalIcon />
           </TooltipIconButton>
         </ComposerPrimitive.Send>
@@ -166,7 +171,7 @@ const ComposerAction: FC = () => {
       <ThreadPrimitive.If running>
         <ComposerPrimitive.Cancel asChild>
           <TooltipIconButton
-            tooltip='Cancel'
+            tooltip={t('cancel')}
             variant='default'
             className='my-2.5 size-8 p-2 transition-opacity ease-in'
           >
@@ -179,21 +184,23 @@ const ComposerAction: FC = () => {
 }
 
 const UserMessage: FC = () => {
+  const t = useTranslations('Chat')
+
   return (
     <MessagePrimitive.Root className='grid auto-rows-auto grid-cols-[minmax(72px,1fr)_auto] gap-y-2 [&>*]:col-start-2 max-w-aui-thread w-full py-4'>
       <UserMessageAttachments />
       <div className='grid w-auto ml-auto'>
-        <UserActionBar />
+        <UserActionBar t={t} />
         <div className='bg-muted text-foreground max-w-[calc(var(--thread-max-width)*0.8)] break-words rounded-3xl px-5 py-2.5 col-start-2 row-start-2'>
           <MessagePrimitive.Content />
         </div>
       </div>
-      <BranchPicker className='col-span-full col-start-1 row-start-3 -mr-1 justify-end' />
+      <BranchPicker t={t} className='col-span-full col-start-1 row-start-3 -mr-1 justify-end' />
     </MessagePrimitive.Root>
   )
 }
 
-const UserActionBar: FC = () => {
+const UserActionBar: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <ActionBarPrimitive.Root
       hideWhenRunning
@@ -201,7 +208,7 @@ const UserActionBar: FC = () => {
       className='flex flex-col items-end col-start-1 row-start-2 mr-3 mt-2.5'
     >
       <ActionBarPrimitive.Edit asChild>
-        <TooltipIconButton tooltip='Edit'>
+        <TooltipIconButton tooltip={t('edit')}>
           <PencilIcon />
         </TooltipIconButton>
       </ActionBarPrimitive.Edit>
@@ -210,16 +217,18 @@ const UserActionBar: FC = () => {
 }
 
 const EditComposer: FC = () => {
+  const t = useTranslations('Chat')
+
   return (
     <ComposerPrimitive.Root className='bg-muted max-w-aui-thread my-4 flex w-full flex-col gap-2 rounded-xl'>
       <ComposerPrimitive.Input className='text-foreground flex h-8 w-full resize-none bg-transparent p-4 pb-0 outline-none' />
 
       <div className='mx-3 mb-3 flex items-center justify-center gap-2 self-end'>
         <ComposerPrimitive.Cancel asChild>
-          <Button variant='ghost'>Cancel</Button>
+          <Button variant='ghost'>{t('cancel')}</Button>
         </ComposerPrimitive.Cancel>
         <ComposerPrimitive.Send asChild>
-          <Button>Send</Button>
+          <Button>{t('send')}</Button>
         </ComposerPrimitive.Send>
       </div>
     </ComposerPrimitive.Root>
@@ -227,6 +236,8 @@ const EditComposer: FC = () => {
 }
 
 const AssistantMessage: FC = () => {
+  const t = useTranslations('Chat')
+
   return (
     <MessagePrimitive.Root className='grid grid-cols-[auto_auto_1fr] grid-rows-[auto_1fr] max-w-aui-thread relative w-full py-4 px-2 sm:px-0'>
       <Avatar className='col-start-1 row-span-full row-start-1 mr-4 bg-muted hidden sm:flex'>
@@ -235,16 +246,27 @@ const AssistantMessage: FC = () => {
 
       <div className='text-foreground max-w-[calc(var(--thread-max-width)*0.8)] break-words leading-7 col-span-2 col-start-2 row-start-1 my-1.5'>
         <MessagePrimitive.Content components={{ Text: MarkdownText, tools: { Fallback: ToolFallback } }} />
+        <MessageError />
       </div>
 
-      <AssistantActionBar />
+      <AssistantActionBar t={t} />
 
-      <BranchPicker className='col-start-2 row-start-2 -ml-2 mr-2' />
+      <BranchPicker t={t} className='col-start-2 row-start-2 -ml-2 mr-2' />
     </MessagePrimitive.Root>
   )
 }
 
-const AssistantActionBar: FC = () => {
+const MessageError: FC = () => {
+  return (
+    <MessagePrimitive.Error>
+      <ErrorPrimitive.Root className='border-destructive bg-destructive/10 dark:bg-destructive/5 text-red-500 mt-2 rounded-md border p-3 text-sm'>
+        <ErrorPrimitive.Message className='line-clamp-2' />
+      </ErrorPrimitive.Root>
+    </MessagePrimitive.Error>
+  )
+}
+
+const AssistantActionBar: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <ActionBarPrimitive.Root
       hideWhenRunning
@@ -254,20 +276,20 @@ const AssistantActionBar: FC = () => {
     >
       <MessagePrimitive.If speaking={false}>
         <ActionBarPrimitive.Speak asChild>
-          <TooltipIconButton tooltip='Read aloud'>
+          <TooltipIconButton tooltip={t('readAloud')}>
             <AudioLinesIcon />
           </TooltipIconButton>
         </ActionBarPrimitive.Speak>
       </MessagePrimitive.If>
       <MessagePrimitive.If speaking>
         <ActionBarPrimitive.StopSpeaking asChild>
-          <TooltipIconButton tooltip='Stop'>
+          <TooltipIconButton tooltip={t('stop')}>
             <StopCircleIcon />
           </TooltipIconButton>
         </ActionBarPrimitive.StopSpeaking>
       </MessagePrimitive.If>
       <ActionBarPrimitive.Copy asChild>
-        <TooltipIconButton tooltip='Copy'>
+        <TooltipIconButton tooltip={t('copy')}>
           <MessagePrimitive.If copied>
             <CheckIcon />
           </MessagePrimitive.If>
@@ -277,7 +299,7 @@ const AssistantActionBar: FC = () => {
         </TooltipIconButton>
       </ActionBarPrimitive.Copy>
       <ActionBarPrimitive.Reload asChild>
-        <TooltipIconButton tooltip='Refresh'>
+        <TooltipIconButton tooltip={t('refresh')}>
           <RefreshCwIcon />
         </TooltipIconButton>
       </ActionBarPrimitive.Reload>
@@ -285,7 +307,11 @@ const AssistantActionBar: FC = () => {
   )
 }
 
-const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({ className, ...rest }) => {
+const BranchPicker: FC<BranchPickerPrimitive.Root.Props & { t: ReturnType<typeof useTranslations> }> = ({
+  className,
+  t,
+  ...rest
+}) => {
   return (
     <BranchPickerPrimitive.Root
       hideWhenSingleBranch
@@ -293,7 +319,7 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({ className, ...rest
       {...rest}
     >
       <BranchPickerPrimitive.Previous asChild>
-        <TooltipIconButton tooltip='Previous'>
+        <TooltipIconButton tooltip={t('previous')}>
           <ChevronLeftIcon />
         </TooltipIconButton>
       </BranchPickerPrimitive.Previous>
@@ -301,7 +327,7 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({ className, ...rest
         <BranchPickerPrimitive.Number /> / <BranchPickerPrimitive.Count />
       </span>
       <BranchPickerPrimitive.Next asChild>
-        <TooltipIconButton tooltip='Next'>
+        <TooltipIconButton tooltip={t('next')}>
           <ChevronRightIcon />
         </TooltipIconButton>
       </BranchPickerPrimitive.Next>

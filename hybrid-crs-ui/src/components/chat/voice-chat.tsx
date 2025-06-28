@@ -25,7 +25,7 @@ const localeToSpeechLang: Record<Locale, string> = {
 
 export default function VoiceChat(props: HTMLAttributes<HTMLElement>): ReactElement {
   const { ...rest } = props
-  const t = useTranslations('Chats')
+  const t = useTranslations('Chat')
 
   const { locale } = useContext(LocaleContext)
   const [loaded, setLoaded] = useState<boolean>(false)

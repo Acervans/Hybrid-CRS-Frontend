@@ -1,22 +1,29 @@
-import { useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
+
+import { useEffectOnce } from 'react-use'
+
+import { SupabaseContext } from '@/contexts/supabaseContext'
 
 export default function GoogleButton() {
   const [isLoaded, setIsLoaded] = useState(false)
+  const { auth } = useContext(SupabaseContext)
 
-  useEffect(() => {
-    const script = document.createElement('script')
+  useEffectOnce(() => {
+    if (!auth?.data.user) {
+      const script = document.createElement('script')
 
-    script.src = 'https://accounts.google.com/gsi/client'
-    script.async = true
-    script.defer = true
+      script.src = 'https://accounts.google.com/gsi/client'
+      script.async = true
+      script.defer = true
 
-    document.body.appendChild(script)
+      document.body.appendChild(script)
 
-    setIsLoaded(true)
-    return () => {
-      document.body.removeChild(script)
+      setIsLoaded(true)
+      return () => {
+        document.body.removeChild(script)
+      }
     }
-  }, [])
+  })
 
   return (
     <>

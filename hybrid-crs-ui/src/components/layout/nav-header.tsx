@@ -8,7 +8,7 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui
 
 export function NavHeader() {
   return (
-    <SidebarMenu>
+    <SidebarMenu className='group-data-[collapsible=icon]:mb-2'>
       <SidebarMenuItem>
         <Link href='/'>
           <SidebarMenuButton size='lg' className='hover:bg-inherit active:bg-inherit'>

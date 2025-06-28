@@ -2,9 +2,9 @@
 
 import { useRouter } from 'next/navigation'
 import type { Dispatch, ReactNode, SetStateAction } from 'react'
-import { createContext, useState } from 'react'
+import { createContext, useCallback, useMemo, useState } from 'react'
 
-import { UserResponse } from '@supabase/supabase-js'
+import { SupabaseClient, UserResponse } from '@supabase/supabase-js'
 import { useEffectOnce } from 'react-use'
 
 import { createClient } from '@/lib/supabase/client'
@@ -12,50 +12,61 @@ import { createClient } from '@/lib/supabase/client'
 interface SupabaseContextType {
   auth: UserResponse | undefined
   setAuth: Dispatch<SetStateAction<UserResponse | undefined>>
-  supabase: ReturnType<typeof createClient>
+  supabase: SupabaseClient
   handleLogin: (redirectTo?: string) => Promise<void>
+  refreshAuth: () => Promise<UserResponse | void>
+  getAccessToken: () => Promise<string | undefined>
 }
 
 export const SupabaseContext = createContext<SupabaseContextType>({
   auth: undefined,
   setAuth: () => {},
   supabase: createClient(),
-  handleLogin: async () => {}
+  handleLogin: async () => {},
+  refreshAuth: async () => {},
+  getAccessToken: async () => undefined
 })
 
 // SupabaseProvider component to provide auth configuration, supabase client
 export const SupabaseProvider = ({ children }: { children: ReactNode }) => {
   const [auth, setAuth] = useState<UserResponse | undefined>()
-  const supabase = createClient()
+  const supabase = useMemo(() => createClient(), [])
   const router = useRouter()
 
-  const refreshAuth = async () => {
-    return supabase.auth.getUser().then(authRes => {
-      setAuth(authRes)
-      return authRes
-    })
-  }
+  const refreshAuth = useCallback(async () => {
+    const authRes = await supabase.auth.getUser()
 
-  const handleLogin = async (redirectTo?: string) => {
-    refreshAuth().then(authRes => {
+    setAuth(authRes)
+    return authRes
+  }, [supabase])
+
+  const handleLogin = useCallback(
+    async (redirectTo?: string) => {
+      const authRes = await refreshAuth()
       if (authRes.data.user) router.push(redirectTo || '/')
-    })
-  }
+    },
+    [refreshAuth, router]
+  )
+
+  const getAccessToken = useCallback(async () => {
+    return (await supabase.auth.getSession()).data.session?.access_token
+  }, [supabase])
 
   useEffectOnce(() => {
     refreshAuth()
   })
 
-  return (
-    <SupabaseContext.Provider
-      value={{
-        auth,
-        setAuth,
-        supabase,
-        handleLogin
-      }}
-    >
-      {children}
-    </SupabaseContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      auth,
+      setAuth,
+      supabase,
+      handleLogin,
+      refreshAuth,
+      getAccessToken
+    }),
+    [auth, handleLogin, refreshAuth, getAccessToken, supabase]
   )
+
+  return <SupabaseContext.Provider value={contextValue}>{children}</SupabaseContext.Provider>
 }

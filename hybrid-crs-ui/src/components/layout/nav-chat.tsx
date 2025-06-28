@@ -1,9 +1,10 @@
 'use client'
 
-import { usePathname, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
-import { Bot, ChevronRight } from 'lucide-react'
+import { ChevronRight, MessagesSquare } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { ThreadList } from '@/components/assistant-ui/thread-list'
@@ -17,34 +18,36 @@ import {
   SidebarMenuSub
 } from '@/components/ui/sidebar'
 
-export function NavChats() {
-  const router = useRouter()
-  const pathname = usePathname()
+export function NavChat() {
   const t = useTranslations('Titles')
-  const inOpenChat = pathname === '/chats/open-chat'
+  const path = usePathname()
+  const inOpenChat = path === '/chat/open-chat'
   const [open, setOpen] = useState<boolean>(inOpenChat)
+
+  const openChatButton = (
+    <SidebarMenuButton
+      tooltip={t('open-chat')}
+      onClick={() => {
+        if (!inOpenChat) {
+          setOpen(true)
+        } else {
+          setOpen(!open)
+        }
+      }}
+    >
+      <MessagesSquare />
+      <span>{t('open-chat')}</span>
+      <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
+    </SidebarMenuButton>
+  )
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{t('chats')}</SidebarGroupLabel>
+      <SidebarGroupLabel>{t('chat')}</SidebarGroupLabel>
       <SidebarMenu>
         <Collapsible asChild open={inOpenChat && open} className='group/collapsible'>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip={t('open-chat')}
-              onClick={() => {
-                if (!inOpenChat) {
-                  router.push('/chats/open-chat')
-                  setOpen(true)
-                } else {
-                  setOpen(!open)
-                }
-              }}
-            >
-              <Bot />
-              <span>{t('open-chat')}</span>
-              <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
-            </SidebarMenuButton>
+            {!inOpenChat ? <Link href='/chat/open-chat'>{openChatButton}</Link> : openChatButton}
             {inOpenChat && (
               <CollapsibleContent>
                 <SidebarMenuSub className='mr-0 mt-1'>
