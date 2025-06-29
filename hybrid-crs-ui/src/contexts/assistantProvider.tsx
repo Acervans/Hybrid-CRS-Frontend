@@ -382,6 +382,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
               agent.userId,
               agent.agentName,
               agent.datasetName,
+              agent.description,
               abortSignal,
               await getAccessToken()
             )

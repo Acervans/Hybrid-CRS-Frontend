@@ -8,7 +8,7 @@ import { apiUrl } from '@/constants'
 import { convertToCoreMessages } from '@/lib/utils'
 
 const commonHeaders: Record<string, string> = {
-  skip_zrok_insterstitial: '1'
+  skip_zrok_interstitial: '1'
 }
 
 const commonJsonHeaders: Record<string, string> = {
@@ -29,9 +29,7 @@ const defaultModel = 'qwen2.5:3b'
 
 function authOllamaProvider(accessToken: string | undefined) {
   return createOllama({
-    // baseURL: `http://192.168.1.142:8000/ollama/api`,
     baseURL: `${apiUrl}/ollama/api`,
-    // baseURL: `http://localhost:11434/api`,
     headers: {
       ...commonHeaders,
       Authorization: `Bearer ${accessToken}`
@@ -362,6 +360,7 @@ export async function startWorkflow(
   userId: string,
   agentName: string,
   datasetName: string,
+  description: string,
   abortSignal: AbortSignal,
   accessToken: string | undefined
 ) {
@@ -376,7 +375,8 @@ export async function startWorkflow(
       agent_id: agentId,
       user_id: userId,
       agent_name: agentName,
-      dataset_name: datasetName
+      dataset_name: datasetName,
+      description: description
     })
   })
 }
