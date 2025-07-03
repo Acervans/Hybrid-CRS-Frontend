@@ -87,3 +87,9 @@ interface AgentConfiguration {
   description: string
   public: boolean
 }
+
+interface WorkflowEvent {
+  event: string
+  message: object | string
+  done: boolean
+}

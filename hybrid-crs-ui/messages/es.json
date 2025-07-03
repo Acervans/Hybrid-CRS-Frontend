@@ -62,13 +62,18 @@
         "stop": "Detener",
         "scrollBottom": "Ir al final",
         "addAttachment": "Adjuntar Archivo",
+        "Agent": {
+            "welcomeAgent": "¡Hola, soy {agentName}! ¿Buscas recomendaciones?",
+            "startAgent": "Comenzar Conversación",
+            "agent": "Agente"
+        },
         "Thread": {
             "somethingWentWrong": "Algo salió mal",
             "tryAgain": "Por favor, inténtalo de nuevo",
             "newChat": "Nuevo Chat",
             "newThread": "Nuevo Chat",
-            "archiveThread": "Archivar Chat",
-            "deleteThread": "Eliminar Chat"
+            "archiveThread": "Archivar chat",
+            "deleteThread": "Eliminar chat"
         },
         "Attachment": {
             "imagePreviewTitle": "Imagen Adjunta",
@@ -420,6 +425,8 @@
         "agentSessionsDescription": "Selecciona una sesión para cargarla en el chat. Las sesiones son de solo lectura.",
         "sessionTitle": "Sesión {num}",
         "noAccess": "No tienes acceso a este agente.",
-        "processing": "Este agente todavía se está procesando. Inténtalo de nuevo más tarde."
+        "processing": "Este agente todavía se está procesando. Inténtalo de nuevo más tarde.",
+        "noPreviousSessions": "No existen sesiones previas",
+        "deleteSession": "Eliminar sesión"
     }
 }

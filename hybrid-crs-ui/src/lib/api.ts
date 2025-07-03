@@ -394,3 +394,27 @@ export async function sendUserResponse(workflowId: string, userResponse: string,
     })
   }).then(checkJsonResponse)
 }
+
+export async function addUserInteractions(
+  userId: string,
+  itemIds: string[],
+  ratings: number[],
+  agentId: number,
+  datasetName: string,
+  accessToken: string | undefined
+) {
+  return fetch(`${apiUrl}/add-user-interactions`, {
+    method: 'POST',
+    headers: {
+      ...commonJsonHeaders,
+      Authorization: `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({
+      user_id: userId,
+      item_ids: itemIds,
+      ratings: ratings,
+      agent_id: agentId,
+      dataset_name: datasetName
+    })
+  }).then(checkJsonResponse)
+}

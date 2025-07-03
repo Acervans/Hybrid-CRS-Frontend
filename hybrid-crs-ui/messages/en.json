@@ -62,6 +62,11 @@
         "stop": "Stop",
         "scrollBottom": "Scroll to bottom",
         "addAttachment": "Add Attachment",
+        "Agent": {
+            "welcomeAgent": "Hi, I'm {agentName}! Want some recommendations?",
+            "startAgent": "Begin Conversation",
+            "agent": "Agent"
+        },
         "Thread": {
             "somethingWentWrong": "Something went wrong",
             "tryAgain": "Please try again",
@@ -420,6 +425,8 @@
         "agentSessionsDescription": "Select a session to load it into the chat. Sessions are read-only.",
         "sessionTitle": "Session {num}",
         "noAccess": "You don't have access to this agent.",
-        "processing": "This agent is still being processed. Please try again later."
+        "processing": "This agent is still being processed. Please try again later.",
+        "noPreviousSessions": "No prevous sessions found",
+        "deleteSession": "Delete session"
     }
 }

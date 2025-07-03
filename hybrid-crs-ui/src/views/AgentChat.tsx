@@ -2,10 +2,12 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import type React from 'react'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
+import { useAssistantRuntime, useThreadList, useThreadListItem } from '@assistant-ui/react'
 import { CirclePlus, Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useEffectOnce } from 'react-use'
 
 import { AgentHeader } from '@/components/agent-chat/agent-header'
 import { AgentThread } from '@/components/agent-chat/agent-thread'
@@ -13,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { ModelContext } from '@/contexts/modelContext'
 import { SupabaseContext } from '@/contexts/supabaseContext'
+import { WorkflowContext } from '@/contexts/workflowContext'
 import { getRecommenderAgentById } from '@/lib/supabase/client'
 
 export function AgentChat({ agentId }: { agentId: string | number }) {
@@ -22,10 +25,22 @@ export function AgentChat({ agentId }: { agentId: string | number }) {
   const sessionId = useSearchParams().get('sessionId')
   const { supabase } = useContext(SupabaseContext)
   const { agent, setAgent } = useContext(ModelContext)
+  const { workflowId } = useContext(WorkflowContext)
   const [noAccess, setNoAccess] = useState<boolean>(false)
+  const [loaded, setLoaded] = useState<boolean>(false)
+  const threads = useThreadList(m => m.threads)
+  const assistantRuntime = useAssistantRuntime()
+  const threadListItem = useThreadListItem()
+
+  const archived = useMemo(
+    () => sessionId !== null && (threadListItem.status === 'archived' || workflowId === null),
+    [sessionId, threadListItem.status, workflowId]
+  )
 
   useEffect(() => {
-    getRecommenderAgentById(supabase, Number(agentId)).then(agent => {
+    const updateAgent = async () => {
+      const agent = await getRecommenderAgentById(supabase, Number(agentId))
+
       if (agent) {
         setAgent(agent)
 
@@ -33,10 +48,38 @@ export function AgentChat({ agentId }: { agentId: string | number }) {
       } else {
         setNoAccess(true)
       }
-    })
+    }
+    updateAgent()
 
     return () => setAgent(undefined)
   }, [agentId, setAgent, supabase])
+
+  useEffect(() => {
+    if (loaded) return
+
+    const shouldInitThread = async () => {
+      if (sessionId !== null) {
+        if (threads.length > 0) {
+          await assistantRuntime.threads
+            .switchToThread(sessionId)
+            .catch(() => {
+              router.replace(path)
+            })
+            .finally(() => setLoaded(true))
+        }
+      } else {
+        assistantRuntime.threads.switchToNewThread().finally(() => setLoaded(true))
+      }
+    }
+
+    shouldInitThread()
+  }, [sessionId, threads, assistantRuntime.threads, loaded, path, router])
+
+  useEffectOnce(() => {
+    if (threadListItem.remoteId && threadListItem.remoteId !== sessionId) {
+      router.replace(`${path}?sessionId=${encodeURIComponent(threadListItem.remoteId)}`)
+    }
+  })
 
   if (!agent && !noAccess) {
     return (
@@ -66,11 +109,14 @@ export function AgentChat({ agentId }: { agentId: string | number }) {
     <TooltipProvider>
       <div className='flex flex-col h-full'>
         <AgentHeader agent={agent!} />
-        <AgentThread archived={!!sessionId} />
+        <AgentThread archived={archived} />
 
-        {sessionId && (
+        {archived && (
           <Button
-            onClick={() => router.replace(path)}
+            onClick={() => {
+              assistantRuntime.threads.switchToNewThread()
+              router.replace(path)
+            }}
             className='fixed rounded-xl text-md p-5! sm:bottom-6 sm:right-6 sm:left-auto sm:translate-x-0 bottom-3 left-1/2 -translate-x-1/2 shadow-lg hover:shadow-xl transition-shadow z-50'
           >
             <CirclePlus className='size-5' />

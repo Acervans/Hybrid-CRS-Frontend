@@ -1,9 +1,11 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useContext, useEffect, useState } from 'react'
 
-import { CirclePlus, History } from 'lucide-react'
+import { useAssistantRuntime } from '@assistant-ui/react'
+import { CirclePlus, History, Trash } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 
+import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
@@ -20,6 +22,7 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
   const { supabase } = useContext(SupabaseContext)
   const [open, setOpen] = useState<boolean>(false)
   const [sessions, setSessions] = useState<ChatHistory[]>([])
+  const assistantRuntime = useAssistantRuntime()
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString(locale, {
@@ -37,62 +40,36 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
   }
 
   useEffect(() => {
-    const SESSIONS = [
-      {
-        userId: '1',
-        chatId: 1,
-        createdAt: Date.now(),
-        chatTitle: undefined,
-        agentId: 1,
-        archived: false
-      },
-      {
-        userId: '1',
-        chatId: 2,
-        createdAt: Date.now(),
-        chatTitle: undefined,
-        agentId: 1,
-        archived: false
-      },
-      {
-        userId: '1',
-        chatId: 3,
-        createdAt: Date.now(),
-        chatTitle: undefined,
-        agentId: 1,
-        archived: false
-      },
-      {
-        userId: '1',
-        chatId: 4,
-        createdAt: Date.now(),
-        chatTitle: undefined,
-        agentId: 1,
-        archived: false
-      },
-      {
-        userId: '1',
-        chatId: 5,
-        createdAt: Date.now() - 100000,
-        chatTitle: undefined,
-        agentId: 1,
-        archived: false
-      }
-    ]
-
     const loadSessions = async () => {
       const chats = await getChatHistoriesByAgentId(supabase, agent.agentId)
 
-      console.log(chats)
-      // setSessions(chats.toSorted((a, b) => b.createdAt - a.createdAt))
-      setSessions(SESSIONS.toSorted((a, b) => b.createdAt - a.createdAt))
+      setSessions(chats)
     }
 
+    const channel = supabase
+      .channel('table-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'ChatHistory',
+          filter: `agent_id=eq.${agent.agentId}`
+        },
+        () => {
+          loadSessions()
+        }
+      )
+      .subscribe()
+
     loadSessions()
+
+    return () => {
+      channel.unsubscribe()
+    }
   }, [agent.agentId, supabase])
 
   useEffect(() => {
-    console.log(agent)
     setOpen(false)
   }, [sessionId, agent])
 
@@ -115,6 +92,7 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
               className={`h-8 hover:bg-muted active:bg-muted rounded-none ${!sessionId ? 'bg-muted' : ''}`}
               onClick={() => {
                 if (sessionId !== null) {
+                  assistantRuntime.threads.switchToNewThread()
                   router.replace(path)
                 } else {
                   setOpen(false)
@@ -125,27 +103,56 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
               <span>{t('newSession')}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          {sessions.map((session, index) => (
-            <SidebarMenuItem key={session.chatId}>
-              <SidebarMenuButton
-                className={`h-12 hover:bg-muted active:bg-muted rounded-none ${sessionId === String(session.chatId) ? 'bg-muted' : ''}`}
-                onClick={() => {
-                  if (sessionId !== String(session.chatId)) {
-                    router.replace(`${path}?sessionId=${encodeURIComponent(session.chatId)}`)
-                  } else {
-                    setOpen(false)
-                  }
-                }}
-              >
-                <div className='flex flex-col gap-1'>
-                  <span className=''>{t('sessionTitle', { num: sessions.length - index })}</span>
-                  <span className='text-muted-foreground text-xs'>
-                    {formatDate(session.createdAt)}, {formatTime(session.createdAt)}
-                  </span>
-                </div>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          {sessions.length ? (
+            sessions.map((session, index) => (
+              <SidebarMenuItem key={session.chatId}>
+                <SidebarMenuButton
+                  asChild
+                  className={`h-12 cursor-pointer hover:bg-muted active:bg-muted rounded-none ${sessionId === String(session.chatId) ? 'bg-muted' : ''}`}
+                  onClick={() => {
+                    if (sessionId !== String(session.chatId)) {
+                      assistantRuntime.threads.switchToThread(String(session.chatId))
+                      router.replace(`${path}?sessionId=${encodeURIComponent(session.chatId)}`)
+                    } else {
+                      setOpen(false)
+                    }
+                  }}
+                >
+                  <div className='flex items-center'>
+                    <div className='flex flex-grow flex-col gap-1'>
+                      <span className=''>{t('sessionTitle', { num: sessions.length - index })}</span>
+                      <span className='text-muted-foreground text-xs'>
+                        {formatDate(session.createdAt)}, {formatTime(session.createdAt)}
+                      </span>
+                    </div>
+                    <TooltipIconButton
+                      className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
+                      variant='ghost'
+                      tooltip={t('deleteSession')}
+                      onClick={e => {
+                        e.stopPropagation()
+                        assistantRuntime.threads
+                          .getItemById(String(session.chatId))
+                          .delete()
+                          .then(() => {
+                            setSessions(sessions.filter(s => s.chatId !== session.chatId))
+                            if (sessionId === String(session.chatId)) {
+                              router.replace(path)
+                            }
+                          })
+                      }}
+                    >
+                      <Trash />
+                    </TooltipIconButton>
+                  </div>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))
+          ) : (
+            <span className='text-sm text-muted-foreground self-center italic mt-8 px-4'>
+              {t('noPreviousSessions')}
+            </span>
+          )}
         </SidebarMenu>
       </SheetContent>
     </Sheet>

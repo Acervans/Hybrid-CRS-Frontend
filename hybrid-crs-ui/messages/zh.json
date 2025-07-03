@@ -62,6 +62,11 @@
         "stop": "停止",
         "scrollBottom": "滚动到底部",
         "addAttachment": "添加附件",
+        "Agent": {
+            "welcomeAgent": "嗨，我是 {agentName}！想要一些推荐吗？",
+            "startAgent": "开始对话",
+            "agent": "代理"
+        },
         "Thread": {
             "somethingWentWrong": "出了点问题",
             "tryAgain": "请重试",
@@ -420,6 +425,8 @@
         "agentSessionsDescription": "选择一个会话将其加载到聊天中。",
         "sessionTitle": "会话{num}",
         "noAccess": "您没有访问该推荐代理的权限。",
-        "processing": "该推荐代理仍在处理中，请稍后再试。"
+        "processing": "该推荐代理仍在处理中，请稍后再试。",
+        "noPreviousSessions": "未找到以前的会话",
+        "deleteSession": "删除会话"
     }
 }

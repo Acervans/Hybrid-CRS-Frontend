@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useSearchParams } from 'next/navigation'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 
 import { CredentialResponse } from 'google-one-tap'
 import { useLocale } from 'next-intl'
@@ -14,6 +14,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { AssistantProvider } from '@/contexts/assistantProvider'
 import { ModelContext } from '@/contexts/modelContext'
 import { SupabaseContext } from '@/contexts/supabaseContext'
+import { WorkflowProvider } from '@/contexts/workflowContext'
 import { handleLoginWithGoogle } from '@/lib/actions'
 
 export default function DashboardLayout({
@@ -32,18 +33,26 @@ export default function DashboardLayout({
       handleLoginWithGoogle(response).then(() => handleLogin(next || '/'))
   }, [next, handleLogin])
 
-  // Full rerender on locale/model change when in /chat
-  const chatKey = path.startsWith('/chat') ? `${locale}-${model}-` : ''
-  const assistantKey = `${chatKey}${!!auth?.data?.user}`
+  // Full rerender on locale/model/agent change when in /chat
+  const assistantKey = useMemo(() => {
+    if (path.startsWith('/chat')) {
+      const agentId = path === '/chat/open-chat' ? '' : `${path.split('/').at(-1)}-`
+
+      return `${locale}-${model}-${agentId}${!!auth?.data?.user}`
+    }
+    return String(!!auth?.data?.user)
+  }, [path, locale, model, auth?.data?.user])
 
   return (
-    <AssistantProvider key={assistantKey}>
-      <AppSidebar authenticated={!!auth?.data?.user} />
-      <SidebarInset className='min-w-0'>
-        <AppHeader authenticated={!!auth?.data?.user} />
-        <div className='h-full'>{children}</div>
-      </SidebarInset>
-      <Toaster />
-    </AssistantProvider>
+    <WorkflowProvider>
+      <AssistantProvider key={assistantKey}>
+        <AppSidebar authenticated={!!auth?.data?.user} />
+        <SidebarInset className='min-w-0'>
+          <AppHeader authenticated={!!auth?.data?.user} />
+          <div className='h-full'>{children}</div>
+        </SidebarInset>
+        <Toaster />
+      </AssistantProvider>
+    </WorkflowProvider>
   )
 }

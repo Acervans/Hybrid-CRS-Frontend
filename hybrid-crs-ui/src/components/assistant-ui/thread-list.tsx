@@ -94,6 +94,7 @@ const ThreadListItemDelete: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t
   const router = useRouter()
   const path = usePathname()
   const searchParams = useSearchParams()
+  const threadListItem = useThreadListItem()
 
   return (
     <ThreadListItemPrimitive.Delete asChild>
@@ -102,7 +103,7 @@ const ThreadListItemDelete: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t
         variant='ghost'
         tooltip={t('deleteThread')}
         onClick={() => {
-          if (searchParams.has('chatId')) {
+          if (searchParams.get('chatId') === threadListItem.remoteId) {
             router.replace(path)
           }
         }}

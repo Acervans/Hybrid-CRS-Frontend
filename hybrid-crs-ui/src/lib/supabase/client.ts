@@ -198,14 +198,6 @@ export async function updateRecommenderAgent(client: SupabaseClient, agent: Reco
   }
 }
 
-export async function incrementRecommenderAgentNewSessions(client: SupabaseClient, agentId: number): Promise<void> {
-  const { error } = await client.rpc('increment_new_sessions', { agent_id: agentId })
-
-  if (error) {
-    throw new Error(error.message)
-  }
-}
-
 export async function setRecommenderAgentProcessed(
   client: SupabaseClient,
   agentId: number,
@@ -225,30 +217,12 @@ export async function setRecommenderAgentProcessed(
 
 // ChatHistory
 
-export async function getChatHistoryById(client: SupabaseClient, chatId: number): Promise<ChatHistory | null> {
-  const { data, error } = await client.from('ChatHistory').select('*').eq('chat_id', chatId).single()
-
-  if (error && error.code !== 'PGRST116') {
-    throw new Error(error.message)
-  }
-
-  return data
-    ? {
-        userId: data.user_id,
-        chatId: data.chat_id,
-        createdAt: new Date(data.created_at).getTime(),
-        chatTitle: data.chat_title,
-        agentId: data.agent_id,
-        archived: data.archived
-      }
-    : null
-}
-
 export async function getChatHistoriesByAgentId(client: SupabaseClient, agentId: number): Promise<ChatHistory[]> {
   const { data, error } = await client
     .from('ChatHistory')
     .select('*')
     .eq('agent_id', agentId)
+    .eq('archived', true)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -304,7 +278,7 @@ export async function addChatHistory(
       user_id: userId,
       chat_title: chatTitle,
       agent_id: agentId || null,
-      archived: agentId !== undefined
+      archived: false
     })
     .select()
     .single()

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { useCallback, useContext, useMemo, useRef } from 'react'
 
@@ -29,6 +29,7 @@ import { WebSpeechSynthesisAdapter } from '@/components/chat/web-speech-adapter'
 import { LocaleContext } from '@/contexts/localeContext'
 import { ModelContext } from '@/contexts/modelContext'
 import { SupabaseContext } from '@/contexts/supabaseContext'
+import { WorkflowContext } from '@/contexts/workflowContext'
 import { useToast } from '@/hooks/use-toast'
 import {
   appendChatHistory,
@@ -37,15 +38,14 @@ import {
   generateTitle,
   getChatHistory,
   pdfToText,
-  startWorkflow,
+  sendUserResponse,
   streamChat
 } from '@/lib/api'
 import {
   addChatHistory,
   deleteChatHistoryById,
+  getChatHistoriesByAgentId,
   getChatHistoriesByUserId,
-  getChatHistoryById,
-  incrementRecommenderAgentNewSessions,
   updateChatHistory
 } from '@/lib/supabase/client'
 
@@ -95,13 +95,16 @@ export class PdfTextAttachmentAdapter implements AttachmentAdapter {
 export const AssistantProvider = ({ children }: { children: ReactNode }) => {
   const t = useTranslations('Chat.Thread')
   const router = useRouter()
+  const path = usePathname()
   const { locale } = useContext(LocaleContext)
   const { model, agent } = useContext(ModelContext)
   const { getAccessToken, supabase } = useContext(SupabaseContext)
+  const { startWorkflow, setOnData, workflowId, abortWorkflow } = useContext(WorkflowContext)
   const { toast } = useToast()
   const threadTitlesMapRef = useRef<Record<string, string>>({})
 
-  const isAgentChat = agent !== undefined
+  const isAgentChat = path.startsWith('/chat') && path !== '/chat/open-chat'
+  const agentId = isAgentChat ? Number(path.split('/').at(-1)) : undefined
 
   const errorToast = useCallback(() => {
     toast({
@@ -119,11 +122,13 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
 
         if (!userId) return { threads: [] }
 
-        const chats = await getChatHistoriesByUserId(supabase, userId, true)
+        const chats = isAgentChat
+          ? await getChatHistoriesByAgentId(supabase, agentId as number)
+          : await getChatHistoriesByUserId(supabase, userId, true)
 
         return {
           threads: chats.map(t => ({
-            status: t.archived ? 'archived' : 'regular',
+            status: 'regular',
             remoteId: String(t.chatId),
             title: t.chatTitle
           }))
@@ -136,14 +141,8 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
         if (!userId) return { remoteId: '', externalId: undefined }
 
         // Check if agent chat or open chat
-        const agentId = isAgentChat ? agent.agentId : undefined
         const chat = await addChatHistory(supabase, userId, t('newChat'), agentId)
         const accessToken = await getAccessToken()
-
-        // Update new sessions
-        if (agentId !== undefined) {
-          await incrementRecommenderAgentNewSessions(supabase, agentId)
-        }
 
         try {
           // Create Chat History in backend using ID from Supabase
@@ -153,10 +152,8 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
           await deleteChatHistoryById(supabase, chat.chatId)
         }
 
-        // Update URL with chatId
-        if (!isAgentChat) {
-          router.replace(`/chat/open-chat?chatId=${encodeURIComponent(chat.chatId)}`)
-        }
+        // Update URL with sessionId/chatId
+        router.replace(`${path}?${isAgentChat ? 'sessionId' : 'chatId'}=${encodeURIComponent(chat.chatId)}`)
 
         return { remoteId: String(chat.chatId), externalId: undefined }
       },
@@ -248,9 +245,8 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
               if (!remoteId || !userId) return { messages: [] }
 
               const accessToken = await getAccessToken()
-              const chatHistory = await getChatHistoryById(supabase, Number(remoteId)).catch(() => null)
 
-              if (chatHistory) {
+              try {
                 const messages: ThreadMessage[] = await getChatHistory(Number(remoteId), userId, accessToken)
 
                 return {
@@ -263,7 +259,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
                     parentId: messages[i - 1]?.id ?? null
                   }))
                 }
-              } else {
+              } catch {
                 return {
                   messages: []
                 }
@@ -318,7 +314,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
         return <RuntimeAdapterProvider adapters={adapters}>{children}</RuntimeAdapterProvider>
       }
     }),
-    [supabase, getAccessToken, router, isAgentChat, agent, model, t]
+    [supabase, getAccessToken, router, isAgentChat, agentId, model, path, t]
   )
 
   const useRuntimeHook = () => {
@@ -375,39 +371,75 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
     // Chat Model Adapter for Agent Chat
     const AgentChatAdapter: ChatModelAdapter | undefined = isAgentChat
       ? {
-          // eslint-disable-next-line
-          async *run({ messages, runConfig, abortSignal, context }) {
-            const response = await startWorkflow(
-              agent.agentId,
-              agent.userId,
-              agent.agentName,
-              agent.datasetName,
-              agent.description,
-              abortSignal,
-              await getAccessToken()
-            )
+          async *run({ messages, abortSignal }) {
+            const queue: WorkflowEvent[] = []
+            let resolveNext: (() => void) | null = null
 
-            if (!response.body) return
-
-            const reader = response.body.getReader()
-            const textDecoder = new TextDecoder()
-            let fullText = ''
-
-            while (true) {
-              const { value, done } = await reader.read()
-
-              if (done) {
-                break
+            setOnData(data => {
+              queue.push(data)
+              if (resolveNext) {
+                resolveNext()
+                resolveNext = null
               }
-              const content = JSON.parse(textDecoder.decode(value))
+            })
 
-              // TODO PARSE DEPENDING ON JSON TYPE, EVENT TYPE
-              // SINGLE, LONG-RUNNING STREAMING RESPONSE
-              if (content) {
-                fullText += content
-                yield {
-                  content: [{ type: 'text', text: fullText }]
+            if (abortSignal) {
+              abortSignal.addEventListener('abort', abortWorkflow)
+            }
+
+            if (!workflowId && agent) {
+              startWorkflow(
+                agent.agentId,
+                agent.userId,
+                agent.agentName,
+                agent.datasetName,
+                agent.description,
+                abortSignal,
+                await getAccessToken()
+              )
+            } else if (workflowId && messages.at(-1)?.role === 'user') {
+              // Send user response
+              const textContent = messages.at(-1)?.content.find(c => c.type === 'text')
+
+              if (textContent) {
+                sendUserResponse(workflowId, textContent.text, await getAccessToken())
+              }
+            }
+
+            try {
+              while (true) {
+                if (queue.length === 0) {
+                  await new Promise<void>(resolve => {
+                    resolveNext = resolve
+                  })
+                  continue
                 }
+
+                const data = queue.shift()
+
+                if (!data) continue
+
+                const parseWorkflowEvent = (response: WorkflowEvent) => {
+                  const text = JSON.stringify(response)
+
+                  // TODO PARSE DEPENDING ON JSON TYPE, EVENT TYPE
+                  console.log(text)
+                  return text
+                }
+
+                const text = parseWorkflowEvent(data)
+
+                if (text) {
+                  yield {
+                    content: [{ type: 'text', text }]
+                  }
+                }
+
+                if (data.done) break
+              }
+            } finally {
+              if (abortSignal) {
+                abortSignal.removeEventListener('abort', abortWorkflow)
               }
             }
           }

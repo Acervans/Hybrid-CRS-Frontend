@@ -92,7 +92,7 @@ const ThreadWelcome: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => 
           <Avatar>
             <Bot className='mx-auto my-auto' />
           </Avatar>
-          <p className='mt-4 font-medium'>{t('welcome')}</p>
+          <p className='mt-4 font-medium text-center'>{t('welcome')}</p>
         </div>
         <ThreadWelcomeSuggestions t={t} />
       </div>
