@@ -1,6 +1,7 @@
 'use client'
 
-import { HTMLAttributes, ReactElement, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { HTMLAttributes, ReactElement, useEffect, useState } from 'react'
 
 import { useComposerRuntime } from '@assistant-ui/react'
 import { Search, SearchCheck } from 'lucide-react'
@@ -13,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 export default function WebSearch(props: HTMLAttributes<HTMLElement>): ReactElement {
   const { ...rest } = props
   const t = useTranslations('Chat')
+  const params = useSearchParams()
 
   const [loaded, setLoaded] = useState<boolean>(false)
   const [active, setActive] = useState<boolean>(false)
@@ -21,6 +23,10 @@ export default function WebSearch(props: HTMLAttributes<HTMLElement>): ReactElem
   useEffectOnce(() => {
     setLoaded(true)
   })
+
+  useEffect(() => {
+    setActive(composerRuntime.getState().runConfig.custom?.webSearch === true)
+  }, [params, composerRuntime])
 
   return (
     <>
