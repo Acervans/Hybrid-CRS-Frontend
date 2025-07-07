@@ -71,7 +71,7 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
         const text = decoder.decode(value)
         const data: WorkflowEvent = JSON.parse(text)
 
-        if (data.event === 'workflowInit') {
+        if (data.event === 'WorkflowInit') {
           setWorkflowId(data.message as string)
         } else {
           onDataRef.current?.(data)

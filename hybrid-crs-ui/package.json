@@ -50,7 +50,7 @@
     "@types/google-one-tap": "^1.2.6",
     "@types/react-speech-recognition": "^3.9.6",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "ai": "^4.3.16",
+    "ai": "^4.3.17",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -85,7 +85,7 @@
     "upgrade": "^1.1.0",
     "use-debounce": "^10.0.5",
     "vaul": "^1.1.2",
-    "zod": "^3.25.74",
+    "zod": "^3.25.75",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
