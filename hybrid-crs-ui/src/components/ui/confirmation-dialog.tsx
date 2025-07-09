@@ -47,7 +47,9 @@ export function ConfirmationDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger disabled={disabled}>{trigger}</DialogTrigger>
+      <DialogTrigger asChild disabled={disabled}>
+        <div>{trigger}</div>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -55,7 +57,7 @@ export function ConfirmationDialog({
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant='secondary'>{cancelLabel}</Button>
+            <Button variant='outline'>{cancelLabel}</Button>
           </DialogClose>
           {confirmButton ? (
             <div onClick={handleConfirm}>{confirmButton}</div>

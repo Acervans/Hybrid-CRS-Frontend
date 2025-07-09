@@ -246,7 +246,7 @@ export function LlmSelector() {
                           <Button
                             title={t('deleteModel', { model: m.name })}
                             variant='ghost'
-                            className='h-auto w-auto !p-0'
+                            className='h-6 w-auto !p-0'
                           >
                             <Trash />
                           </Button>
