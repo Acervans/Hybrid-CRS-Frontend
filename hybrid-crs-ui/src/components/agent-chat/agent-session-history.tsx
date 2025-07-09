@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from 'next-intl'
 
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import { Button } from '@/components/ui/button'
+import { ConfirmationDialog } from '@/components/ui/confirmation-dialog'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { SupabaseContext } from '@/contexts/supabaseContext'
@@ -125,25 +126,34 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
                         {formatDate(session.createdAt)}, {formatTime(session.createdAt)}
                       </span>
                     </div>
-                    <TooltipIconButton
-                      className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
-                      variant='ghost'
-                      tooltip={t('deleteSession')}
-                      onClick={e => {
-                        e.stopPropagation()
-                        assistantRuntime.threads
-                          .getItemById(String(session.chatId))
-                          .delete()
-                          .then(() => {
-                            setSessions(sessions.filter(s => s.chatId !== session.chatId))
-                            if (sessionId === String(session.chatId)) {
-                              router.replace(path)
-                            }
-                          })
-                      }}
-                    >
-                      <Trash />
-                    </TooltipIconButton>
+                    <div onClick={e => e.stopPropagation()}>
+                      <ConfirmationDialog
+                        title={t('deleteSession')}
+                        description={t('deleteSessionDescription', { num: sessions.length - index })}
+                        cancelLabel={t('cancel')}
+                        variant='destructive'
+                        onConfirm={() => {
+                          assistantRuntime.threads
+                            .getItemById(String(session.chatId))
+                            .delete()
+                            .then(() => {
+                              setSessions(sessions.filter(s => s.chatId !== session.chatId))
+                              if (sessionId === String(session.chatId)) {
+                                router.replace(path)
+                              }
+                            })
+                        }}
+                        trigger={
+                          <TooltipIconButton
+                            className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
+                            variant='ghost'
+                            tooltip={t('deleteSession')}
+                          >
+                            <Trash />
+                          </TooltipIconButton>
+                        }
+                      />
+                    </div>
                   </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
