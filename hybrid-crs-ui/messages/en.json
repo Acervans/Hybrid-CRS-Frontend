@@ -65,15 +65,21 @@
         "Agent": {
             "welcomeAgent": "Hi, I'm {agentName}! Want some recommendations?",
             "startAgent": "Begin Conversation",
+            "sendFeedback": "Send Feedback",
+            "sendFeedbackTitle": "Feedback Sent",
+            "sendFeedbackDescription": "You sent feedback for {numItems} recommendations.",
             "agent": "Agent"
         },
         "Thread": {
             "somethingWentWrong": "Something went wrong",
-            "tryAgain": "Please try again",
+            "tryAgain": "Please try again.",
             "newChat": "New Chat",
             "newThread": "New Thread",
             "archiveThread": "Archive thread",
-            "deleteThread": "Delete thread"
+            "deleteThread": "Delete Thread",
+            "deleteThreadDescription": "Are you sure you want to delete \"{threadTitle}\"?",
+            "delete": "Delete",
+            "cancel": "Cancel"
         },
         "Attachment": {
             "imagePreviewTitle": "Image Attachment Preview",
@@ -427,6 +433,19 @@
         "noAccess": "You don't have access to this agent.",
         "processing": "This agent is still being processed. Please try again later.",
         "noPreviousSessions": "No prevous sessions found",
-        "deleteSession": "Delete session"
+        "deleteSession": "Delete Session",
+        "deleteSessionDescription": "Are you sure you want to delete Session {num}?",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "Recommendations": {
+            "title": "Rate this Recommendation",
+            "click": "Click to select a rating",
+            "clear": "Clear rating",
+            "explanation": "Why this recommendation",
+            "empty": "No recommendations available.",
+            "prevRating": "Your rating",
+            "clickTooltip": "Click to change rating",
+            "dragTooltip": "Drag to change rating"
+        }
     }
 }

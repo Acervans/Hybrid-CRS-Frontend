@@ -65,11 +65,14 @@
         "Agent": {
             "welcomeAgent": "嗨，我是 {agentName}！想要一些推荐吗？",
             "startAgent": "开始对话",
+            "sendFeedback": "发送反馈",
+            "sendFeedbackTitle": "反馈已发送",
+            "sendFeedbackDescription": "你已为 {numItems} 个推荐发送了反馈。",
             "agent": "代理"
         },
         "Thread": {
             "somethingWentWrong": "出了点问题",
-            "tryAgain": "请重试",
+            "tryAgain": "请重试。",
             "newChat": "新聊天",
             "newThread": "新对话",
             "archiveThread": "归档对话",
@@ -427,6 +430,19 @@
         "noAccess": "您没有访问该推荐代理的权限。",
         "processing": "该推荐代理仍在处理中，请稍后再试。",
         "noPreviousSessions": "未找到以前的会话",
-        "deleteSession": "删除会话"
+        "deleteSession": "删除会话",
+        "deleteSessionDescription": "你确定要删除第 {num} 个会话吗？",
+        "delete": "删除",
+        "cancel": "取消",
+        "Recommendations": {
+            "title": "为此推荐评分",
+            "click": "点击选择评分",
+            "clear": "清除评分",
+            "explanation": "推荐原因",
+            "empty": "暂无推荐内容。",
+            "prevRating": "你的评分",
+            "clickTooltip": "点击更改评分",
+            "dragTooltip": "拖动以更改评分"
+        }
     }
 }

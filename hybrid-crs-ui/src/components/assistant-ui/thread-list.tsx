@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import { Button } from '@/components/ui/button'
+import { ConfirmationDialog } from '@/components/ui/confirmation-dialog'
 
 export const ThreadList: FC = () => {
   const t = useTranslations('Chat.Thread')
@@ -97,19 +98,32 @@ const ThreadListItemDelete: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t
   const threadListItem = useThreadListItem()
 
   return (
-    <ThreadListItemPrimitive.Delete asChild>
-      <TooltipIconButton
-        className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
-        variant='ghost'
-        tooltip={t('deleteThread')}
-        onClick={() => {
-          if (searchParams.get('chatId') === threadListItem.remoteId) {
-            router.replace(path)
-          }
-        }}
-      >
-        <Trash />
-      </TooltipIconButton>
-    </ThreadListItemPrimitive.Delete>
+    <ConfirmationDialog
+      title={t('deleteThread')}
+      description={t('deleteThreadDescription', { threadTitle: threadListItem.title ?? t('newChat') })}
+      cancelLabel={t('cancel')}
+      variant='destructive'
+      confirmButton={
+        <ThreadListItemPrimitive.Delete asChild>
+          <Button variant='destructive' type='submit'>
+            {t('delete')}
+          </Button>
+        </ThreadListItemPrimitive.Delete>
+      }
+      trigger={
+        <TooltipIconButton
+          className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
+          variant='ghost'
+          tooltip={t('deleteThread')}
+          onClick={() => {
+            if (searchParams.get('chatId') === threadListItem.remoteId) {
+              router.replace(path)
+            }
+          }}
+        >
+          <Trash />
+        </TooltipIconButton>
+      }
+    />
   )
 }

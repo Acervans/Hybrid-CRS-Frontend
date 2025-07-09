@@ -3,16 +3,17 @@
 import type React from 'react'
 import { useState } from 'react'
 
+import { Button } from '@/components/ui/button'
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog'
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 
 interface ConfirmationDialogProps {
   title: string
@@ -20,8 +21,9 @@ interface ConfirmationDialogProps {
   confirmLabel?: string
   cancelLabel?: string
   variant?: 'default' | 'destructive'
-  onConfirm: () => void
+  onConfirm?: () => void
   trigger: React.ReactNode
+  confirmButton?: React.ReactNode
   disabled?: boolean
 }
 
@@ -33,33 +35,37 @@ export function ConfirmationDialog({
   variant = 'default',
   onConfirm,
   trigger,
+  confirmButton,
   disabled
 }: ConfirmationDialogProps) {
   const [open, setOpen] = useState(false)
 
   const handleConfirm = () => {
-    onConfirm()
+    onConfirm?.()
     setOpen(false)
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <div onClick={disabled ? undefined : () => setOpen(true)}>{trigger}</div>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setOpen(false)}>{cancelLabel}</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleConfirm}
-            className={variant === 'destructive' ? 'bg-destructive hover:bg-red-800 text-destructive-foreground' : ''}
-          >
-            {confirmLabel}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger disabled={disabled}>{trigger}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant='secondary'>{cancelLabel}</Button>
+          </DialogClose>
+          {confirmButton ? (
+            <div onClick={handleConfirm}>{confirmButton}</div>
+          ) : (
+            <Button variant={variant} type='submit' onClick={handleConfirm}>
+              {confirmLabel}
+            </Button>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

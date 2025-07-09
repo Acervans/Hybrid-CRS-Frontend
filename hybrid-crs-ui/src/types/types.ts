@@ -6,6 +6,8 @@ type Theme = 'dark' | 'light' | 'system'
 
 type Locale = 'en' | 'es' | 'de' | 'fr' | 'it' | 'pt' | 'zh'
 
+type FileType = 'users' | 'items' | 'interactions'
+
 type SearchParams = {
   [key: string]: string | string[] | undefined
 }
@@ -15,7 +17,11 @@ type PageProps<T extends { [key: string]: string } = {}> = {
   searchParams: Promise<SearchParams>
 }
 
-type FileType = 'users' | 'items' | 'interactions'
+type WorkflowEvent = {
+  event: string
+  message: Record<string, unknown> | RecommendationList | string
+  done: boolean
+}
 
 // Interfaces
 
@@ -88,8 +94,15 @@ interface AgentConfiguration {
   public: boolean
 }
 
-interface WorkflowEvent {
-  event: string
-  message: object | string
-  done: boolean
+interface Recommendation {
+  itemId: string
+  name: string
+  category?: string
+  falkordbRating?: number
+  [key: string]: string | number | undefined
+}
+
+interface RecommendationList {
+  recommendations: Recommendation[]
+  explanations: string[]
 }

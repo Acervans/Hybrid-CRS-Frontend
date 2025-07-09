@@ -18,14 +18,14 @@
         "pullPrompt": "Descargar",
         "pulling": "Descargando",
         "cancel": "Cancelar",
-        "delete": "Borrar",
-        "deleteModel": "Borrar {model}",
-        "deleteSuccess": "{model} borrado con éxito",
-        "deleteFail": "No se ha podido borrar {model}",
+        "delete": "Eliminar",
+        "deleteModel": "Eliminar {model}",
+        "deleteSuccess": "{model} eliminado con éxito",
+        "deleteFail": "No se ha podido eliminar {model}",
         "notFound": "El modelo solicitado no existe",
         "pullError": "Error durante la descarga del modelo",
         "pullSuccess": "{model} descargado con éxito",
-        "deleteDialogConfirm": "¿Seguro que quieres borrar \"{model}\"?",
+        "deleteDialogConfirm": "¿Seguro que quieres eliminar \"{model}\"?",
         "refreshModels": "Refrescar Modelos"
     },
     "Titles": {
@@ -65,15 +65,21 @@
         "Agent": {
             "welcomeAgent": "¡Hola, soy {agentName}! ¿Buscas recomendaciones?",
             "startAgent": "Comenzar Conversación",
+            "sendFeedback": "Enviar Valoraciones",
+            "sendFeedbackTitle": "Valoraciones Enviadas",
+            "sendFeedbackDescription": "Has valorado {numItems} recomendaciones.",
             "agent": "Agente"
         },
         "Thread": {
             "somethingWentWrong": "Algo salió mal",
-            "tryAgain": "Por favor, inténtalo de nuevo",
+            "tryAgain": "Por favor, inténtalo de nuevo.",
             "newChat": "Nuevo Chat",
             "newThread": "Nuevo Chat",
             "archiveThread": "Archivar chat",
-            "deleteThread": "Eliminar chat"
+            "deleteThread": "Eliminar Chat",
+            "deleteThreadDescription": "¿Seguro que quieres eliminar \"{threadTitle}\"?",
+            "delete": "Eliminar",
+            "cancel": "Cancelar"
         },
         "Attachment": {
             "imagePreviewTitle": "Imagen Adjunta",
@@ -427,6 +433,19 @@
         "noAccess": "No tienes acceso a este agente.",
         "processing": "Este agente todavía se está procesando. Inténtalo de nuevo más tarde.",
         "noPreviousSessions": "No existen sesiones previas",
-        "deleteSession": "Eliminar sesión"
+        "deleteSession": "Eliminar Sesión",
+        "deleteSessionDescription": "¿Seguro que quieres eliminar la Sesión {num}?",
+        "delete": "Eliminar",
+        "cancel": "Cancelar",
+        "Recommendations": {
+            "title": "Valora esta Recomendación",
+            "click": "Haz click para valorar",
+            "clear": "Deshacer valoración",
+            "explanation": "Por qué esta recomendación",
+            "empty": "No hay recomendaciones disponibles.",
+            "prevRating": "Tu valoración",
+            "clickTooltip": "Click para cambiar tu valoración",
+            "dragTooltip": "Desliza para cambiar tu valoración"
+        }
     }
 }

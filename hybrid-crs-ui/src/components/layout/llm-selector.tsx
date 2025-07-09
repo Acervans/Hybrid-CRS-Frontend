@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { MouseEventHandler, useContext, useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 
 import { BotOff, Check, Loader2, RefreshCw, Trash } from 'lucide-react'
 import { Bot } from 'lucide-react'
@@ -12,16 +12,7 @@ import { useEffectOnce } from 'react-use'
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
 import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
+import { ConfirmationDialog } from '@/components/ui/confirmation-dialog'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Progress } from '@/components/ui/progress'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -30,48 +21,6 @@ import { SupabaseContext } from '@/contexts/supabaseContext'
 import { useToast } from '@/hooks/use-toast'
 import { ollamaDelete, ollamaList, ollamaPull } from '@/lib/api'
 import { formatBytes } from '@/lib/utils'
-
-function ConfirmDeleteDialog(props: { model: string; onConfirm?: MouseEventHandler<HTMLButtonElement> }) {
-  const t = useTranslations('LLM')
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          title={t('deleteModel', { model: props.model })}
-          variant='ghost'
-          className='h-auto w-auto !p-0'
-          onClick={e => e.stopPropagation()}
-        >
-          <Trash />
-        </Button>
-      </DialogTrigger>
-      <DialogContent onClick={e => e.stopPropagation()}>
-        <DialogHeader>
-          <DialogTitle>{t('deleteModel', { model: props.model })}</DialogTitle>
-          <DialogDescription>{t('deleteDialogConfirm', { model: props.model })}</DialogDescription>
-        </DialogHeader>
-        <DialogFooter className='flex flex-row gap-2 justify-center'>
-          <Button
-            variant='destructive'
-            type='submit'
-            onClick={e => {
-              e.stopPropagation()
-              if (props.onConfirm) props.onConfirm(e)
-            }}
-          >
-            {t('delete')}
-          </Button>
-          <DialogClose asChild>
-            <Button variant='secondary' onClick={e => e.stopPropagation()}>
-              {t('cancel')}
-            </Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
-}
 
 export function LlmSelectorDisabled() {
   const t = useTranslations('LLM')
@@ -285,7 +234,25 @@ export function LlmSelector() {
                     <span className='max-w-[11rem] break-words'>{m.name}</span>
                     <span className='text-primary ml-auto'>{formatBytes(m.size, 1)}</span>
                     <Check className={model === m.name ? 'opacity-100' : 'opacity-0'} />
-                    <ConfirmDeleteDialog model={m.name} onConfirm={() => deleteModel(m.name)} />
+                    <div onClick={e => e.stopPropagation()}>
+                      <ConfirmationDialog
+                        title={t('deleteModel', { model: m.name })}
+                        description={t('deleteDialogConfirm', { model: m.name })}
+                        confirmLabel={t('delete')}
+                        cancelLabel={t('cancel')}
+                        variant='destructive'
+                        onConfirm={() => deleteModel(m.name)}
+                        trigger={
+                          <Button
+                            title={t('deleteModel', { model: m.name })}
+                            variant='ghost'
+                            className='h-auto w-auto !p-0'
+                          >
+                            <Trash />
+                          </Button>
+                        }
+                      />
+                    </div>
                   </CommandItem>
                 ))}
               </CommandGroup>
