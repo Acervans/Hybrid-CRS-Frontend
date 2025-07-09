@@ -76,7 +76,10 @@
             "newChat": "新聊天",
             "newThread": "新对话",
             "archiveThread": "归档对话",
-            "deleteThread": "删除对话"
+            "deleteThread": "删除对话",
+            "deleteThreadDescription": "你确定要删除“{threadTitle}”这段对话吗？",
+            "delete": "删除",
+            "cancel": "取消"
         },
         "Attachment": {
             "imagePreviewTitle": "图像附件预览",
