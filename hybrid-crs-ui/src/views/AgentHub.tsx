@@ -166,11 +166,15 @@ export function AgentHub() {
 
     if (agent && auth?.data.user?.id) {
       setRecommenderAgentProcessed(supabase, agentId, false)
-      retrainAgent(agentId, agent.datasetName, auth.data.user.id, await getAccessToken())
-      toast({
-        title: t('retrainingTitle'),
-        description: t('retrainingDescription', { agentName: agent?.agentName || 'Agent' })
-      })
+      try {
+        toast({
+          title: t('retrainingTitle'),
+          description: t('retrainingDescription', { agentName: agent?.agentName || 'Agent' })
+        })
+        await retrainAgent(agentId, agent.datasetName, auth.data.user.id, await getAccessToken())
+      } catch {
+        setTimeout(() => setRecommenderAgentProcessed(supabase, agentId, true), 200)
+      }
     }
   }
 

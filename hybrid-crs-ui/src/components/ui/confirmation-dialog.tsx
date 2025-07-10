@@ -62,7 +62,7 @@ export function ConfirmationDialog({
           {confirmButton ? (
             <div onClick={handleConfirm}>{confirmButton}</div>
           ) : (
-            <Button variant={variant} type='submit' onClick={handleConfirm}>
+            <Button variant={variant} type='submit' autoFocus onClick={handleConfirm}>
               {confirmLabel}
             </Button>
           )}

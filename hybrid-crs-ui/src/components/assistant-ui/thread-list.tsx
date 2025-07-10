@@ -108,6 +108,7 @@ const ThreadListItemDelete: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t
           <Button
             variant='destructive'
             type='submit'
+            autoFocus
             onClick={() => {
               if (searchParams.get('chatId') === threadListItem.remoteId) {
                 router.replace(path)
