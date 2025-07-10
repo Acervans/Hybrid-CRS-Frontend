@@ -112,7 +112,6 @@ export function DataProvider({ children }: DataProviderProps) {
         const accessToken = await getAccessToken()
         const result = await createAgent(newAgent.agentId, agentConfig, files, accessToken)
 
-        console.log(`Agent created with ID ${result.agentId}: ${JSON.stringify(result.agentRow)}`)
         console.log(`Test scores: ${JSON.stringify(result.testScores)}`)
       } catch (error) {
         await deleteRecommenderAgentById(supabase, newAgent.agentId)

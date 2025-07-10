@@ -89,7 +89,6 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
 
         if (text) {
           const eventStrings = text.split('\n\n')
-          console.log('RECEIVED:', text)
 
           eventStrings.forEach(event => {
             if (!event) return
@@ -140,11 +139,6 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
         return ''
       }
       case 'InputRequiredEvent': {
-        const data = response.message as Record<string, unknown>
-
-        if (data.from_event === 'RecommendationGeneratedEvent') {
-          console.log('InputRequiredEvent AFTER RecommendationGeneratedEvent')
-        }
         return ''
       }
       default:
