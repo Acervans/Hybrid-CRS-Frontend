@@ -19,11 +19,11 @@ export const WorkflowContext = createContext<{
   workflowId: string | null
   setWorkflowId: Dispatch<SetStateAction<string | null>>
   abortWorkflow: () => void
-  lastRecommendationList: RecommendationList | undefined
-  setLastRecommendationList: Dispatch<SetStateAction<RecommendationList | undefined>>
-  lastFeedback: Record<string, number | undefined> | null
-  setLastFeedback: Dispatch<SetStateAction<Record<string, number | undefined> | null>>
-  sendLastFeedback: () => Promise<void>
+  lastRecommendations: RecommendationList | undefined
+  setLastRecommendations: Dispatch<SetStateAction<RecommendationList | undefined>>
+  lastFeedback: Record<string, number | null> | null
+  setLastFeedback: Dispatch<SetStateAction<Record<string, number | null> | null>>
+  sendLastFeedback: () => Promise<number>
   parseWorkflowEvent: (response: WorkflowEvent) => string
 }>({
   startWorkflow: async () => {},
@@ -31,11 +31,11 @@ export const WorkflowContext = createContext<{
   workflowId: null,
   setWorkflowId: () => null,
   abortWorkflow: () => {},
-  lastRecommendationList: { recommendations: [], explanations: [] },
-  setLastRecommendationList: () => {},
+  lastRecommendations: { recommendations: [], explanations: [] },
+  setLastRecommendations: () => {},
   lastFeedback: {},
   setLastFeedback: () => {},
-  sendLastFeedback: async () => {},
+  sendLastFeedback: async () => 0,
   parseWorkflowEvent: () => ''
 })
 
@@ -44,9 +44,9 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
   const readerRef = useRef<ReadableStreamDefaultReader | null>(null)
   const onDataRef = useRef<((data: WorkflowEvent) => void) | null>(null)
   const [workflowId, setWorkflowId] = useState<string | null>(null)
-  const [lastRecommendationList, setLastRecommendationList] = useState<RecommendationList>()
+  const [lastRecommendations, setLastRecommendations] = useState<RecommendationList>()
   // Feedback for current recommendations
-  const [lastFeedback, setLastFeedback] = useState<Record<string, number | undefined> | null>(null)
+  const [lastFeedback, setLastFeedback] = useState<Record<string, number | null> | null>(null)
   const { getAccessToken } = useContext(SupabaseContext)
 
   const setOnData = (cb: (data: WorkflowEvent) => void) => {
@@ -132,7 +132,7 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
         const recommendations = data.recommendations ?? []
         const explanations = data.explanations ?? []
 
-        setLastRecommendationList({
+        setLastRecommendations({
           recommendations,
           explanations
         })
@@ -153,11 +153,16 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
   }, [])
 
   const sendLastFeedback = async () => {
-    if (workflowId !== null) {
-      const accessToken = await getAccessToken()
-
-      await sendUserResponse(workflowId, JSON.stringify(lastFeedback ?? {}), accessToken)
+    if (workflowId === null || lastFeedback === null) {
+      return 0
     }
+
+    const accessToken = await getAccessToken()
+    const validFeedbackEntries = Object.entries(lastFeedback).filter(fb => fb[1] !== null)
+    const filteredFeedback = Object.fromEntries(validFeedbackEntries)
+
+    await sendUserResponse(workflowId, JSON.stringify(filteredFeedback), accessToken)
+    return validFeedbackEntries.length
   }
 
   return (
@@ -168,8 +173,8 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
         workflowId,
         setWorkflowId,
         abortWorkflow,
-        lastRecommendationList,
-        setLastRecommendationList,
+        lastRecommendations,
+        setLastRecommendations,
         lastFeedback,
         setLastFeedback,
         sendLastFeedback,

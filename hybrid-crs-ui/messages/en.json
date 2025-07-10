@@ -440,7 +440,7 @@
         "cancel": "Cancel",
         "Recommendations": {
             "title": "Rate this Recommendation",
-            "click": "Click to select a rating",
+            "click": "Click to rate",
             "clear": "Clear rating",
             "explanation": "Why this recommendation",
             "empty": "No recommendations available.",

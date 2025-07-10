@@ -12,7 +12,9 @@ import { createClient } from '@/lib/supabase/client'
 interface SupabaseContextType {
   auth: UserResponse | undefined
   setAuth: Dispatch<SetStateAction<UserResponse | undefined>>
-  supabase: SupabaseClient
+  // TODO remove after fix
+  // eslint-disable-next-line
+  supabase: SupabaseClient<any, any, any>
   handleLogin: (redirectTo?: string) => Promise<void>
   refreshAuth: () => Promise<UserResponse | void>
   getAccessToken: () => Promise<string | undefined>
@@ -21,7 +23,7 @@ interface SupabaseContextType {
 export const SupabaseContext = createContext<SupabaseContextType>({
   auth: undefined,
   setAuth: () => {},
-  supabase: createClient(),
+  supabase: undefined as unknown as SupabaseClient,
   handleLogin: async () => {},
   refreshAuth: async () => {},
   getAccessToken: async () => undefined

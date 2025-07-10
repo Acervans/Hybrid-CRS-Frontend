@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { type FC, useContext, useState } from 'react'
+import { type FC, useState } from 'react'
 
 import { ChevronDown, ChevronUp, Star, Tag } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -11,11 +11,10 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { WorkflowContext } from '@/contexts/workflowContext'
 
 interface RecommendationDisplayProps extends RecommendationList {
   archived: boolean
-  onFeedbackChange?: (itemId: string, rating: number | undefined) => void
+  onFeedbackChange?: (newFeedback: Record<string, number | null>) => void
 }
 
 const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
@@ -25,21 +24,20 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
   onFeedbackChange
 }) => {
   const t = useTranslations('AgentChat.Recommendations')
-  const { setLastFeedback } = useContext(WorkflowContext)
 
-  const [feedback, setFeedback] = useState<Record<string, number | undefined>>(
-    Object.fromEntries(recommendations.map(x => [x.itemId, undefined]))
+  const [feedback, setFeedback] = useState<Record<string, number | null>>(
+    Object.fromEntries(recommendations.map(x => [x.itemId, null]))
   )
 
   const [explanationStates, setExplanationStates] = useState<{ [itemId: string]: boolean }>(
     Object.fromEntries(recommendations.map(x => [x.itemId, true]))
   )
 
-  const handleFeedbackChange = (itemId: string, rating: number | undefined) => {
+  const handleFeedbackChange = (itemId: string, rating: number | null) => {
     const newFeedback = { ...feedback, [itemId]: rating }
+
     setFeedback(newFeedback)
-    setLastFeedback(newFeedback)
-    onFeedbackChange?.(itemId, rating)
+    onFeedbackChange?.(newFeedback)
   }
 
   const toggleExplanation = (itemId: string) => {
@@ -99,32 +97,6 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
                       )}
                     </div>
                   </div>
-
-                  {/* Rating slider */}
-                  {!archived && (
-                    <div className='w-full max-w-md bg-muted/30 rounded-lg mx-auto px-4 lg:px-8'>
-                      <RatingSlider
-                        defaultValue={undefined}
-                        onValueChange={rating => handleFeedbackChange(recommendation.itemId, rating)}
-                        className='p-0'
-                      />
-                    </div>
-                  )}
-
-                  {/* Previous feedback (local session) */}
-                  {archived && feedback[recommendation.itemId] !== undefined && (
-                    <div className='lg:w-80 lg:flex-shrink-0'>
-                      <div className='bg-muted/30 rounded-lg'>
-                        <div className='flex items-center justify-center gap-2 text-sm text-muted-foreground'>
-                          <span>{t('prevRating')}:</span>
-                          <div className='flex items-center gap-1'>
-                            <Star className='w-4 h-4 fill-current text-yellow-500' />
-                            <span className='font-medium'>{feedback[recommendation.itemId]}/5</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </CardHeader>
 
@@ -147,11 +119,35 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
                     </Button>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <div className='bg-muted/50 rounded-lg p-3 mt-2'>
+                    <div className='bg-muted/50 rounded-lg p-2 mt-2'>
                       <p className='text-sm text-muted-foreground leading-relaxed'>{explanations[index]}</p>
                     </div>
                   </CollapsibleContent>
                 </Collapsible>
+
+                {/* Rating slider */}
+                {!archived && (
+                  <div className='bg-muted/30 rounded-lg p-4'>
+                    <RatingSlider
+                      defaultValue={null}
+                      onValueChange={rating => handleFeedbackChange(recommendation.itemId, rating)}
+                      className='max-w-md mx-auto'
+                    />
+                  </div>
+                )}
+
+                {/* Previous feedback (local session) */}
+                {archived && feedback[recommendation.itemId] && (
+                  <div className='bg-muted/30 rounded-lg p-4'>
+                    <div className='flex items-center justify-center gap-2 text-sm text-muted-foreground'>
+                      <span>{t('prevRating')}:</span>
+                      <div className='flex items-center gap-1'>
+                        <Star className='w-4 h-4 fill-current text-yellow-500' />
+                        <span className='font-medium'>{feedback[recommendation.itemId]}/5</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}

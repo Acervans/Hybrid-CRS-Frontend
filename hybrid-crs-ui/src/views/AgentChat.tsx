@@ -25,7 +25,7 @@ export function AgentChat({ agentId }: { agentId: string | number }) {
   const sessionId = useSearchParams().get('sessionId')
   const { supabase } = useContext(SupabaseContext)
   const { agent, setAgent } = useContext(ModelContext)
-  const { workflowId, lastRecommendationList, setLastRecommendationList } = useContext(WorkflowContext)
+  const { workflowId, lastRecommendations, setLastRecommendations } = useContext(WorkflowContext)
   const [noAccess, setNoAccess] = useState<boolean>(false)
   const [loaded, setLoaded] = useState<boolean>(false)
   const threads = useThreadList(m => m.threads)
@@ -77,14 +77,14 @@ export function AgentChat({ agentId }: { agentId: string | number }) {
   }, [sessionId, threads, assistantRuntime.threads, loaded, path, router])
 
   useEffect(() => {
-    if (lastRecommendationList !== undefined) {
+    if (lastRecommendations !== undefined) {
       // Send recommendations as system message
       composerRuntime.setRole('system')
-      composerRuntime.setText(JSON.stringify(lastRecommendationList))
+      composerRuntime.setText(JSON.stringify(lastRecommendations))
       composerRuntime.send()
       composerRuntime.setRole('user')
     }
-  }, [lastRecommendationList, setLastRecommendationList, composerRuntime])
+  }, [lastRecommendations, setLastRecommendations, composerRuntime])
 
   useEffectOnce(() => {
     if (threadListItem.remoteId && threadListItem.remoteId !== sessionId) {

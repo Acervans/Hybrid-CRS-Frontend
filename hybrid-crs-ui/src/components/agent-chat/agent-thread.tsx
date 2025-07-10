@@ -119,7 +119,7 @@ const ThreadWelcome: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => 
 const Composer: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   const composerRuntime = useComposerRuntime()
   const assistantRuntime = useAssistantRuntime()
-  const { lastFeedback, setLastFeedback, sendLastFeedback, setLastRecommendationList } = useContext(WorkflowContext)
+  const { lastFeedback, setLastFeedback, sendLastFeedback, setLastRecommendations } = useContext(WorkflowContext)
   const { toast } = useToast()
 
   if (lastFeedback !== null) {
@@ -128,7 +128,14 @@ const Composer: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
         className='focus-within:border-ring/20 flex w-full max-w-md whitespace-normal h-fit min-h-12 text-md rounded-lg border px-2.5 shadow-sm transition-colors ease-in'
         onClick={async () => {
           try {
-            await sendLastFeedback()
+            const numItems = await sendLastFeedback()
+
+            toast({
+              title: t('Agent.sendFeedbackTitle'),
+              description: t('Agent.sendFeedbackDescription', { numItems })
+            })
+            setLastFeedback(null)
+            setLastRecommendations(undefined)
           } catch {
             toast({
               title: t('Thread.somethingWentWrong'),
@@ -137,17 +144,9 @@ const Composer: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
             })
             return
           }
-          const numItems = Object.entries(lastFeedback).filter(f => f[1] !== undefined).length
           const messages = assistantRuntime.thread.getState().messages
 
-          toast({
-            title: t('Agent.sendFeedbackTitle'),
-            description: t('Agent.sendFeedbackDescription', { numItems })
-          })
-
           assistantRuntime.thread.startRun({ parentId: messages.at(-1)?.id ?? null })
-          setLastFeedback(null)
-          setLastRecommendationList(undefined)
         }}
       >
         <Star className='mr-2' />
@@ -266,7 +265,7 @@ const AssistantMessage: FC = () => {
 }
 
 const ItemRecommendation: FC<TextContentPartProps> = (props: TextContentPartProps) => {
-  const { workflowId } = useContext(WorkflowContext)
+  const { workflowId, setLastFeedback } = useContext(WorkflowContext)
 
   if (props?.status.type !== 'complete') {
     return <Loader2 className='h-4 w-4 animate-spin' />
@@ -292,6 +291,7 @@ const ItemRecommendation: FC<TextContentPartProps> = (props: TextContentPartProp
             recommendations={recommendations}
             explanations={explanations}
             archived={workflowId === null}
+            onFeedbackChange={setLastFeedback}
           />
         )
       } else {

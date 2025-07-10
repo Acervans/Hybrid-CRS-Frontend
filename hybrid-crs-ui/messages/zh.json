@@ -440,7 +440,7 @@
         "cancel": "取消",
         "Recommendations": {
             "title": "为此推荐评分",
-            "click": "点击选择评分",
+            "click": "点击评分",
             "clear": "清除评分",
             "explanation": "推荐原因",
             "empty": "暂无推荐内容。",

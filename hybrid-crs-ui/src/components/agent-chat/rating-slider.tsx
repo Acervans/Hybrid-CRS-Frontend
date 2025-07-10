@@ -11,8 +11,8 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 interface RatingSliderProps {
-  defaultValue?: number | undefined
-  onValueChange?: (value: number | undefined) => void
+  defaultValue?: number | null
+  onValueChange?: (value: number | null) => void
   colors?: {
     light: string[]
     dark: string[]
@@ -24,7 +24,7 @@ interface RatingSliderProps {
 }
 
 export default function RatingSlider({
-  defaultValue = undefined,
+  defaultValue = null,
   onValueChange,
   colors,
   labels = [1, 2, 3, 4, 5],
@@ -33,7 +33,7 @@ export default function RatingSlider({
   className = ''
 }: RatingSliderProps) {
   const t = useTranslations('AgentChat.Recommendations')
-  const [rating, setRating] = useState<number | undefined>(defaultValue)
+  const [rating, setRating] = useState<number | null>(defaultValue)
   const { theme } = useTheme()
 
   // Default color schemes
@@ -58,13 +58,13 @@ export default function RatingSlider({
   const currentColors = theme === 'dark' ? colorScheme.dark : colorScheme.light
 
   // Get color for rating value
-  const getColor = (value: number | undefined) => {
-    return currentColors[(value ?? 0) - 1] || currentColors[0]
+  const getColor = (value: number) => {
+    return currentColors[value - 1] || currentColors[0]
   }
 
   // Get icon based on rating
-  const getIcon = (value: number | undefined) => {
-    if (!showIcons || value === undefined) return null
+  const getIcon = (value: number) => {
+    if (!showIcons) return null
 
     if (value <= 2) {
       return <ThumbsDown className='w-4 h-4' />
@@ -78,6 +78,7 @@ export default function RatingSlider({
 
   const handleValueChange = (newValue: number[]) => {
     const selectedRating = newValue[0]
+
     setRating(selectedRating)
     onValueChange?.(selectedRating)
   }
@@ -96,10 +97,11 @@ export default function RatingSlider({
         </div>
 
         {/* Slider container - centered */}
-        <div className='relative w-full pt-6 pb-2 flex-grow flex items-center'>
+        <div className='relative w-full pt-11 pb-2 flex-grow flex items-center'>
           <div className='relative w-full'>
             <SliderPrimitive.Root
-              value={rating !== undefined ? [rating] : undefined}
+              key={String(rating === null)}
+              value={rating !== null ? [rating] : [-1]}
               onValueChange={handleValueChange}
               max={labels.length}
               min={1}
@@ -110,13 +112,13 @@ export default function RatingSlider({
                 className='relative h-3 w-full grow overflow-hidden rounded-lg cursor-pointer'
                 style={{
                   background: `linear-gradient(to right, ${gradientStops})`,
-                  opacity: rating === undefined ? 0.6 : 1.0
+                  opacity: rating === null ? 0.6 : 1.0
                 }}
                 title={t('clickTooltip')}
               >
                 <SliderPrimitive.Range className='absolute h-full bg-transparent' />
               </SliderPrimitive.Track>
-              {rating !== undefined && (
+              {rating !== null && (
                 <SliderPrimitive.Thumb
                   className='block h-6 w-6 rounded-full border-3 border-background shadow-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:scale-110 cursor-pointer'
                   style={{ backgroundColor: getColor(rating) }}
@@ -161,12 +163,12 @@ export default function RatingSlider({
         </div>
 
         <div className='text-center flex-shrink-0 h-4'>
-          {rating !== undefined ? (
+          {rating !== null ? (
             <button
               className='text-xs text-muted-foreground hover:text-foreground transition-colors'
               onClick={() => {
-                setRating(undefined)
-                onValueChange?.(undefined)
+                setRating(null)
+                onValueChange?.(null)
               }}
             >
               {t('clear')}
