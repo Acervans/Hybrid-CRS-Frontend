@@ -148,7 +148,7 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
                             .then(() => {
                               setSessions(sessions.filter(s => s.chatId !== session.chatId))
                               if (sessionId === String(session.chatId)) {
-                                router.replace(path)
+                                setTimeout(() => router.replace(path), 200)
                               }
                             })
                         }}

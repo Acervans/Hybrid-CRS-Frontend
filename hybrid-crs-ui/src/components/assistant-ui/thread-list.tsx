@@ -111,7 +111,7 @@ const ThreadListItemDelete: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t
             autoFocus
             onClick={() => {
               if (searchParams.get('chatId') === threadListItem.remoteId) {
-                router.replace(path)
+                setTimeout(() => router.replace(path), 200)
               }
             }}
           >
