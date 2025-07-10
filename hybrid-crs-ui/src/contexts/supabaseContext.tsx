@@ -23,7 +23,7 @@ interface SupabaseContextType {
 export const SupabaseContext = createContext<SupabaseContextType>({
   auth: undefined,
   setAuth: () => {},
-  supabase: undefined as unknown as SupabaseClient,
+  supabase: createClient(),
   handleLogin: async () => {},
   refreshAuth: async () => {},
   getAccessToken: async () => undefined
