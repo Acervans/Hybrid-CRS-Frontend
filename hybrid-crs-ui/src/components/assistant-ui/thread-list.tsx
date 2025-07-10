@@ -105,24 +105,29 @@ const ThreadListItemDelete: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t
       variant='destructive'
       confirmButton={
         <ThreadListItemPrimitive.Delete asChild>
-          <Button variant='destructive' type='submit'>
+          <Button
+            variant='destructive'
+            type='submit'
+            onClick={() => {
+              if (searchParams.get('chatId') === threadListItem.remoteId) {
+                router.replace(path)
+              }
+            }}
+          >
             {t('delete')}
           </Button>
         </ThreadListItemPrimitive.Delete>
       }
       trigger={
-        <TooltipIconButton
-          className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
-          variant='ghost'
-          tooltip={t('deleteThread')}
-          onClick={() => {
-            if (searchParams.get('chatId') === threadListItem.remoteId) {
-              router.replace(path)
-            }
-          }}
-        >
-          <Trash />
-        </TooltipIconButton>
+        <div>
+          <TooltipIconButton
+            className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
+            variant='ghost'
+            tooltip={t('deleteThread')}
+          >
+            <Trash />
+          </TooltipIconButton>
+        </div>
       }
     />
   )

@@ -48,7 +48,7 @@ export function ConfirmationDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild disabled={disabled}>
-        <div>{trigger}</div>
+        {trigger}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

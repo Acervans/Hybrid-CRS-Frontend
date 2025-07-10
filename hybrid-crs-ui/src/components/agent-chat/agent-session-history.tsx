@@ -40,6 +40,15 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
     })
   }
 
+  const handleClickSession = (chatId: number) => {
+    if (sessionId !== String(chatId)) {
+      assistantRuntime.threads.switchToThread(String(chatId))
+      router.replace(`${path}?sessionId=${encodeURIComponent(chatId)}`)
+    } else {
+      setOpen(false)
+    }
+  }
+
   useEffect(() => {
     const loadSessions = async () => {
       const chats = await getChatHistoriesByAgentId(supabase, agent.agentId)
@@ -109,13 +118,12 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
               <SidebarMenuItem key={session.chatId}>
                 <SidebarMenuButton
                   asChild
+                  tabIndex={0}
                   className={`h-12 cursor-pointer hover:bg-muted active:bg-muted rounded-none ${sessionId === String(session.chatId) ? 'bg-muted' : ''}`}
-                  onClick={() => {
-                    if (sessionId !== String(session.chatId)) {
-                      assistantRuntime.threads.switchToThread(String(session.chatId))
-                      router.replace(`${path}?sessionId=${encodeURIComponent(session.chatId)}`)
-                    } else {
-                      setOpen(false)
+                  onClick={() => handleClickSession(session.chatId)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      handleClickSession(session.chatId)
                     }
                   }}
                 >
@@ -126,7 +134,7 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
                         {formatDate(session.createdAt)}, {formatTime(session.createdAt)}
                       </span>
                     </div>
-                    <div onClick={e => e.stopPropagation()}>
+                    <div onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()}>
                       <ConfirmationDialog
                         title={t('deleteSession')}
                         description={t('deleteSessionDescription', { num: sessions.length - index })}
@@ -144,13 +152,15 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
                             })
                         }}
                         trigger={
-                          <TooltipIconButton
-                            className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
-                            variant='ghost'
-                            tooltip={t('deleteSession')}
-                          >
-                            <Trash />
-                          </TooltipIconButton>
+                          <div>
+                            <TooltipIconButton
+                              className='hover:text-primary text-foreground ml-auto mr-3 size-4 p-0'
+                              variant='ghost'
+                              tooltip={t('deleteSession')}
+                            >
+                              <Trash />
+                            </TooltipIconButton>
+                          </div>
                         }
                       />
                     </div>

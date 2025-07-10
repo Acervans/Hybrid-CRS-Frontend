@@ -138,25 +138,25 @@ export function AgentCard({ agent, isOwner, onEdit, onRetrain, onDelete }: Agent
                     </TooltipTrigger>
                     <TooltipContent>{t('editTitle')}</TooltipContent>
                   </Tooltip>
-                  <ConfirmationDialog
-                    title={t('retrainTitle')}
-                    description={`${
-                      !!agent.newSessions
-                        ? t('retrainDescriptionSessions', {
-                            agentName: agent.agentName,
-                            numSessions: agent.newSessions
-                          })
-                        : t('retrainDescription', {
-                            agentName: agent.agentName
-                          })
-                    } ${t('retrainTakeAWhile')}`}
-                    confirmLabel={t('retrain')}
-                    cancelLabel={t('cancel')}
-                    variant='default'
-                    onConfirm={handleRetrain}
-                    disabled={!agent.processed}
-                    trigger={
-                      <Tooltip>
+                  <Tooltip>
+                    <ConfirmationDialog
+                      title={t('retrainTitle')}
+                      description={`${
+                        !!agent.newSessions
+                          ? t('retrainDescriptionSessions', {
+                              agentName: agent.agentName,
+                              numSessions: agent.newSessions
+                            })
+                          : t('retrainDescription', {
+                              agentName: agent.agentName
+                            })
+                      } ${t('retrainTakeAWhile')}`}
+                      confirmLabel={t('retrain')}
+                      cancelLabel={t('cancel')}
+                      variant='default'
+                      onConfirm={handleRetrain}
+                      disabled={!agent.processed}
+                      trigger={
                         <TooltipTrigger asChild>
                           <Button
                             variant='outline'
@@ -179,23 +179,23 @@ export function AgentCard({ agent, isOwner, onEdit, onRetrain, onDelete }: Agent
                             )}
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent>
-                          {`${t('retrainTitle')}${agent.newSessions ? ` (${t('newSessions', { newSessions: agent.newSessions })})` : ''}`}
-                        </TooltipContent>
-                      </Tooltip>
-                    }
-                  />
+                      }
+                    />
+                    <TooltipContent>
+                      {`${t('retrainTitle')}${agent.newSessions ? ` (${t('newSessions', { newSessions: agent.newSessions })})` : ''}`}
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
-                <ConfirmationDialog
-                  title={t('deleteTitle')}
-                  description={t('deleteDescription', { agentName: agent.agentName })}
-                  confirmLabel={t('delete')}
-                  cancelLabel={t('cancel')}
-                  variant='destructive'
-                  onConfirm={handleDelete}
-                  disabled={!agent.processed}
-                  trigger={
-                    <Tooltip>
+                <Tooltip>
+                  <ConfirmationDialog
+                    title={t('deleteTitle')}
+                    description={t('deleteDescription', { agentName: agent.agentName })}
+                    confirmLabel={t('delete')}
+                    cancelLabel={t('cancel')}
+                    variant='destructive'
+                    onConfirm={handleDelete}
+                    disabled={!agent.processed}
+                    trigger={
                       <TooltipTrigger asChild>
                         <Button
                           variant='outline'
@@ -209,10 +209,10 @@ export function AgentCard({ agent, isOwner, onEdit, onRetrain, onDelete }: Agent
                           <Trash2 className='h-4 w-4' />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>{t('deleteTitle')}</TooltipContent>
-                    </Tooltip>
-                  }
-                />
+                    }
+                  />
+                  <TooltipContent>{t('deleteTitle')}</TooltipContent>
+                </Tooltip>
               </div>
             )}
             {agent.processed ? (
