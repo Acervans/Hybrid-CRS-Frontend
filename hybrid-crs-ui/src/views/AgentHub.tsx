@@ -172,8 +172,10 @@ export function AgentHub() {
           description: t('retrainingDescription', { agentName: agent?.agentName || 'Agent' })
         })
         await retrainAgent(agentId, agent.datasetName, auth.data.user.id, await getAccessToken())
-      } catch {
-        setTimeout(() => setRecommenderAgentProcessed(supabase, agentId, true), 200)
+      } catch (error) {
+        if (error instanceof TypeError) {
+          setTimeout(() => setRecommenderAgentProcessed(supabase, agentId, true), 200)
+        }
       }
     }
   }

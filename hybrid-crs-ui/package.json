@@ -46,7 +46,7 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.50.4",
+    "@supabase/supabase-js": "^2.50.5",
     "@types/google-one-tap": "^1.2.6",
     "@types/react-speech-recognition": "^3.9.6",
     "@types/react-syntax-highlighter": "^15.5.13",
