@@ -25,7 +25,7 @@ export function AgentChat({ agentId }: { agentId: string | number }) {
   const sessionId = useSearchParams().get('sessionId')
   const { supabase } = useContext(SupabaseContext)
   const { agent, setAgent } = useContext(ModelContext)
-  const { workflowId, lastRecommendations, setLastRecommendations } = useContext(WorkflowContext)
+  const { workflowId, lastRecommendations, setLastRecommendations, setLastFeedback } = useContext(WorkflowContext)
   const [noAccess, setNoAccess] = useState<boolean>(false)
   const [loaded, setLoaded] = useState<boolean>(false)
   const threads = useThreadList(m => m.threads)
@@ -83,8 +83,9 @@ export function AgentChat({ agentId }: { agentId: string | number }) {
       composerRuntime.setText(JSON.stringify(lastRecommendations))
       composerRuntime.send()
       composerRuntime.setRole('user')
+      setLastFeedback({})
     }
-  }, [lastRecommendations, setLastRecommendations, composerRuntime])
+  }, [lastRecommendations, setLastRecommendations, setLastFeedback, composerRuntime])
 
   useEffectOnce(() => {
     if (threadListItem.remoteId && threadListItem.remoteId !== sessionId) {

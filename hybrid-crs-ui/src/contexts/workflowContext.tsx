@@ -110,6 +110,8 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
     } finally {
       readerRef.current = null
       setWorkflowId(null)
+      setLastFeedback(null)
+      setLastRecommendations(undefined)
     }
   }
 

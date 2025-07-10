@@ -1,4 +1,4 @@
-import { type FC, memo, useContext } from 'react'
+import { type FC, memo, useContext, useEffect, useState } from 'react'
 
 import {
   ActionBarPrimitive,
@@ -265,7 +265,14 @@ const AssistantMessage: FC = () => {
 }
 
 const ItemRecommendation: FC<TextContentPartProps> = (props: TextContentPartProps) => {
-  const { workflowId, setLastFeedback } = useContext(WorkflowContext)
+  const { workflowId, setLastFeedback, lastRecommendations } = useContext(WorkflowContext)
+  const [submitted, setSubmitted] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (!submitted && lastRecommendations === undefined) {
+      setSubmitted(true)
+    }
+  }, [lastRecommendations, submitted])
 
   if (props?.status.type !== 'complete') {
     return <Loader2 className='h-4 w-4 animate-spin' />
@@ -291,6 +298,7 @@ const ItemRecommendation: FC<TextContentPartProps> = (props: TextContentPartProp
             recommendations={recommendations}
             explanations={explanations}
             archived={workflowId === null}
+            submitted={submitted}
             onFeedbackChange={setLastFeedback}
           />
         )

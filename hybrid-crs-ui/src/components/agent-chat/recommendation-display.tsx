@@ -14,6 +14,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 
 interface RecommendationDisplayProps extends RecommendationList {
   archived: boolean
+  submitted: boolean
   onFeedbackChange?: (newFeedback: Record<string, number | null>) => void
 }
 
@@ -21,6 +22,7 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
   recommendations,
   explanations,
   archived,
+  submitted,
   onFeedbackChange
 }) => {
   const t = useTranslations('AgentChat.Recommendations')
@@ -53,11 +55,11 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
         <div className='space-y-4'>
           {recommendations.map((recommendation, index) => (
             <Card key={recommendation.itemId} className='overflow-hidden'>
-              <CardHeader className='pb-3'>
+              <CardHeader>
                 <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4'>
                   {/* Item info */}
                   <div className='flex-1 min-w-0'>
-                    <div className='flex items-start justify-between mb-2'>
+                    <div className='flex items-start justify-between'>
                       <div className='flex-1 min-w-0'>
                         <div className='flex items-center gap-3 mb-2'>
                           <h3 className='text-lg font-semibold text-foreground truncate'>{recommendation.name}</h3>
@@ -101,7 +103,7 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
               </CardHeader>
 
               {/* Explanations */}
-              <CardContent className='pt-0'>
+              <CardContent className='pt-0 space-y-3'>
                 <Collapsible open={explanationStates[recommendation.itemId]}>
                   <CollapsibleTrigger asChild>
                     <Button
@@ -119,15 +121,15 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
                     </Button>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <div className='bg-muted/50 rounded-lg p-2 mt-2'>
-                      <p className='text-sm text-muted-foreground leading-relaxed'>{explanations[index]}</p>
+                    <div className='bg-muted/50 rounded-lg p-3 mt-2'>
+                      <p className='text-sm text-foreground/80 leading-relaxed'>{explanations[index]}</p>
                     </div>
                   </CollapsibleContent>
                 </Collapsible>
 
                 {/* Rating slider */}
-                {!archived && (
-                  <div className='bg-muted/30 rounded-lg p-4'>
+                {!archived && !submitted && (
+                  <div className='bg-muted/50 rounded-lg p-4'>
                     <RatingSlider
                       defaultValue={null}
                       onValueChange={rating => handleFeedbackChange(recommendation.itemId, rating)}
@@ -137,9 +139,9 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
                 )}
 
                 {/* Previous feedback (local session) */}
-                {archived && feedback[recommendation.itemId] && (
-                  <div className='bg-muted/30 rounded-lg p-4'>
-                    <div className='flex items-center justify-center gap-2 text-sm text-muted-foreground'>
+                {(archived || submitted) && feedback[recommendation.itemId] && (
+                  <div className='bg-muted/50 rounded-lg p-4'>
+                    <div className='flex items-center justify-center gap-2 text-sm text-foreground'>
                       <span>{t('prevRating')}:</span>
                       <div className='flex items-center gap-1'>
                         <Star className='w-4 h-4 fill-current text-yellow-500' />
