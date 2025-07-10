@@ -109,10 +109,9 @@ export default function RatingSlider({
               className='relative flex w-full touch-none select-none items-center'
             >
               <SliderPrimitive.Track
-                className='relative h-3 w-full grow overflow-hidden rounded-lg cursor-pointer'
+                className={`relative h-3 w-full grow overflow-hidden rounded-lg cursor-pointer ${rating === null ? 'opacity-60 hover:opacity-70' : 'opacity-100'}`}
                 style={{
-                  background: `linear-gradient(to right, ${gradientStops})`,
-                  opacity: rating === null ? 0.6 : 1.0
+                  background: `linear-gradient(to right, ${gradientStops})`
                 }}
                 title={t('clickTooltip')}
               >
