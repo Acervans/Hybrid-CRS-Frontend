@@ -51,6 +51,7 @@
         "voiceTooltipDisabled": "Microphone disabled for this app",
         "voiceStop": "Stop Listening",
         "webSearch": "Search the Web",
+        "endSession": "End Session",
         "edit": "Edit",
         "readAloud": "Read aloud",
         "copy": "Copy",

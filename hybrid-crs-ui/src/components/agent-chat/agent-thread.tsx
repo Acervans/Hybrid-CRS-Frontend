@@ -22,10 +22,12 @@ import {
   Loader2,
   MessageCircle,
   SendHorizontalIcon,
+  Star,
   StopCircleIcon
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import RecommendationDisplay from '@/components/agent-chat/recommendation-display'
 import {
   ComposerAddAttachment,
   ComposerAttachments,
@@ -35,10 +37,13 @@ import { ThreadFollowupSuggestions } from '@/components/assistant-ui/follow-up-s
 import { MarkdownText } from '@/components/assistant-ui/markdown-text'
 import { ToolFallback } from '@/components/assistant-ui/tool-fallback'
 import { TooltipIconButton } from '@/components/assistant-ui/tooltip-icon-button'
+import EndSession from '@/components/chat/end-session'
 import VoiceChat from '@/components/chat/voice-chat'
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { ModelContext } from '@/contexts/modelContext'
+import { WorkflowContext } from '@/contexts/workflowContext'
+import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 
 interface AgentThreadProps {
@@ -114,6 +119,42 @@ const ThreadWelcome: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => 
 const Composer: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   const composerRuntime = useComposerRuntime()
   const assistantRuntime = useAssistantRuntime()
+  const { lastFeedback, setLastFeedback, sendLastFeedback, setLastRecommendationList } = useContext(WorkflowContext)
+  const { toast } = useToast()
+
+  if (lastFeedback !== null) {
+    return (
+      <Button
+        className='focus-within:border-ring/20 flex w-full max-w-md whitespace-normal h-fit min-h-12 text-md rounded-lg border px-2.5 shadow-sm transition-colors ease-in'
+        onClick={async () => {
+          try {
+            await sendLastFeedback()
+          } catch {
+            toast({
+              title: t('Thread.somethingWentWrong'),
+              description: t('Thread.tryAgain'),
+              variant: 'destructive'
+            })
+            return
+          }
+          const numItems = Object.entries(lastFeedback).filter(f => f[1] !== undefined).length
+          const messages = assistantRuntime.thread.getState().messages
+
+          toast({
+            title: t('Agent.sendFeedbackTitle'),
+            description: t('Agent.sendFeedbackDescription', { numItems })
+          })
+
+          assistantRuntime.thread.startRun({ parentId: messages.at(-1)?.id ?? null })
+          setLastFeedback(null)
+          setLastRecommendationList(undefined)
+        }}
+      >
+        <Star className='mr-2' />
+        {t('Agent.sendFeedback')}
+      </Button>
+    )
+  }
 
   return (
     <>
@@ -159,7 +200,8 @@ const Composer: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
 const ComposerAction: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <div className='flex flex-row gap-1'>
-      <VoiceChat className='my-2.5 mr-2 size-8 p-2 transition-opacity ease-in' />
+      <VoiceChat className='my-2.5 size-8 p-2 transition-opacity ease-in' />
+      <EndSession className='my-2.5 mr-2 size-8 p-2 transition-opacity ease-in' />
       <ThreadPrimitive.If running={false}>
         <ComposerPrimitive.Send asChild>
           <TooltipIconButton
@@ -224,12 +266,40 @@ const AssistantMessage: FC = () => {
 }
 
 const ItemRecommendation: FC<TextContentPartProps> = (props: TextContentPartProps) => {
-  if (props.status.type !== 'complete') {
+  const { workflowId } = useContext(WorkflowContext)
+
+  if (props?.status.type !== 'complete') {
     return <Loader2 className='h-4 w-4 animate-spin' />
   } else {
-    // TODO
-    // Parse props.text, get item properties, render them as a list with a feedback option to the right??
-    return <p>{props.text}</p>
+    try {
+      const data = JSON.parse(props.text)
+      const recommendations: Recommendation[] = data.recommendations.map((r: Record<string, unknown>) => {
+        const { item_id: itemId, name, category, falkordb_rating: falkordbRating, ...rest } = r
+
+        return {
+          itemId,
+          name,
+          category,
+          falkordbRating,
+          ...rest
+        }
+      })
+      const explanations: string[] = data.explanations
+
+      if (recommendations.length && explanations.length) {
+        return (
+          <RecommendationDisplay
+            recommendations={recommendations}
+            explanations={explanations}
+            archived={workflowId === null}
+          />
+        )
+      } else {
+        return <p>{props.text}</p>
+      }
+    } catch {
+      return <p>{props.text}</p>
+    }
   }
 }
 
@@ -237,9 +307,6 @@ const SystemMessage: FC = () => {
   const t = useTranslations('Chat')
   const ItemRecommendationText = memo(ItemRecommendation)
 
-  /* TODO Allow user to give feedback on recommended items (liked/disliked, rating),
-      using a state in WorkflowContext. Send recommended items as a system message?. Don't save feedback
-  */
   return (
     <MessagePrimitive.Root className='grid grid-cols-[auto_auto_1fr] grid-rows-[auto_1fr] max-w-aui-thread relative w-full py-4 px-2 sm:px-0'>
       <Avatar className='col-start-1 row-span-full row-start-1 mr-4 bg-muted hidden sm:flex'>
@@ -247,8 +314,7 @@ const SystemMessage: FC = () => {
       </Avatar>
 
       <div className='text-foreground max-w-[calc(var(--thread-max-width)*0.8)] break-words leading-7 col-span-2 col-start-2 row-start-1 my-1.5'>
-        {/* <MessagePrimitive.Content components={{ Text: MarkdownText, tools: { Fallback: ToolFallback } }} /> */}
-        <MessagePrimitive.Content components={{ Text: ItemRecommendationText, tools: { Fallback: ToolFallback } }} />
+        <MessagePrimitive.Content components={{ Text: ItemRecommendationText }} />
         <MessageError />
       </div>
 

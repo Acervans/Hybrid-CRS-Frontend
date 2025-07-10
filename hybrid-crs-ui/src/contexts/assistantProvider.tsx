@@ -99,7 +99,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
   const { locale } = useContext(LocaleContext)
   const { model, agent } = useContext(ModelContext)
   const { getAccessToken, supabase } = useContext(SupabaseContext)
-  const { startWorkflow, setOnData, workflowId, abortWorkflow } = useContext(WorkflowContext)
+  const { startWorkflow, setOnData, workflowId, abortWorkflow, parseWorkflowEvent } = useContext(WorkflowContext)
   const { toast } = useToast()
   const threadTitlesMapRef = useRef<Record<string, string>>({})
 
@@ -367,8 +367,6 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
       }
     }
 
-    // TODO add follow-up suggestions with custom context or ThreadStatus
-    // Chat Model Adapter for Agent Chat
     const AgentChatAdapter: ChatModelAdapter | undefined = isAgentChat
       ? {
           async *run({ messages, abortSignal }) {
@@ -407,6 +405,8 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
             }
 
             try {
+              let fullText = ''
+
               while (true) {
                 if (queue.length === 0) {
                   await new Promise<void>(resolve => {
@@ -419,19 +419,12 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
 
                 if (!data) continue
 
-                const parseWorkflowEvent = (response: WorkflowEvent) => {
-                  const text = JSON.stringify(response)
-
-                  // TODO PARSE DEPENDING ON JSON TYPE, EVENT TYPE
-                  console.log(text)
-                  return text
-                }
-
                 const text = parseWorkflowEvent(data)
 
                 if (text) {
+                  fullText += text
                   yield {
-                    content: [{ type: 'text', text }]
+                    content: [{ type: 'text', text: fullText }]
                   }
                 }
 

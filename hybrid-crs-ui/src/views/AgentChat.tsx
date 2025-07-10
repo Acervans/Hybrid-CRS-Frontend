@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import type React from 'react'
 import { useContext, useEffect, useMemo, useState } from 'react'
 
-import { useAssistantRuntime, useThreadList, useThreadListItem } from '@assistant-ui/react'
+import { useAssistantRuntime, useComposerRuntime, useThreadList, useThreadListItem } from '@assistant-ui/react'
 import { CirclePlus, Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useEffectOnce } from 'react-use'
@@ -25,11 +25,12 @@ export function AgentChat({ agentId }: { agentId: string | number }) {
   const sessionId = useSearchParams().get('sessionId')
   const { supabase } = useContext(SupabaseContext)
   const { agent, setAgent } = useContext(ModelContext)
-  const { workflowId } = useContext(WorkflowContext)
+  const { workflowId, lastRecommendationList, setLastRecommendationList } = useContext(WorkflowContext)
   const [noAccess, setNoAccess] = useState<boolean>(false)
   const [loaded, setLoaded] = useState<boolean>(false)
   const threads = useThreadList(m => m.threads)
   const assistantRuntime = useAssistantRuntime()
+  const composerRuntime = useComposerRuntime()
   const threadListItem = useThreadListItem()
 
   const archived = useMemo(
@@ -74,6 +75,16 @@ export function AgentChat({ agentId }: { agentId: string | number }) {
 
     shouldInitThread()
   }, [sessionId, threads, assistantRuntime.threads, loaded, path, router])
+
+  useEffect(() => {
+    if (lastRecommendationList !== undefined) {
+      // Send recommendations as system message
+      composerRuntime.setRole('system')
+      composerRuntime.setText(JSON.stringify(lastRecommendationList))
+      composerRuntime.send()
+      composerRuntime.setRole('user')
+    }
+  }, [lastRecommendationList, setLastRecommendationList, composerRuntime])
 
   useEffectOnce(() => {
     if (threadListItem.remoteId && threadListItem.remoteId !== sessionId) {

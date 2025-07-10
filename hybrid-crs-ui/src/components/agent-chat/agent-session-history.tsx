@@ -138,6 +138,7 @@ export function AgentSessionHistory(props: { agent: RecommenderAgent }) {
                       <ConfirmationDialog
                         title={t('deleteSession')}
                         description={t('deleteSessionDescription', { num: sessions.length - index })}
+                        confirmLabel={t('delete')}
                         cancelLabel={t('cancel')}
                         variant='destructive'
                         onConfirm={() => {
