@@ -213,7 +213,7 @@
             "checkingAvailability": "Vérification de la disponibilité...",
             "characters": "caractères",
             "datasetName": "Nom du Dataset",
-            "datasetNamePlaceholder": "p. ex., Dataset Steam",
+            "datasetNamePlaceholder": "p. ex., Dataset de Musique",
             "datasetConstraint": "Le nom du dataset ne peut pas être modifié",
             "description": "Description",
             "descriptionPlaceholder": "Décrivez votre agent, quel type de recommandations vous souhaitez générer...",

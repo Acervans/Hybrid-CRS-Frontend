@@ -213,7 +213,7 @@
             "checkingAvailability": "Verfügbarkeit wird geprüft...",
             "characters": "Zeichen",
             "datasetName": "Datensatzname",
-            "datasetNamePlaceholder": "z.B. Steam-Datensatz",
+            "datasetNamePlaceholder": "z.B. Datensatz für Musik",
             "datasetConstraint": "Der Datensatzname kann nicht geändert werden",
             "description": "Beschreibung",
             "descriptionPlaceholder": "Beschreibe deinen Agenten, welche Art von Empfehlungen du generieren möchtest...",

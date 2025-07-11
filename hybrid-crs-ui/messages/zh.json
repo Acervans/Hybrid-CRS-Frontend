@@ -213,7 +213,7 @@
             "checkingAvailability": "正在检查可用性...",
             "characters": "个字符",
             "datasetName": "数据集名称",
-            "datasetNamePlaceholder": "例如，蒸汽游戏数据集",
+            "datasetNamePlaceholder": "例如，音乐数据集",
             "datasetConstraint": "数据集名称无法更改",
             "description": "描述",
             "descriptionPlaceholder": "描述您的代理商，您想生成什么样的建议...",

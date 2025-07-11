@@ -213,7 +213,7 @@
             "checkingAvailability": "Checking availability...",
             "characters": "characters",
             "datasetName": "Dataset Name",
-            "datasetNamePlaceholder": "e.g., Steam Games Dataset",
+            "datasetNamePlaceholder": "e.g., Music Dataset",
             "datasetConstraint": "Dataset name cannot be changed",
             "description": "Description",
             "descriptionPlaceholder": "Describe your agent, what kind of recommendations you want to generate...",
