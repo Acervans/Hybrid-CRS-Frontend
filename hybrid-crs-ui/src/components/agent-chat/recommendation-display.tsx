@@ -62,7 +62,7 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
                     <div className='flex items-start justify-between'>
                       <div className='flex-1 min-w-0'>
                         <div className='flex flex-wrap items-center gap-3 mb-2'>
-                          <h3 className='text-lg font-semibold text-foreground truncate'>{recommendation.name}</h3>
+                          <h3 className='text-lg font-semibold text-foreground'>{recommendation.name}</h3>
                           {recommendation.category && (
                             <Badge
                               variant='secondary'
