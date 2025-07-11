@@ -63,7 +63,7 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
                       <div className='flex-1 min-w-0'>
                         <div className='flex flex-wrap items-center gap-3 mb-2'>
                           <h3 className='text-lg font-semibold text-foreground'>
-                            {recommendation.name && recommendation.itemId}
+                            {recommendation.name || recommendation.itemId}
                           </h3>
                           {recommendation.category && (
                             <Badge
