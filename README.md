@@ -3,18 +3,19 @@ Frontend for [Hybrid-CRS](https://github.com/Acervans/Hybrid-CRS), developed wit
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Folder Structure
-The Next.js app is located inside `hybrid-crs-ui/`, with the following folder structure:
+## Project Structure
+The Next.js app is located inside `hybrid-crs-ui/`, with the following structure:
 - **/src** -> All the source code that will be compiled and rendered by Next.js
   - **/app** -> Application routes and pages
   - **/components** -> Custom React components
   - **/contexts** -> Data Contexts shared among Components
   - **/hooks** -> Custom hooks for shared stateful logic
   - **/i18n** -> Request configuration for i18n (Internationalisation)
-  - **/lib** -> Backend API and database configuration, Server Actions
+  - **/lib** -> Backend API and database logic, Server Actions
+  - **/types** -> Type/Interface definitions
   - **/views** -> Page views, composed of whole screens or sections
   - `constants.ts` -> Shared constants definitions
-  - `types.ts` -> Type/Interface definitions
+  - `middleware.ts` -> Authentication middleware
 - **/public** -> Static assets
 
 ## Getting Started
