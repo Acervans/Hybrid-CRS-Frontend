@@ -56,15 +56,18 @@ const RecommendationDisplay: FC<RecommendationDisplayProps> = ({
           {recommendations.map((recommendation, index) => (
             <Card key={recommendation.itemId} className='overflow-hidden'>
               <CardHeader>
-                <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4'>
+                <div className='flex flex-col lg:flex-row flex-wrap lg:items-start lg:justify-between gap-4'>
                   {/* Item info */}
                   <div className='flex-1 min-w-0'>
                     <div className='flex items-start justify-between'>
                       <div className='flex-1 min-w-0'>
-                        <div className='flex items-center gap-3 mb-2'>
+                        <div className='flex flex-wrap items-center gap-3 mb-2'>
                           <h3 className='text-lg font-semibold text-foreground truncate'>{recommendation.name}</h3>
                           {recommendation.category && (
-                            <Badge variant='secondary' className='flex items-center gap-1 flex-shrink-0'>
+                            <Badge
+                              variant='secondary'
+                              className='flex whitespace-break-spaces items-center gap-1.5 flex-shrink-0'
+                            >
                               <Tag className='w-3 h-3' />
                               {recommendation.category}
                             </Badge>

@@ -73,7 +73,7 @@ export const AgentThread: FC<AgentThreadProps> = ({ archived }) => {
         </ThreadPrimitive.If>
 
         <div
-          className={`max-w-aui-thread sticky bottom-0 mt-3 flex w-full flex-col items-center justify-end rounded-t-lg bg-inherit ${!archived ? 'pb-4' : ''}`}
+          className={`max-w-aui-thread sticky bottom-0 mt-3 flex w-full flex-col items-center justify-end rounded-t-lg bg-transparent ${!archived ? 'pb-4' : ''}`}
         >
           <ThreadScrollToBottom t={t} />
           {!archived && <Composer t={t} />}
@@ -158,7 +158,7 @@ const Composer: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   return (
     <>
       <ThreadPrimitive.If empty={false}>
-        <ComposerPrimitive.Root className='focus-within:border-ring/20 flex w-full flex-wrap items-end rounded-lg border bg-inherit px-2.5 shadow-sm transition-colors ease-in'>
+        <ComposerPrimitive.Root className='focus-within:border-ring/20 flex w-full flex-wrap items-end rounded-lg border bg-background px-2.5 shadow-sm transition-colors ease-in'>
           <ComposerAttachments />
           <ComposerAddAttachment t={t} />
 
