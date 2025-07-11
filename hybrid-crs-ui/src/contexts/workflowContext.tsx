@@ -142,6 +142,7 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
       }
       case 'InputRequiredEvent':
       case 'WorkflowEnd':
+      case 'AbortWorkflow':
         return ''
       case 'Error': {
         console.error(response.message)
