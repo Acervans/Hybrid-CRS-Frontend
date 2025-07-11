@@ -98,7 +98,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
   const path = usePathname()
   const { locale } = useContext(LocaleContext)
   const { model, agent } = useContext(ModelContext)
-  const { getAccessToken, supabase } = useContext(SupabaseContext)
+  const { getAccessToken, supabase, auth } = useContext(SupabaseContext)
   const { startWorkflow, setOnData, workflowId, abortWorkflow, parseWorkflowEvent } = useContext(WorkflowContext)
   const { toast } = useToast()
   const threadTitlesMapRef = useRef<Record<string, string>>({})
@@ -385,10 +385,10 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
               abortSignal.addEventListener('abort', abortWorkflow)
             }
 
-            if (!workflowId && agent) {
+            if (!workflowId && agent && auth?.data.user) {
               startWorkflow(
                 agent.agentId,
-                agent.userId,
+                auth?.data.user?.id,
                 agent.agentName,
                 agent.datasetName,
                 agent.description,
