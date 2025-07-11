@@ -143,6 +143,10 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
       case 'InputRequiredEvent':
       case 'WorkflowEnd':
         return ''
+      case 'Error': {
+        console.error(response.message)
+        return ''
+      }
       default:
         return JSON.stringify(response)
     }
