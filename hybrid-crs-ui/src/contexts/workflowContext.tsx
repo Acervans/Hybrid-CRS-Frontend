@@ -140,9 +140,9 @@ export const WorkflowProvider = ({ children }: { children: React.ReactNode }) =>
 
         return ''
       }
-      case 'InputRequiredEvent': {
+      case 'InputRequiredEvent':
+      case 'WorkflowEnd':
         return ''
-      }
       default:
         return JSON.stringify(response)
     }
