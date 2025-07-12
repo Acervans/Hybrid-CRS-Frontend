@@ -120,13 +120,16 @@ const Composer: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
   const composerRuntime = useComposerRuntime()
   const assistantRuntime = useAssistantRuntime()
   const { lastFeedback, setLastFeedback, sendLastFeedback, setLastRecommendations } = useContext(WorkflowContext)
+  const [sendingFeedback, setSendingFeedback] = useState<boolean>(false)
   const { toast } = useToast()
 
   if (lastFeedback !== null) {
     return (
       <Button
         className='focus-within:border-ring/20 flex w-full max-w-md whitespace-normal h-fit min-h-12 text-md rounded-lg border px-2.5 shadow-sm transition-colors ease-in'
+        disabled={sendingFeedback}
         onClick={async () => {
+          setSendingFeedback(true)
           try {
             const numItems = await sendLastFeedback()
 
@@ -143,14 +146,22 @@ const Composer: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t }) => {
               variant: 'destructive'
             })
             return
+          } finally {
+            setSendingFeedback(false)
           }
           const messages = assistantRuntime.thread.getState().messages
 
           assistantRuntime.thread.startRun({ parentId: messages.at(-1)?.id ?? null })
         }}
       >
-        <Star className='mr-2' />
-        {t('Agent.sendFeedback')}
+        {sendingFeedback ? (
+          <Loader2 className='animate-spin' />
+        ) : (
+          <>
+            <Star className='mr-2' />
+            {t('Agent.sendFeedback')}
+          </>
+        )}
       </Button>
     )
   }
