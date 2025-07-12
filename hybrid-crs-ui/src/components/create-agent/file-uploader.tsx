@@ -474,8 +474,42 @@ export function FileUploader() {
         </Card>
       )}
 
+      <Card className='mt-4'>
+        <CardContent>
+          <div className='space-y-4'>
+            <div className='flex items-center space-x-2'>
+              <Checkbox id='use-headers' checked={useFirstRowAsHeader} onCheckedChange={handleUseHeadersChange} />
+              <Label htmlFor='use-headers' className='text-sm font-medium'>
+                {t('firstRowAsHeader')}
+              </Label>
+            </div>
+
+            <div className='flex items-center space-x-2'>
+              <Checkbox
+                id='column-types'
+                checked={columnNamesContainTypes}
+                onCheckedChange={checked => setColumnNamesContainTypes(checked as boolean)}
+                disabled={!useFirstRowAsHeader}
+              />
+              <div>
+                <Label
+                  htmlFor='column-types'
+                  className={`text-sm font-medium ${!useFirstRowAsHeader ? 'text-muted-foreground' : ''}`}
+                >
+                  {t('columnsDataTypes')}
+                </Label>
+                <p className='text-xs mt-1 text-muted-foreground'>
+                  {t('columnsDataTypesDescription', { format: '"name:type" (e.g., "user_id:token", "ratings:float")' })}
+                  {!useFirstRowAsHeader && ` (${t('requiresHeaders')})`}
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div
-        className={`border-2 ${
+        className={`border-2 mt-4 ${
           isDragging ? 'border-primary bg-muted' : 'border-dashed border-gray-400'
         } ${availableTypes.length === 0 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} rounded-lg p-8 text-center transition-colors`}
         onClick={availableTypes.length > 0 ? handleButtonClick : undefined}
@@ -520,40 +554,6 @@ export function FileUploader() {
           </div>
         )}
       </div>
-
-      <Card className='mt-4'>
-        <CardContent>
-          <div className='space-y-4'>
-            <div className='flex items-center space-x-2'>
-              <Checkbox id='use-headers' checked={useFirstRowAsHeader} onCheckedChange={handleUseHeadersChange} />
-              <Label htmlFor='use-headers' className='text-sm font-medium'>
-                {t('firstRowAsHeader')}
-              </Label>
-            </div>
-
-            <div className='flex items-center space-x-2'>
-              <Checkbox
-                id='column-types'
-                checked={columnNamesContainTypes}
-                onCheckedChange={checked => setColumnNamesContainTypes(checked as boolean)}
-                disabled={!useFirstRowAsHeader}
-              />
-              <div>
-                <Label
-                  htmlFor='column-types'
-                  className={`text-sm font-medium ${!useFirstRowAsHeader ? 'text-muted-foreground' : ''}`}
-                >
-                  {t('columnsDataTypes')}
-                </Label>
-                <p className='text-xs mt-1 text-muted-foreground'>
-                  {t('columnsDataTypesDescription', { format: '"name:type" (e.g., "user_id:token", "ratings:float")' })}
-                  {!useFirstRowAsHeader && ` (${t('requiresHeaders')})`}
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       <div className='mt-4'>
         <h4 className='text-sm font-medium mb-2'>{t('acceptedTypes')}:</h4>
