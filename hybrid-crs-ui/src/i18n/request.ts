@@ -11,7 +11,7 @@ export default getRequestConfig(async () => {
 
   // Get locale from cookie or request headers
   const locale =
-    reqCookies.get('NEXT_LOCALE')?.value || reqHeaders.get('accept-language')?.split(',')[1].split(';')[0] || 'en'
+    reqCookies.get('NEXT_LOCALE')?.value || reqHeaders.get('accept-language')?.split(',')[1]?.split(';')[0] || 'en'
 
   const defaultMessages = (await import(`../../messages/en.json`)).default
 
