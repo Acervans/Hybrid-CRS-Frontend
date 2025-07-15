@@ -5,11 +5,5 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  return (
-    <>
-      <h1>You&apos;re Offline</h1>
-      <br />
-      <h2>Check your connection to use HybridCRS</h2>
-    </>
-  )
+  return <h1 className='p-3'>You&apos;re Offline. Check your connection to use HybridCRS.</h1>
 }
