@@ -357,19 +357,17 @@ export function FileUploader() {
       const sniffer = new (CSVSniffer())()
 
       // Sample the first 10 lines to detect format
-      const sample = text
-        .split(/[\r\n]+/)
-        .slice(0, 10)
-        .join('\n')
+      const newlineStr = text.match(/\r\n|\n|\r/)?.[0] || '\n'
+      const sample = text.split(newlineStr).slice(0, 10).join(newlineStr)
       const sniffResult = sniffer.sniff(sample)
-      const totalRows = getLines(text, sniffResult.newlineStr).length
+      const totalRows = getLines(text, newlineStr).length
 
       console.log('CSV Analysis:', {
-        newlineStr: sniffResult.newlineStr,
         delimiter: sniffResult.delimiter,
         quoteChar: sniffResult.quoteChar,
         hasHeader: useFirstRowAsHeader || sniffResult.hasHeader,
         labels: sniffResult.labels,
+        newlineStr,
         totalRows
       })
 
