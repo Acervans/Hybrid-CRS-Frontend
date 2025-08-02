@@ -327,6 +327,8 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
           model,
           metadata: runConfig.custom,
           onError: async (event: { error: unknown }) => {
+            if (abortSignal?.aborted) return
+
             const error = event.error as Error
 
             errorToast()
@@ -349,20 +351,25 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
         const textDecoder = new TextDecoder()
         let fullText = ''
 
-        while (true) {
-          const { value, done } = await reader.read()
+        try {
+          while (true) {
+            const { value, done } = await reader.read()
 
-          if (done) {
-            break
-          }
-          const content = textDecoder.decode(value)
+            if (done) {
+              break
+            }
+            const content = textDecoder.decode(value)
 
-          if (content) {
-            fullText += content
-            yield {
-              content: [{ type: 'text', text: fullText }]
+            if (content) {
+              fullText += content
+              yield {
+                content: [{ type: 'text', text: fullText }]
+              }
             }
           }
+        } catch (error) {
+          if (abortSignal?.aborted) return
+          throw error
         }
       }
     }
