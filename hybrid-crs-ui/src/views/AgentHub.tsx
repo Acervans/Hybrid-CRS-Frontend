@@ -288,14 +288,17 @@ export function AgentHub() {
           onClearFilters={handleClearFilters}
         />
       </div>
-      <div className='mb-4'>
-        <p className='text-sm text-muted-foreground'>
-          {t('showingAgents', {
-            range: `${start}–${end}`,
-            total: total
-          })}
-        </p>
-      </div>
+
+      {agents !== null && (
+        <div className='mb-4'>
+          <p className='text-sm text-muted-foreground'>
+            {t('showingAgents', {
+              range: `${start}–${end}`,
+              total: total
+            })}
+          </p>
+        </div>
+      )}
 
       <div
         className={`grid grid-cols-1 gap-4 ${open ? 'lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4' : 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}
