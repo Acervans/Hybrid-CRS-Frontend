@@ -189,40 +189,39 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
           // Generate title from messages using LLM
           for (const content of firstMessageContents) {
             if (content.type === 'text') {
-              await generateTitle(model, content.text, await getAccessToken())
-                .then(async title => {
-                  threadTitlesMapRef.current[remoteId] = title
+              try {
+                const newTitle = await generateTitle(model, content.text, await getAccessToken())
+                threadTitlesMapRef.current[remoteId] = newTitle
 
-                  // return stream with title
-                  return new ReadableStream({
-                    start(controller) {
-                      controller.enqueue({
-                        type: 'part-start',
-                        part: { type: 'text' },
-                        path: [0] // required field with length 1
-                      })
-                      controller.enqueue({
-                        type: 'text-delta',
-                        textDelta: title, // the new title
-                        path: [0]
-                      })
-                      controller.enqueue({
-                        type: 'message-finish',
-                        finishReason: 'stop',
-                        usage: {
-                          promptTokens: 1,
-                          completionTokens: 2
-                        },
-                        path: [0]
-                      })
-                      controller.close()
-                    }
-                  })
+                // return stream with title
+                return new ReadableStream({
+                  start(controller) {
+                    controller.enqueue({
+                      type: 'part-start',
+                      part: { type: 'text' },
+                      path: [0] // required field with length 1
+                    })
+                    controller.enqueue({
+                      type: 'text-delta',
+                      textDelta: newTitle, // the new title
+                      path: [0]
+                    })
+                    controller.enqueue({
+                      type: 'message-finish',
+                      finishReason: 'stop',
+                      usage: {
+                        promptTokens: 1,
+                        completionTokens: 2
+                      },
+                      path: [0]
+                    })
+                    controller.close()
+                  }
                 })
-                .catch(() => {
-                  // Keep default title
-                  threadTitlesMapRef.current[remoteId] = t('newChat')
-                })
+              } catch {
+                // Keep default title
+                threadTitlesMapRef.current[remoteId] = t('newChat')
+              }
               break
             }
           }
