@@ -106,6 +106,7 @@ const ThreadListItemDelete: FC<{ t: ReturnType<typeof useTranslations> }> = ({ t
       confirmButton={
         <ThreadListItemPrimitive.Delete asChild>
           <Button
+            className='w-full'
             variant='destructive'
             type='submit'
             autoFocus
