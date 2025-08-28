@@ -12,11 +12,6 @@ type SearchParams = {
   [key: string]: string | string[] | undefined
 }
 
-type PageProps<T extends { [key: string]: string } = {}> = {
-  params: Promise<T>
-  searchParams: Promise<SearchParams>
-}
-
 type WorkflowEvent = {
   event: string
   message: Record<string, unknown> | RecommendationList | string

@@ -12,6 +12,6 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function SignupPage({ searchParams }: PageProps) {
+export default async function SignupPage({ searchParams }: PageProps<'/signup'>) {
   return <AuthForm isSignup params={await searchParams} />
 }

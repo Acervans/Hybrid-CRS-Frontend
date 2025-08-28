@@ -1,6 +1,6 @@
 import { ThreadMessage } from '@assistant-ui/react'
 import { StepResult, ToolSet, generateObject, streamText } from 'ai'
-import { createOllama } from 'ollama-ai-provider'
+import { createOllama } from 'ollama-ai-provider-v2'
 import { Ollama } from 'ollama/browser'
 import { z } from 'zod'
 
@@ -27,14 +27,14 @@ const modelToCtxWindow: Record<string, number> = {
 
 const defaultModel = 'qwen2.5:3b'
 
-function authOllamaProvider(accessToken: string | undefined) {
+function authOllamaProvider(model: string, accessToken: string | undefined) {
   return createOllama({
     baseURL: `${apiUrl}/ollama/api`,
     headers: {
       ...commonHeaders,
       Authorization: `Bearer ${accessToken}`
     }
-  })
+  }).chat(model)
 }
 
 function authOllama(accessToken: string | undefined) {
@@ -73,7 +73,14 @@ export async function streamChat({
   const llm = model || defaultModel
 
   return streamText({
-    model: authOllamaProvider(accessToken)(llm, { numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 2 }),
+    model: authOllamaProvider(llm, accessToken),
+    providerOptions: {
+      ollama: {
+        options: {
+          numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 2
+        }
+      }
+    },
     temperature: 0.2,
     messages: convertToCoreMessages(messages),
     headers: metadata as Record<string, string>,
@@ -118,7 +125,14 @@ export async function generateTitle(
 ): Promise<string> {
   const llm = model || defaultModel
   const { object } = await generateObject({
-    model: authOllamaProvider(accessToken)(llm, { numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 2 }),
+    model: authOllamaProvider(llm, accessToken),
+    providerOptions: {
+      ollama: {
+        options: {
+          numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 2
+        }
+      }
+    },
     schema: z.object({
       title: z.string()
     }),

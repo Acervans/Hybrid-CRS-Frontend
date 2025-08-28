@@ -25,10 +25,7 @@ export default function ResetPasswordForm() {
   const router = useRouter()
 
   const resetFormSchema = z.object({
-    email: z
-      .string()
-      .email({ message: t('validEmail') })
-      .trim()
+    email: z.email({ message: t('validEmail') }).trim()
   })
 
   const passwordFormSchema = z
@@ -60,7 +57,7 @@ export default function ResetPasswordForm() {
     reset,
     formState: { errors, isSubmitting }
   } = useForm<ResetSchemaType | PasswordSchemaType>({
-    resolver: zodResolver(schema as unknown as z.ZodUnion<[z.ZodType<ResetSchemaType>, z.ZodType<PasswordSchemaType>]>),
+    resolver: zodResolver(schema),
     mode: !auth?.data.user ? 'onSubmit' : 'onChange',
     criteriaMode: 'all'
   })

@@ -26,10 +26,7 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
   const { handleLogin } = useContext(SupabaseContext)
 
   const loginFormSchema = z.object({
-    email: z
-      .string()
-      .email({ message: t('validEmail') })
-      .trim(),
+    email: z.email({ message: t('validEmail') }).trim(),
     password: z
       .string()
       .min(8, { message: t('minLen', { min: 8 }) })
@@ -47,10 +44,7 @@ export default function AuthForm(props: { isSignup?: boolean; params: SearchPara
         .string()
         .min(4, { message: t('minLen', { min: 4 }) })
         .trim(),
-      email: z
-        .string()
-        .email({ message: t('validEmail') })
-        .trim(),
+      email: z.email({ message: t('validEmail') }).trim(),
       password: z
         .string()
         .min(8, { message: t('minLen', { min: 8 }) })
