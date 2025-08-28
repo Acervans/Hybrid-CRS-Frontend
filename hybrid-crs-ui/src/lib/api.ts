@@ -77,7 +77,7 @@ export async function streamChat({
     providerOptions: {
       ollama: {
         options: {
-          numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 2
+          num_ctx: modelToCtxWindow[llm] || CTX_WIN_1K * 2
         }
       }
     },
@@ -129,7 +129,7 @@ export async function generateTitle(
     providerOptions: {
       ollama: {
         options: {
-          numCtx: modelToCtxWindow[llm] || CTX_WIN_1K * 2
+          num_ctx: modelToCtxWindow[llm] || CTX_WIN_1K * 2
         }
       }
     },
