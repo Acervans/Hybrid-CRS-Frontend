@@ -274,7 +274,7 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
   const useRuntimeHook = () => {
     // Chat Model Adapter for Open Chat
     const OllamaModelAdapter: ChatModelAdapter = {
-      async *run({ messages, runConfig, abortSignal, context }) {
+      async *run({ messages, runConfig, abortSignal }) {
         const response = await streamChat({
           messages,
           abortSignal,
