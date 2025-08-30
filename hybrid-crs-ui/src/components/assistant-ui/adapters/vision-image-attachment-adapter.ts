@@ -44,10 +44,10 @@ export class VisionImageAttachmentAdapter implements AttachmentAdapter {
 
       reader.onload = () => {
         // FileReader result is already a data URL
-        const base64 = reader.result as string
+        const dataUrl = reader.result as string
 
         // Extract Base64 string
-        resolve(base64.split(',')[1])
+        resolve(dataUrl.split(',')[1])
       }
       reader.onerror = reject
       reader.readAsDataURL(file)
