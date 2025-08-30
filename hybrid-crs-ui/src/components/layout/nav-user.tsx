@@ -39,8 +39,10 @@ export function NavUser() {
         title: t('logoutErrorTitle')
       })
     } else {
-      setAuth(undefined)
-      redirect('/login')
+      setTimeout(() => {
+        setAuth(undefined)
+        redirect('/login')
+      }, 200)
     }
   }
 
