@@ -288,9 +288,6 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
             errorToast()
             console.error(`[${error.name}] ${error.message}`)
           },
-          onFinish: async () => {
-            if (context.tools) console.log(context.tools)
-          },
           accessToken: await getAccessToken()
         })
         if (response.status !== 200) {

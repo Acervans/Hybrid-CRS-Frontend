@@ -47,7 +47,6 @@ export class VisionImageAttachmentAdapter implements AttachmentAdapter {
 
       reader.onload = () => {
         // FileReader result is already a data URL
-        console.log(reader.result as string) // TODO remove
         resolve(reader.result as string)
       }
       reader.onerror = reject
