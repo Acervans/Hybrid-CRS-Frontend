@@ -20,7 +20,7 @@ export class VisionImageAttachmentAdapter implements AttachmentAdapter {
   }
 
   async send(attachment: PendingAttachment): Promise<CompleteAttachment> {
-    const base64 = await this.fileToBase64(attachment.file)
+    const base64 = await this.fileToBase64DataURL(attachment.file)
 
     return {
       ...attachment,
@@ -38,16 +38,13 @@ export class VisionImageAttachmentAdapter implements AttachmentAdapter {
     // noop
   }
 
-  private async fileToBase64(file: File): Promise<string> {
+  private async fileToBase64DataURL(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
 
       reader.onload = () => {
         // FileReader result is already a data URL
-        const dataUrl = reader.result as string
-
-        // Extract Base64 string
-        resolve(dataUrl.split(',')[1])
+        resolve(reader.result as string)
       }
       reader.onerror = reject
       reader.readAsDataURL(file)
