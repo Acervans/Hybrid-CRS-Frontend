@@ -82,7 +82,6 @@ export async function streamChat({
         }
       }
     },
-    temperature: 0.2,
     messages: convertToModelMessages(messages),
     headers: metadata as Record<string, string>,
     abortSignal: abortSignal,
