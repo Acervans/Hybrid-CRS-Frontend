@@ -5,7 +5,7 @@ import { Ollama } from 'ollama/browser'
 import { z } from 'zod'
 
 import { apiUrl } from '@/constants'
-import { convertToCoreMessages } from '@/lib/utils'
+import { convertToModelMessages } from '@/lib/utils'
 
 const commonHeaders: Record<string, string> = {
   skip_zrok_interstitial: '1'
@@ -22,7 +22,8 @@ const CTX_WIN_1K = 1024
 const modelToCtxWindow: Record<string, number> = {
   'qwen2.5:3b': CTX_WIN_1K * 16,
   'qwen3:4b': CTX_WIN_1K * 4,
-  'llava-phi3': CTX_WIN_1K * 4
+  'qwen2.5vl:3b': CTX_WIN_1K * 4,
+  'llava-phi3:latest': CTX_WIN_1K * 4
 }
 
 const defaultModel = 'qwen2.5:3b'
@@ -77,12 +78,12 @@ export async function streamChat({
     providerOptions: {
       ollama: {
         options: {
-          num_ctx: modelToCtxWindow[llm] || CTX_WIN_1K * 2
+          num_ctx: modelToCtxWindow[llm]
         }
       }
     },
     temperature: 0.2,
-    messages: convertToCoreMessages(messages),
+    messages: convertToModelMessages(messages),
     headers: metadata as Record<string, string>,
     abortSignal: abortSignal,
     onError,
@@ -129,7 +130,7 @@ export async function generateTitle(
     providerOptions: {
       ollama: {
         options: {
-          num_ctx: modelToCtxWindow[llm] || CTX_WIN_1K * 2
+          num_ctx: modelToCtxWindow[llm]
         }
       }
     },

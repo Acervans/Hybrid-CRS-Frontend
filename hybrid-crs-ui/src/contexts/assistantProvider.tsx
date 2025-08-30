@@ -6,14 +6,10 @@ import { useCallback, useContext, useMemo, useRef } from 'react'
 
 import {
   AssistantRuntimeProvider,
-  AttachmentAdapter,
   type ChatModelAdapter,
-  CompleteAttachment,
   CompositeAttachmentAdapter,
-  PendingAttachment,
   type unstable_RemoteThreadListAdapter as RemoteThreadListAdapter,
   RuntimeAdapterProvider,
-  SimpleImageAttachmentAdapter,
   SimpleTextAttachmentAdapter,
   type ThreadHistoryAdapter,
   ThreadMessage,
@@ -25,7 +21,9 @@ import {
 } from '@assistant-ui/react'
 import { useTranslations } from 'next-intl'
 
-import { WebSpeechSynthesisAdapter } from '@/components/chat/web-speech-adapter'
+import { PDFTextAttachmentAdapter } from '@/components/assistant-ui/adapters/pdf-text-attachment-adapter'
+import { VisionImageAttachmentAdapter } from '@/components/assistant-ui/adapters/vision-image-attachment-adapter'
+import { WebSpeechSynthesisAdapter } from '@/components/assistant-ui/adapters/web-speech-adapter'
 import { LocaleContext } from '@/contexts/localeContext'
 import { ModelContext } from '@/contexts/modelContext'
 import { SupabaseContext } from '@/contexts/supabaseContext'
@@ -37,7 +35,6 @@ import {
   deleteChatHistory,
   generateTitle,
   getChatHistory,
-  pdfToText,
   sendUserResponse,
   streamChat
 } from '@/lib/api'
@@ -48,48 +45,6 @@ import {
   getChatHistoriesByUserId,
   updateChatHistory
 } from '@/lib/supabase/client'
-
-export class PdfTextAttachmentAdapter implements AttachmentAdapter {
-  public accept = 'application/pdf'
-  private getAccessToken
-
-  constructor(getAccessToken: () => Promise<string | undefined>) {
-    this.getAccessToken = getAccessToken
-  }
-
-  public async add(state: { file: File }): Promise<PendingAttachment> {
-    return {
-      id: state.file.name,
-      type: 'file',
-      name: state.file.name,
-      contentType: state.file.type,
-      file: state.file,
-      status: { type: 'requires-action', reason: 'composer-send' }
-    }
-  }
-
-  public async send(attachment: PendingAttachment): Promise<CompleteAttachment> {
-    return {
-      ...attachment,
-      status: { type: 'complete' },
-      content: [
-        {
-          type: 'text',
-          text: `<attachment name=${attachment.name} type=pdf>\n${await pdfToText(
-            attachment.file,
-            await this.getAccessToken()
-          ).catch(error => {
-            console.error(`Failed to convert PDF to Text: ${error}`)
-          })}\n</attachment>`
-        }
-      ]
-    }
-  }
-
-  public async remove() {
-    // noop
-  }
-}
 
 // AssistantProvider to provide Assistant Runtime Context
 export const AssistantProvider = ({ children }: { children: ReactNode }) => {
@@ -452,8 +407,8 @@ export const AssistantProvider = ({ children }: { children: ReactNode }) => {
     return useLocalThreadRuntime(isAgentChat ? AgentChatAdapter! : OllamaModelAdapter, {
       adapters: {
         attachments: new CompositeAttachmentAdapter([
-          new SimpleImageAttachmentAdapter(),
-          new PdfTextAttachmentAdapter(getAccessToken),
+          new VisionImageAttachmentAdapter(),
+          new PDFTextAttachmentAdapter(getAccessToken),
           textAttachmentAdapter
         ]),
         speech: new WebSpeechSynthesisAdapter(locale)

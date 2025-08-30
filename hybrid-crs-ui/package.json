@@ -13,8 +13,8 @@
     "prepare": "cd .. && husky hybrid-crs-ui/.husky"
   },
   "dependencies": {
-    "@assistant-ui/react": "^0.10.43",
-    "@assistant-ui/react-ai-sdk": "^1.0.4",
+    "@assistant-ui/react": "^0.10.44",
+    "@assistant-ui/react-ai-sdk": "^1.0.5",
     "@assistant-ui/react-markdown": "^0.10.9",
     "@hookform/resolvers": "^5.2.1",
     "@radix-ui/react-accordion": "^1.2.12",
@@ -45,10 +45,10 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@supabase/ssr": "^0.7.0",
-    "@supabase/supabase-js": "^2.56.0",
+    "@supabase/supabase-js": "^2.56.1",
     "@types/google-one-tap": "^1.2.6",
     "@types/react-speech-recognition": "^3.9.6",
-    "ai": "^5.0.27",
+    "ai": "^5.0.28",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

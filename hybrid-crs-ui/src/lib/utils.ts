@@ -1,5 +1,5 @@
 import { ThreadMessage } from '@assistant-ui/react'
-import { CoreMessage } from 'ai'
+import { ModelMessage } from 'ai'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -7,13 +7,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function convertToCoreMessages(messages: readonly ThreadMessage[] | ThreadMessage[]): CoreMessage[] {
+export function convertToModelMessages(messages: readonly ThreadMessage[] | ThreadMessage[]): ModelMessage[] {
   return messages.map(
     msg =>
       ({
         role: msg.role,
         content: [...(msg.attachments?.flatMap(att => att.content) || []), ...msg.content]
-      }) as unknown as CoreMessage
+      }) as unknown as ModelMessage
   )
 }
 
