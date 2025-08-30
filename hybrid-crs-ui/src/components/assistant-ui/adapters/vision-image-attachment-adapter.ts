@@ -1,7 +1,7 @@
 import { AttachmentAdapter, CompleteAttachment, PendingAttachment } from '@assistant-ui/react'
 
 export class VisionImageAttachmentAdapter implements AttachmentAdapter {
-  accept = 'image/jpeg,image/png,image/webp,image/gif'
+  accept = 'image/*'
 
   async add({ file }: { file: File }): Promise<PendingAttachment> {
     const maxSize = 20 * 1024 * 1024 // 20MB
@@ -20,13 +20,10 @@ export class VisionImageAttachmentAdapter implements AttachmentAdapter {
   }
 
   async send(attachment: PendingAttachment): Promise<CompleteAttachment> {
-    const base64 = await this.fileToBase64DataURL(attachment.file)
+    const base64 = await this.fileToBase64(attachment.file)
 
     return {
-      id: attachment.id,
-      type: 'image',
-      name: attachment.name,
-      contentType: attachment.contentType,
+      ...attachment,
       content: [
         {
           type: 'image',
@@ -41,13 +38,16 @@ export class VisionImageAttachmentAdapter implements AttachmentAdapter {
     // noop
   }
 
-  private async fileToBase64DataURL(file: File): Promise<string> {
+  private async fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
 
       reader.onload = () => {
         // FileReader result is already a data URL
-        resolve(reader.result as string)
+        const base64 = reader.result as string
+
+        // Extract Base64 string
+        resolve(base64.split(',')[1])
       }
       reader.onerror = reject
       reader.readAsDataURL(file)
