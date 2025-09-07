@@ -1,4 +1,4 @@
-import { FileMessagePart, ImageMessagePart, ThreadMessage } from '@assistant-ui/react'
+import { ThreadMessage } from '@assistant-ui/react'
 import { ModelMessage } from 'ai'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -12,23 +12,7 @@ export function convertToModelMessages(messages: readonly ThreadMessage[] | Thre
     msg =>
       ({
         role: msg.role,
-        content: [
-          ...(msg.attachments?.flatMap(att => {
-            // Convert image attachments to file parts
-            if (att.type === 'image') {
-              return [
-                {
-                  type: 'file',
-                  data: (att.content[0] as ImageMessagePart).image.split(',')[1],
-                  filename: att.name,
-                  mediaType: att.contentType
-                }
-              ] as unknown as FileMessagePart[]
-            }
-            return att.content
-          }) || []),
-          ...msg.content
-        ]
+        content: [...(msg.attachments?.flatMap(att => att.content) || []), ...msg.content]
       }) as ModelMessage
   )
 }
